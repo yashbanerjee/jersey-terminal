@@ -8,8 +8,8 @@ type Props = {
 };
 
 /**
- * Official Jersey Terminal logo.
- * - mark: emblem only (header / compact)
+ * Official Jersey Terminal logo (same /brand/jt-logo.png asset).
+ * - mark: emblem framed for header / compact use (no stretch, no edge clip)
  * - lockup: full mark + wordmark
  */
 export function BrandLogo({
@@ -25,8 +25,7 @@ export function BrandLogo({
         width={320}
         height={360}
         priority={priority}
-        className={cn("w-auto object-contain", className)}
-        style={{ width: "auto" }}
+        className={cn("h-auto w-auto max-h-full object-contain", className)}
       />
     );
   }
@@ -34,17 +33,27 @@ export function BrandLogo({
   return (
     <span
       className={cn(
-        "relative inline-block overflow-hidden bg-transparent",
+        "relative inline-flex shrink-0 overflow-hidden rounded-2xl bg-jt-black",
+        "ring-1 ring-jt-neon/40 shadow-[0_0_28px_-8px_rgba(180,255,26,0.65)]",
         className,
       )}
     >
+      {/*
+        The PNG is a full lockup (mark + wordmark). Frame the emblem with
+        object-cover + a top-biased position — never scale past 1, which was
+        clipping the circle top/bottom and making it look stretched.
+      */}
       <Image
         src="/brand/jt-logo.png"
         alt="Jersey Terminal"
         fill
-        sizes="48px"
+        sizes="56px"
         priority={priority}
-        className="scale-[1.35] object-cover object-[center_18%]"
+        className="object-cover object-[center_16%]"
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-br from-jt-neon/10 via-transparent to-jt-orange/10"
       />
     </span>
   );

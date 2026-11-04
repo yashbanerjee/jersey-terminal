@@ -30,7 +30,7 @@ export function SiteFooter() {
           {/* Brand */}
           <Reveal>
             <div className="flex items-center gap-2.5 sm:gap-3">
-              <BrandLogo variant="mark" className="h-10 w-10 sm:h-12 sm:w-12" />
+              <BrandLogo variant="mark" className="h-11 w-11 sm:h-12 sm:w-12" />
               <span className="jt-display text-2xl tracking-wide sm:text-3xl">JERSEY TERMINAL</span>
             </div>
             <p className="mt-3 max-w-md text-sm leading-relaxed text-jt-muted sm:mt-4">

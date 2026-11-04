@@ -69,9 +69,9 @@ export function SiteHeader() {
           <BrandLogo
             variant="mark"
             priority
-            className="h-10 w-10 shrink-0 transition-transform duration-500 group-hover:rotate-[-6deg] group-hover:scale-105 sm:h-11 sm:w-11"
+            className="h-11 w-11 shrink-0 transition-transform duration-500 group-hover:rotate-[-4deg] group-hover:scale-[1.04] sm:h-12 sm:w-12"
           />
-          <span className="hidden truncate jt-display text-xl text-white transition-all duration-500 group-hover:jt-gradient-text sm:inline sm:text-2xl">
+          <span className="hidden truncate jt-display text-xl leading-none text-white transition-all duration-500 group-hover:jt-gradient-text md:inline md:text-2xl">
             JERSEY TERMINAL
           </span>
         </Link>
