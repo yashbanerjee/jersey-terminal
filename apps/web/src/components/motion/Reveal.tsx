@@ -147,7 +147,7 @@ export function StaggerItem({
       whileHover={
         effect === "3d"
           ? { y: -8, rotateY: 4, transition: { type: "spring", stiffness: 260, damping: 20 } }
-          : { y: -4 }
+          : undefined
       }
     >
       {children}

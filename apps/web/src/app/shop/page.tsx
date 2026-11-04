@@ -25,19 +25,19 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
 
       <div className="mt-6 flex flex-col gap-4 sm:mt-8 lg:flex-row lg:items-center lg:justify-between">
         <StaggerGroup className="jt-chip-row">
-          <StaggerItem>
+          <StaggerItem className="shrink-0">
             <Link
               href="/shop"
-              className="jt-chip rounded-full border border-jt-neon bg-jt-neon/10 px-4 py-2 text-xs uppercase tracking-[0.16em] text-jt-neon transition hover:scale-105"
+              className="jt-chip rounded-full border border-jt-neon bg-jt-neon/10 px-5 py-2.5 text-xs uppercase tracking-[0.16em] text-jt-neon transition-colors hover:bg-jt-neon/20"
             >
               All
             </Link>
           </StaggerItem>
           {categories.map((c) => (
-            <StaggerItem key={c.id}>
+            <StaggerItem key={c.id} className="shrink-0">
               <Link
                 href={`/shop/${c.slug}`}
-                className="jt-chip rounded-full border border-white/15 px-4 py-2 text-xs uppercase tracking-[0.16em] text-jt-muted transition-colors hover:border-jt-neon/60 hover:text-white hover:scale-105"
+                className="jt-chip rounded-full border border-white/15 bg-white/[0.02] px-5 py-2.5 text-xs uppercase tracking-[0.16em] text-jt-muted transition-colors hover:border-jt-neon/60 hover:bg-jt-neon/10 hover:text-white"
               >
                 {c.name}
               </Link>
