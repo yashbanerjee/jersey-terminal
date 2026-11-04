@@ -1,4 +1,4 @@
-FROM wordpress:6.7.2-php8.2-apache
+FROM wordpress:6.8.3-php8.2-apache
 
 # PHP production tuning
 RUN { \
@@ -26,7 +26,7 @@ RUN curl -fsSL -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/bui
 
 # Bundle WooCommerce compatible with WordPress 6.7.x (latest-stable now requires WP 7.0)
 # wordpress image has no unzip binary — use PHP ZipArchive instead
-ARG WOOCOMMERCE_VERSION=10.5.3
+ARG WOOCOMMERCE_VERSION=9.8.5
 RUN curl -fsSL -o /tmp/woocommerce.zip "https://downloads.wordpress.org/plugin/woocommerce.${WOOCOMMERCE_VERSION}.zip" \
   && php -r '$z=new ZipArchive; if($z->open("/tmp/woocommerce.zip")!==true){fwrite(STDERR,"zip open failed\n"); exit(1);} $z->extractTo("/usr/src/wordpress/wp-content/plugins"); $z->close();' \
   && rm /tmp/woocommerce.zip \
