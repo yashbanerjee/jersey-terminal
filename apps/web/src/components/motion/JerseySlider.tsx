@@ -15,8 +15,8 @@ type Props = {
 };
 
 /**
- * One-by-one jersey carousel with a light 3D rotateY coverflow.
- * Cards are media-only; name/price live below so mobile never overlaps.
+ * Playing-card coverflow — jerseys fan in 3D like a dealt hand.
+ * Name/price sit below so mobile never overlaps the deck.
  */
 export function JerseySlider({ products, intervalMs = 3000, className = "" }: Props) {
   const reduced = useReducedMotion();
@@ -51,18 +51,16 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
       setEntered(true);
       return;
     }
-    const t = window.setTimeout(() => setEntered(true), 700);
+    const t = window.setTimeout(() => setEntered(true), 750);
     return () => window.clearTimeout(t);
   }, [inView, reduced]);
 
-  // Keep autoplay alive; only pause for mouse hover / reduced motion
   useEffect(() => {
     if (!entered || reduced || paused || total < 2) return;
     const id = window.setInterval(() => go(index + 1), intervalMs);
     return () => window.clearInterval(id);
   }, [entered, go, index, intervalMs, paused, reduced, total]);
 
-  // Resume if the tab was backgrounded (browsers throttle timers)
   useEffect(() => {
     const onVis = () => {
       if (document.visibilityState === "visible") setPaused(false);
@@ -75,7 +73,7 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
 
   const slots = total === 1 ? [0] : total === 2 ? [-1, 0] : [-1, 0, 1];
   const show = inView || reduced;
-  const spread = narrow ? 132 : 220;
+  const spread = narrow ? 118 : 200;
 
   return (
     <div
@@ -86,13 +84,18 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
       }}
       onPointerLeave={() => setPaused(false)}
     >
-      {/* Full-width stage; card size drives height so caption never collides */}
       <div
         className="relative mx-auto w-full max-w-5xl"
-        style={{ perspective: "1200px", perspectiveOrigin: "50% 40%" }}
+        style={{ perspective: "1400px", perspectiveOrigin: "50% 45%" }}
       >
+        {/* Soft table shadow under the deck */}
         <div
-          className="relative mx-auto aspect-[3/4] w-[min(68vw,240px)] overflow-visible sm:w-[280px] md:w-[300px] lg:w-[320px]"
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 top-[72%] h-10 w-[min(70%,320px)] -translate-x-1/2 rounded-[100%] bg-black/50 blur-2xl"
+        />
+
+        <div
+          className="relative mx-auto aspect-[5/7] w-[min(68vw,230px)] overflow-visible sm:w-[270px] md:w-[290px] lg:w-[310px]"
           style={{ transformStyle: "preserve-3d" }}
         >
           {slots.map((offset) => {
@@ -100,9 +103,13 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
             const product = products[i];
             const isActive = offset === 0;
             const x = offset * spread;
-            const rotateY = reduced ? 0 : offset * -16;
-            const scale = isActive ? 1 : 0.76;
-            const opacity = isActive ? 1 : 0.32;
+            // Fan like a hand of cards — side cards tuck back & down
+            const rotateY = reduced ? 0 : offset * -28;
+            const rotateZ = reduced ? 0 : offset * 4;
+            const y = isActive ? -8 : 18;
+            const z = isActive ? 80 : -60;
+            const scale = isActive ? 1 : 0.78;
+            const opacity = isActive ? 1 : 0.42;
 
             return (
               <motion.div
@@ -111,53 +118,73 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
                 style={{
                   transformStyle: "preserve-3d",
                   zIndex: isActive ? 30 : 10 - Math.abs(offset),
+                  transformOrigin: "50% 100%",
                 }}
                 initial={
                   reduced
                     ? false
                     : {
                         opacity: 0,
-                        y: 70,
-                        rotateY: offset === 0 ? 14 : offset * -24,
-                        scale: 0.78,
+                        y: 100,
+                        rotateY: offset === 0 ? 40 : offset * -50,
+                        rotateZ: offset * 12,
+                        z: -120,
+                        scale: 0.7,
                       }
                 }
                 animate={
                   show
                     ? {
                         x,
-                        y: 0,
+                        y,
+                        z,
                         rotateY,
+                        rotateZ,
                         scale,
                         opacity,
-                        filter: isActive ? "brightness(1) saturate(1)" : "brightness(0.5) saturate(0.8)",
+                        filter: isActive
+                          ? "brightness(1.05) saturate(1.05)"
+                          : "brightness(0.55) saturate(0.75)",
                       }
                     : {
                         opacity: 0,
-                        y: 70,
-                        rotateY: offset === 0 ? 14 : offset * -24,
-                        scale: 0.78,
+                        y: 100,
+                        rotateY: offset === 0 ? 40 : offset * -50,
+                        z: -120,
+                        scale: 0.7,
                       }
                 }
                 transition={{
                   type: "spring",
-                  stiffness: 120,
-                  damping: 18,
-                  mass: 0.9,
-                  delay: show && !entered ? Math.abs(offset) * 0.1 : 0,
+                  stiffness: 110,
+                  damping: 16,
+                  mass: 0.95,
+                  delay: show && !entered ? Math.abs(offset) * 0.12 : 0,
                 }}
                 aria-hidden={!isActive}
               >
-                <div className={isActive ? "pointer-events-auto" : "pointer-events-none select-none"}>
+                {/* Idle float on the active card — like holding it in hand */}
+                <motion.div
+                  className={isActive ? "pointer-events-auto" : "pointer-events-none select-none"}
+                  animate={
+                    isActive && show && !reduced
+                      ? { y: [0, -6, 0], rotateZ: [0, 0.6, 0] }
+                      : { y: 0, rotateZ: 0 }
+                  }
+                  transition={
+                    isActive
+                      ? { duration: 3.6, repeat: Infinity, ease: "easeInOut" }
+                      : { duration: 0.3 }
+                  }
+                >
                   <ProductCard product={product} priority={isActive} mediaOnly />
-                </div>
+                </motion.div>
               </motion.div>
             );
           })}
         </div>
       </div>
 
-      {/* Caption — single source of name/price */}
       <AnimatePresence mode="wait">
         <motion.div
           key={active.id}
@@ -165,7 +192,7 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
           animate={show ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 0, y: 14 }}
           exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
           transition={{ duration: 0.38, delay: show ? 0.1 : 0, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-20 mt-5 px-3 text-center sm:mt-6"
+          className="relative z-20 mt-6 px-3 text-center sm:mt-7"
         >
           <p className="text-[10px] uppercase tracking-[0.28em] text-jt-muted sm:text-[11px]">
             <span className="text-jt-neon">{String(index + 1).padStart(2, "0")}</span>

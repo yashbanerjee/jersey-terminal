@@ -16,7 +16,6 @@ const BADGE_LABEL: Record<ProductCardModel["badges"][number], string> = {
   sale: "Sale",
 };
 
-/** Each badge type gets its own hue so a grid of cards reads as a colourful mix. */
 const BADGE_STYLE: Record<ProductCardModel["badges"][number], string> = {
   new: "jt-gradient-bg text-jt-black",
   bestseller: "bg-jt-cyan text-jt-black",
@@ -24,10 +23,10 @@ const BADGE_STYLE: Record<ProductCardModel["badges"][number], string> = {
   sale: "bg-jt-coral text-white",
 };
 
+/** Playing-card style jersey tile — thick foil edge, 3D tilt, holographic shine. */
 export function ProductCard({
   product,
   priority = false,
-  /** Image + badges only — used inside the coverflow slider to avoid text overlap */
   mediaOnly = false,
 }: {
   product: ProductCardModel;
@@ -43,7 +42,6 @@ export function ProductCard({
   );
   const wished = hydrated && wishedStored;
 
-  // Enable pointer tilt only after mount so SSR HTML matches the first client paint.
   const [tiltReady, setTiltReady] = useState(false);
   useEffect(() => setTiltReady(true), []);
 
@@ -51,48 +49,48 @@ export function ProductCard({
   const px = useMotionValue(0.5);
   const py = useMotionValue(0.5);
 
-  // Strong left/right yaw + lighter pitch — mouse X drives the 3D turn
-  const rotateY = useSpring(useTransform(px, [0, 1], [18, -18]), {
-    stiffness: 180,
+  // Playing-card flip feel — stronger yaw (left/right) than pitch
+  const rotateY = useSpring(useTransform(px, [0, 1], [22, -22]), {
+    stiffness: 160,
+    damping: 16,
+    mass: 0.4,
+  });
+  const rotateX = useSpring(useTransform(py, [0, 1], [14, -14]), {
+    stiffness: 160,
+    damping: 16,
+    mass: 0.4,
+  });
+  const shiftX = useSpring(useTransform(px, [0, 1], [-18, 18]), {
+    stiffness: 140,
     damping: 18,
     mass: 0.45,
   });
-  const rotateX = useSpring(useTransform(py, [0, 1], [10, -10]), {
-    stiffness: 180,
+  const shiftY = useSpring(useTransform(py, [0, 1], [-12, 10]), {
+    stiffness: 140,
     damping: 18,
     mass: 0.45,
   });
-  // Lateral slide so the card physically leans left/right with the cursor
-  const shiftX = useSpring(useTransform(px, [0, 1], [-14, 14]), {
-    stiffness: 160,
-    damping: 20,
-    mass: 0.5,
-  });
-  const shiftY = useSpring(useTransform(py, [0, 1], [-8, 8]), {
-    stiffness: 160,
-    damping: 20,
-    mass: 0.5,
-  });
+  const liftZ = useSpring(0, { stiffness: 200, damping: 20 });
 
-  // Soft spotlight that follows the pointer across the media
   const glareX = useTransform(px, [0, 1], ["0%", "100%"]);
   const glareY = useTransform(py, [0, 1], ["0%", "100%"]);
-  const glare = useMotionTemplate`radial-gradient(420px circle at ${glareX} ${glareY}, rgba(255,255,255,0.22), transparent 55%)`;
+  const glare = useMotionTemplate`radial-gradient(480px circle at ${glareX} ${glareY}, rgba(255,255,255,0.32), rgba(180,255,26,0.08) 35%, transparent 60%)`;
+
+  const enable3d = tiltReady && !mediaOnly;
 
   function onMove(e: MouseEvent<HTMLElement>) {
-    // Skip pointer tilt inside the coverflow slider — parent already owns 3D.
-    if (!tiltReady || mediaOnly) return;
+    if (!enable3d) return;
     const r = ref.current?.getBoundingClientRect();
     if (!r) return;
     px.set((e.clientX - r.left) / r.width);
     py.set((e.clientY - r.top) / r.height);
+    liftZ.set(28);
   }
   function onLeave() {
     px.set(0.5);
     py.set(0.5);
+    liftZ.set(0);
   }
-
-  const enable3d = tiltReady && !mediaOnly;
 
   return (
     <motion.article
@@ -106,20 +104,25 @@ export function ProductCard({
               rotateY,
               x: shiftX,
               y: shiftY,
-              transformPerspective: 1100,
+              z: liftZ,
+              transformPerspective: 900,
               transformStyle: "preserve-3d",
             }
-          : undefined
+          : { transformStyle: "preserve-3d" }
       }
-      whileHover={enable3d ? { scale: 1.03, zIndex: 20 } : undefined}
-      transition={{ type: "spring", stiffness: 260, damping: 20 }}
-      className="jt-card group relative w-full min-w-0 will-change-transform"
+      whileHover={enable3d ? { scale: 1.045, zIndex: 30 } : undefined}
+      transition={{ type: "spring", stiffness: 240, damping: 18 }}
+      className="jt-card jt-playing-card group relative w-full min-w-0 will-change-transform"
     >
       <Link href={`/product/${product.slug}`} className="block" style={{ transformStyle: "preserve-3d" }}>
-        {/* Animated gradient border shell */}
-        <div className="jt-card-frame relative p-[2px]">
-          <span aria-hidden className="jt-card-frame-glow" />
-          <div className="jt-card-media jt-chamfer-sm relative aspect-[3/4] w-full overflow-hidden bg-gradient-to-br from-jt-surface via-jt-dark to-jt-surface">
+        {/* Cut-corner frame + moving gradient border */}
+        <div className="jt-card-frame jt-playing-frame relative p-[2px] sm:p-[2.5px]">
+          <span aria-hidden className="jt-card-border-run" />
+
+          <div className="jt-card-media jt-playing-face relative aspect-[5/7] w-full overflow-hidden bg-jt-dark">
+            {/* Inner cut guide line */}
+            <span aria-hidden className="jt-playing-inset pointer-events-none absolute inset-[5px] z-[1] sm:inset-[6px]" />
+
             {product.image ? (
               <Image
                 src={product.image.src}
@@ -127,51 +130,48 @@ export function ProductCard({
                 fill
                 priority={priority}
                 sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, (max-width:1536px) 25vw, 20vw"
-                className="object-cover transition duration-700 ease-out group-hover:scale-[1.08]"
+                className="object-cover transition duration-700 ease-out group-hover:scale-[1.07]"
               />
             ) : (
-              <div className="flex h-full items-center justify-center jt-display text-4xl text-jt-muted">
-                JT
-              </div>
+              <div className="flex h-full items-center justify-center jt-display text-4xl text-jt-muted">JT</div>
             )}
 
-            {/* Pointer glare */}
             {enable3d && (
               <motion.span
                 aria-hidden
-                className="pointer-events-none absolute inset-0 opacity-0 mix-blend-soft-light transition-opacity duration-300 group-hover:opacity-100"
+                className="pointer-events-none absolute inset-0 z-[1] opacity-0 mix-blend-soft-light transition-opacity duration-300 group-hover:opacity-100"
                 style={{ background: glare }}
               />
             )}
 
-            <span aria-hidden className="jt-card-shine pointer-events-none absolute inset-0" />
+            <span aria-hidden className="jt-card-shine jt-holo-shine pointer-events-none absolute inset-0 z-[1]" />
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-1/2 bg-gradient-to-t from-black/75 via-black/20 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-90"
             />
 
-            <div className="absolute left-2 top-2 flex flex-col gap-1 sm:left-3 sm:top-3">
+            <div className="absolute left-2 top-2 z-[2] flex flex-col gap-1 sm:left-3 sm:top-3">
               {product.badges.map((b) => (
                 <span
                   key={b}
-                  className={`jt-slant-sm px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider transition-transform duration-500 group-hover:translate-x-0.5 sm:px-3 sm:text-[10px] ${BADGE_STYLE[b]}`}
+                  className={`jt-slant-sm px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider sm:px-3 sm:text-[10px] ${BADGE_STYLE[b]}`}
                 >
                   {BADGE_LABEL[b]}
                 </span>
               ))}
             </div>
 
-            <div className="pointer-events-none absolute inset-x-2 bottom-2 translate-y-4 opacity-0 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:translate-y-0 group-hover:opacity-100 sm:inset-x-3 sm:bottom-3">
-              <span className="jt-gradient-bg jt-slant flex items-center justify-between px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-jt-black">
+            <div className="pointer-events-none absolute inset-x-2 bottom-2 z-[2] translate-y-3 opacity-0 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:translate-y-0 group-hover:opacity-100 sm:inset-x-3 sm:bottom-3">
+              <span className="jt-gradient-bg jt-slant flex items-center justify-between px-4 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-jt-black shadow-[0_8px_24px_-8px_rgba(180,255,26,0.7)]">
                 View jersey
-                <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight className="h-4 w-4" />
               </span>
             </div>
           </div>
         </div>
 
         {!mediaOnly && (
-          <div className="mt-3 space-y-1" style={{ transform: "translateZ(18px)" }}>
+          <div className="mt-3 space-y-1 px-0.5" style={{ transform: "translateZ(16px)" }}>
             {product.category && (
               <p className="truncate text-[10px] uppercase tracking-[0.2em] text-jt-muted sm:text-[11px]">
                 {product.category}
@@ -201,8 +201,8 @@ export function ProductCard({
         whileTap={{ scale: 0.85 }}
         aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
         onClick={() => toggle(product.id)}
-        className="absolute right-2 top-2 z-10 rounded-full bg-black/55 p-2 text-white backdrop-blur transition-colors hover:bg-black/80 sm:right-3 sm:top-3"
-        style={{ transform: "translateZ(28px)" }}
+        className="absolute right-3 top-3 z-10 rounded-full bg-black/60 p-2 text-white backdrop-blur transition-colors hover:bg-black/80 sm:right-3.5 sm:top-3.5"
+        style={{ transform: "translateZ(36px)" }}
       >
         <Heart
           className={`h-4 w-4 transition-all duration-300 ${
