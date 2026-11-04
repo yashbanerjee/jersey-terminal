@@ -16,17 +16,17 @@ export function PageTransition({ children }: { children: ReactNode }) {
         initial={
           reduce
             ? false
-            : { opacity: 0, y: 28, filter: "blur(10px)", scale: 0.98, rotateX: 4 }
+            : { opacity: 0, y: 42, filter: "blur(14px)", scale: 0.97, rotateX: 6 }
         }
         animate={{ opacity: 1, y: 0, filter: "blur(0px)", scale: 1, rotateX: 0 }}
         exit={
           reduce
             ? undefined
-            : { opacity: 0, y: -16, filter: "blur(6px)", scale: 0.99, transition: { duration: 0.28 } }
+            : { opacity: 0, y: -20, filter: "blur(8px)", scale: 0.985, transition: { duration: 0.3 } }
         }
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
         className="w-full"
-        style={{ transformPerspective: 1200 }}
+        style={{ transformPerspective: 1400 }}
       >
         {children}
       </motion.div>
