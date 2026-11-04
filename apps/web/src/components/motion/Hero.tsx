@@ -21,6 +21,8 @@ export type HeroProduct = {
   name: string;
   price: string;
   image?: { src: string; alt: string };
+  badges?: Array<"new" | "bestseller" | "limited" | "sale">;
+  category?: string;
 };
 
 const STATS = [
@@ -214,32 +216,21 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
             </div>
           </div>
 
-          {/* Featured jersey — slides one-by-one with a light 3D rotate */}
+          {/* Featured jersey — data-rich trading card like the reference */}
           <div className="hero-visual order-1 lg:order-2">
             {featured?.image ? (
               <div
-                className="relative mx-auto w-full max-w-[280px] sm:max-w-[400px] lg:ml-auto lg:mr-0 lg:max-w-[480px]"
+                className="relative mx-auto w-full max-w-[300px] sm:max-w-[420px] lg:ml-auto lg:mr-0 lg:max-w-[500px]"
                 style={{ perspective: "1100px" }}
                 onPointerEnter={(e) => {
                   if (e.pointerType === "mouse") setPaused(true);
                 }}
                 onPointerLeave={() => setPaused(false)}
               >
-                {/* Orange glow + smoke behind the frame */}
                 <div className="pointer-events-none absolute left-1/2 top-[55%] h-[110%] w-[115%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,122,26,0.42),rgba(255,122,26,0.1)_45%,transparent_70%)] blur-3xl" />
                 <div className="hero-smoke pointer-events-none absolute -bottom-[8%] -left-[20%] h-[55%] w-[70%] rounded-full bg-[radial-gradient(ellipse,rgba(255,160,90,0.35),transparent_65%)] blur-2xl" />
                 <div className="hero-smoke pointer-events-none absolute -bottom-[12%] right-[-15%] h-[50%] w-[60%] rounded-full bg-[radial-gradient(ellipse,rgba(255,255,255,0.18),transparent_65%)] blur-2xl" />
                 <div className="pointer-events-none absolute -right-[12%] top-[8%] h-[45%] w-[45%] rounded-full bg-[radial-gradient(circle,rgba(46,230,255,0.28),transparent_65%)] blur-3xl" />
-
-                {/* Floating chips */}
-                <div className="hero-chip hero-chip-a absolute left-3 top-4 z-30 hidden items-center gap-2 rounded-full border border-jt-amber/40 bg-jt-black/80 px-3 py-2 text-xs shadow-[0_10px_30px_-10px_rgba(255,176,32,0.6)] backdrop-blur-md sm:flex lg:-left-6">
-                  <Star className="h-3.5 w-3.5 fill-jt-amber text-jt-amber" />
-                  <span className="font-semibold">4.9 Fan Favourite</span>
-                </div>
-                <div className="hero-chip hero-chip-b absolute -right-2 bottom-[22%] z-30 hidden items-center gap-2 rounded-full border border-jt-neon/60 bg-jt-neon px-3 py-2 text-xs font-bold text-jt-black shadow-[0_10px_30px_-8px_rgba(180,255,26,0.8)] sm:flex lg:-right-6">
-                  <PenLine className="h-3.5 w-3.5" />
-                  Personalise name &amp; number
-                </div>
 
                 <div className="hero-jersey relative jt-drop-orange" style={{ transformStyle: "preserve-3d" }}>
                   <SlideImpact triggerKey={featured.id} />
@@ -255,7 +246,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                       style={{ transformStyle: "preserve-3d" }}
                     >
                       <Link href={`/product/${featured.slug}`} className="group relative block">
-                        <div className="jt-chamfer relative bg-[linear-gradient(135deg,rgba(46,230,255,0.9),rgba(255,255,255,0.35)_30%,rgba(255,122,26,0.9)_65%,rgba(255,176,32,0.9))] p-[2px]">
+                        <div className="jt-chamfer relative bg-[linear-gradient(135deg,rgba(46,230,255,0.9),rgba(255,255,255,0.35)_30%,rgba(255,122,26,0.9)_65%,rgba(255,176,32,0.9))] p-[2px] shadow-[0_30px_80px_-20px_rgba(255,122,26,0.55)]">
                           <div className="jt-chamfer relative overflow-hidden bg-jt-dark">
                             <div className="relative aspect-[4/5]">
                               <Image
@@ -268,23 +259,66 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                               />
                               <div className="pointer-events-none absolute -left-[30%] top-[20%] h-[3px] w-[160%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(46,230,255,0.9),transparent)] opacity-70 blur-[1px]" />
                               <div className="pointer-events-none absolute -left-[30%] top-[70%] h-[4px] w-[160%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(255,122,26,0.9),transparent)] opacity-70 blur-[1.5px]" />
-                              <div className="absolute inset-0 bg-gradient-to-t from-jt-black via-jt-black/15 to-transparent" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-jt-black via-jt-black/20 to-transparent" />
                               <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[radial-gradient(ellipse_at_50%_100%,rgba(255,122,26,0.35),transparent_60%)]" />
                               <span aria-hidden className="jt-card-shine pointer-events-none absolute inset-0" />
-                            </div>
 
-                            <div className="absolute inset-x-0 bottom-0 flex flex-col gap-3 p-4 sm:flex-row sm:items-end sm:justify-between sm:gap-4 sm:p-6">
-                              <div className="min-w-0 flex-1">
-                                <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-jt-orange">
-                                  Featured jersey
-                                </p>
-                                <h2 className="mt-1.5 line-clamp-2 break-words jt-display text-xl leading-[0.95] text-white sm:text-2xl md:text-3xl">
-                                  {featured.name}
-                                </h2>
+                              {/* Top data row — always visible on the image */}
+                              <div className="absolute inset-x-0 top-0 z-20 flex items-start justify-between gap-2 p-3 sm:p-4">
+                                <div className="hero-chip hero-chip-a flex items-center gap-1.5 rounded-full border border-jt-amber/45 bg-jt-black/80 px-2.5 py-1.5 text-[11px] shadow-[0_10px_30px_-10px_rgba(255,176,32,0.7)] backdrop-blur-md sm:gap-2 sm:px-3 sm:py-2 sm:text-xs">
+                                  <Star className="h-3.5 w-3.5 fill-jt-amber text-jt-amber" />
+                                  <span className="font-semibold text-white">4.9 Fan Favourite</span>
+                                </div>
+                                <div className="flex flex-col items-end gap-1.5">
+                                  <span className="rounded-full border border-white/20 bg-black/55 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/85 backdrop-blur">
+                                    {String(index + 1).padStart(2, "0")} / {String(Math.max(products.length, 1)).padStart(2, "0")}
+                                  </span>
+                                  {(featured.badges?.[0] || featured.category) && (
+                                    <span className="jt-gradient-bg-fire rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-jt-black">
+                                      {featured.badges?.[0] === "limited"
+                                        ? "Limited"
+                                        : featured.badges?.[0] === "new"
+                                          ? "New drop"
+                                          : featured.badges?.[0] === "sale"
+                                            ? "Sale"
+                                            : featured.category || "Featured"}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
-                              <div className="w-fit shrink-0 jt-slant bg-jt-black/90 px-4 py-2 text-left ring-1 ring-white/10 sm:text-right">
-                                <p className="text-[9px] uppercase tracking-[0.2em] text-jt-muted">From</p>
-                                <p className="jt-display text-lg text-white sm:text-xl">{formatAED(featured.price)}</p>
+
+                              {/* Mid-card personalise pill */}
+                              <div className="hero-chip hero-chip-b absolute right-3 top-[42%] z-20 sm:right-4">
+                                <span className="inline-flex items-center gap-1.5 rounded-full border border-jt-neon/70 bg-jt-neon px-2.5 py-1.5 text-[10px] font-bold text-jt-black shadow-[0_10px_30px_-8px_rgba(180,255,26,0.85)] sm:gap-2 sm:px-3 sm:py-2 sm:text-xs">
+                                  <PenLine className="h-3.5 w-3.5" />
+                                  Personalise name &amp; number
+                                </span>
+                              </div>
+
+                              {/* Bottom product data */}
+                              <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col gap-3 p-3.5 sm:flex-row sm:items-end sm:justify-between sm:gap-4 sm:p-5">
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-jt-orange">
+                                    Featured jersey
+                                    {featured.category ? (
+                                      <span className="text-white/35"> · {featured.category}</span>
+                                    ) : null}
+                                  </p>
+                                  <h2 className="mt-1.5 line-clamp-2 break-words jt-display text-xl leading-[0.95] text-white sm:text-2xl md:text-3xl">
+                                    {featured.name}
+                                  </h2>
+                                  <p className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] uppercase tracking-[0.16em] text-white/55">
+                                    <span>Match-day cut</span>
+                                    <span className="text-white/25">·</span>
+                                    <span>UAE print</span>
+                                    <span className="text-white/25">·</span>
+                                    <span>Ships worldwide</span>
+                                  </p>
+                                </div>
+                                <div className="w-fit shrink-0 jt-slant bg-jt-black/90 px-4 py-2 text-left ring-1 ring-white/10 sm:text-right">
+                                  <p className="text-[9px] uppercase tracking-[0.2em] text-jt-muted">From</p>
+                                  <p className="jt-display text-lg text-white sm:text-xl">{formatAED(featured.price)}</p>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -294,6 +328,31 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                   </AnimatePresence>
                 </div>
 
+                {/* Thumb strip — keeps the visual column dense with selectable data */}
+                {products.length > 1 && (
+                  <div className="mt-3 grid grid-cols-4 gap-2 sm:mt-4 sm:grid-cols-6 sm:gap-2.5">
+                    {products.slice(0, 6).map((p, i) => (
+                      <button
+                        key={p.id}
+                        type="button"
+                        aria-label={`Show ${p.name}`}
+                        onClick={() => {
+                          setDir(i > index ? 1 : -1);
+                          setIndex(i);
+                        }}
+                        className={`relative aspect-square overflow-hidden rounded-lg bg-jt-surface ring-1 transition ${
+                          i === index
+                            ? "ring-jt-neon shadow-[0_0_18px_-4px_rgba(180,255,26,0.75)]"
+                            : "ring-white/10 opacity-70 hover:opacity-100"
+                        }`}
+                      >
+                        {p.image ? (
+                          <Image src={p.image.src} alt="" fill className="object-cover" sizes="80px" />
+                        ) : null}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             ) : (
               <div className="jt-chamfer mx-auto aspect-[4/5] w-full max-w-[400px] bg-jt-surface lg:ml-auto" />
