@@ -5,7 +5,7 @@
 | Service    | Root directory / Dockerfile                         | Notes                                      |
 |-----------|------------------------------------------------------|--------------------------------------------|
 | `web`     | `apps/web/Dockerfile` (repo root context)            | Custom domain `www.yourdomain.com`         |
-| `wordpress` | `wordpress/Dockerfile`                             | Volume mount `/var/www/html`, `cms.*`      |
+| `wordpress` | `wordpress/Dockerfile`                             | Volume mount `/var/www/html/wp-content`, public port `8080` |
 | `mysql`   | Railway MySQL/MariaDB plugin                         | Private networking only                    |
 | `redis`   | Railway Redis plugin                                 | Private networking                         |
 | `worker`  | `apps/worker/Dockerfile` (repo root context)         | No public domain                           |

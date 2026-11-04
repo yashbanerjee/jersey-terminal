@@ -14,6 +14,22 @@ function restAuthQuery(url: URL) {
   url.searchParams.set("consumer_secret", env.wooSecret);
 }
 
+/** WordPress install / error pages return HTML with HTTP 200 — never trust res.json(). */
+async function readJsonBody<T>(res: Response, label: string): Promise<T> {
+  const text = await res.text();
+  const trimmed = text.trimStart();
+  if (!trimmed || trimmed.startsWith("<!") || trimmed.startsWith("<html")) {
+    throw new Error(
+      `${label}: WordPress returned HTML instead of JSON (CMS may still be installing or WooCommerce is inactive)`,
+    );
+  }
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    throw new Error(`${label}: invalid JSON response`);
+  }
+}
+
 export async function wooRest<T>(
   path: string,
   init?: RequestInit & { next?: NextFetchRequestConfig },
@@ -33,7 +49,7 @@ export async function wooRest<T>(
   if (!res.ok) {
     throw new Error(`Woo REST ${res.status}: ${await res.text()}`);
   }
-  return res.json() as Promise<T>;
+  return readJsonBody<T>(res, "Woo REST");
 }
 
 export type StoreSession = {
@@ -73,8 +89,9 @@ export async function wooStore<T>(
   const cartToken = res.headers.get("Cart-Token") ?? session?.cartToken;
   const nonce = res.headers.get("Nonce") ?? session?.nonce;
 
+  const text = await res.text();
+
   if (!res.ok) {
-    const text = await res.text();
     // Surface WooCommerce's human-readable message when present (e.g. validation errors)
     let message = `Woo Store API ${res.status}: ${text}`;
     try {
@@ -86,8 +103,22 @@ export async function wooStore<T>(
     throw new Error(message);
   }
 
+  const trimmed = text.trimStart();
+  if (!trimmed || trimmed.startsWith("<!") || trimmed.startsWith("<html")) {
+    throw new Error(
+      "Woo Store API: WordPress returned HTML instead of JSON (CMS may still be installing or WooCommerce is inactive)",
+    );
+  }
+
+  let data: T;
+  try {
+    data = JSON.parse(text) as T;
+  } catch {
+    throw new Error("Woo Store API: invalid JSON response");
+  }
+
   return {
-    data: (await res.json()) as T,
+    data,
     cartToken: cartToken ?? undefined,
     nonce: nonce ?? undefined,
   };
@@ -110,5 +141,5 @@ export async function jtSports<T>(
   if (!res.ok) {
     throw new Error(`JT Sports API ${res.status}: ${await res.text()}`);
   }
-  return res.json() as Promise<T>;
+  return readJsonBody<T>(res, "JT Sports API");
 }

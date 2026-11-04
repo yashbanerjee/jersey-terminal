@@ -10,8 +10,8 @@ export const dynamic = "force-dynamic";
 export default async function ShopPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q } = await searchParams;
   const [products, categories] = await Promise.all([
-    listProducts({ search: q, perPage: 24, orderby: "date" }),
-    getCategories(),
+    listProducts({ search: q, perPage: 24, orderby: "date" }).catch(() => []),
+    getCategories().catch(() => []),
   ]);
 
   return (

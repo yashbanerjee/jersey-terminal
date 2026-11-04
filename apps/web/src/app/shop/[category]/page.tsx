@@ -9,13 +9,13 @@ export const dynamic = "force-dynamic";
 
 export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
   const { category } = await params;
-  const categories = await getCategories();
+  const categories = await getCategories().catch(() => []);
   const match = categories.find((c) => c.slug === category);
   const products = await listProducts({
     category: match ? String(match.id) : undefined,
     search: match ? undefined : category.replace(/-/g, " "),
     perPage: 24,
-  });
+  }).catch(() => []);
 
   return (
     <div className="jt-page jt-container w-full">
