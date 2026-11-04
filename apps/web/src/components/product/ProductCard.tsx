@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowUpRight, Heart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,8 +36,6 @@ export function ProductCard({
 }) {
   const toggle = useWishlistStore((s) => s.toggle);
   const wishedStored = useWishlistStore((s) => s.ids.includes(product.id));
-  // The wishlist is persisted in localStorage; only read it once hydrated so the
-  // first client render matches the server HTML (avoids a hydration mismatch).
   const hydrated = useSyncExternalStore(
     () => () => {},
     () => true,
@@ -52,10 +50,37 @@ export function ProductCard({
   const ref = useRef<HTMLElement>(null);
   const px = useMotionValue(0.5);
   const py = useMotionValue(0.5);
-  const rotateX = useSpring(useTransform(py, [0, 1], [6, -6]), { stiffness: 200, damping: 20 });
-  const rotateY = useSpring(useTransform(px, [0, 1], [-6, 6]), { stiffness: 200, damping: 20 });
+
+  // Strong left/right yaw + lighter pitch — mouse X drives the 3D turn
+  const rotateY = useSpring(useTransform(px, [0, 1], [18, -18]), {
+    stiffness: 180,
+    damping: 18,
+    mass: 0.45,
+  });
+  const rotateX = useSpring(useTransform(py, [0, 1], [10, -10]), {
+    stiffness: 180,
+    damping: 18,
+    mass: 0.45,
+  });
+  // Lateral slide so the card physically leans left/right with the cursor
+  const shiftX = useSpring(useTransform(px, [0, 1], [-14, 14]), {
+    stiffness: 160,
+    damping: 20,
+    mass: 0.5,
+  });
+  const shiftY = useSpring(useTransform(py, [0, 1], [-8, 8]), {
+    stiffness: 160,
+    damping: 20,
+    mass: 0.5,
+  });
+
+  // Soft spotlight that follows the pointer across the media
+  const glareX = useTransform(px, [0, 1], ["0%", "100%"]);
+  const glareY = useTransform(py, [0, 1], ["0%", "100%"]);
+  const glare = useMotionTemplate`radial-gradient(420px circle at ${glareX} ${glareY}, rgba(255,255,255,0.22), transparent 55%)`;
 
   function onMove(e: MouseEvent<HTMLElement>) {
+    // Skip pointer tilt inside the coverflow slider — parent already owns 3D.
     if (!tiltReady || mediaOnly) return;
     const r = ref.current?.getBoundingClientRect();
     if (!r) return;
@@ -67,68 +92,86 @@ export function ProductCard({
     py.set(0.5);
   }
 
+  const enable3d = tiltReady && !mediaOnly;
+
   return (
     <motion.article
       ref={ref}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
       style={
-        tiltReady && !mediaOnly
-          ? { rotateX, rotateY, transformPerspective: 1000 }
+        enable3d
+          ? {
+              rotateX,
+              rotateY,
+              x: shiftX,
+              y: shiftY,
+              transformPerspective: 1100,
+              transformStyle: "preserve-3d",
+            }
           : undefined
       }
-      whileHover={tiltReady && !mediaOnly ? { y: -10, scale: 1.01 } : undefined}
-      transition={{ type: "spring", stiffness: 280, damping: 22 }}
+      whileHover={enable3d ? { scale: 1.03, zIndex: 20 } : undefined}
+      transition={{ type: "spring", stiffness: 260, damping: 20 }}
       className="jt-card group relative w-full min-w-0 will-change-transform"
     >
-      <Link href={`/product/${product.slug}`} className="block">
-        <div className="jt-card-media jt-chamfer-sm relative aspect-[3/4] w-full overflow-hidden bg-gradient-to-br from-jt-surface via-jt-dark to-jt-surface ring-1 ring-white/[0.06]">
-          {product.image ? (
-            <Image
-              src={product.image.src}
-              alt={product.image.alt}
-              fill
-              priority={priority}
-              sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, (max-width:1536px) 25vw, 20vw"
-              className="object-cover transition duration-700 ease-out group-hover:scale-[1.06]"
+      <Link href={`/product/${product.slug}`} className="block" style={{ transformStyle: "preserve-3d" }}>
+        {/* Animated gradient border shell */}
+        <div className="jt-card-frame relative p-[2px]">
+          <span aria-hidden className="jt-card-frame-glow" />
+          <div className="jt-card-media jt-chamfer-sm relative aspect-[3/4] w-full overflow-hidden bg-gradient-to-br from-jt-surface via-jt-dark to-jt-surface">
+            {product.image ? (
+              <Image
+                src={product.image.src}
+                alt={product.image.alt}
+                fill
+                priority={priority}
+                sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, (max-width:1536px) 25vw, 20vw"
+                className="object-cover transition duration-700 ease-out group-hover:scale-[1.08]"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center jt-display text-4xl text-jt-muted">
+                JT
+              </div>
+            )}
+
+            {/* Pointer glare */}
+            {enable3d && (
+              <motion.span
+                aria-hidden
+                className="pointer-events-none absolute inset-0 opacity-0 mix-blend-soft-light transition-opacity duration-300 group-hover:opacity-100"
+                style={{ background: glare }}
+              />
+            )}
+
+            <span aria-hidden className="jt-card-shine pointer-events-none absolute inset-0" />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
             />
-          ) : (
-            <div className="flex h-full items-center justify-center jt-display text-4xl text-jt-muted">
-              JT
+
+            <div className="absolute left-2 top-2 flex flex-col gap-1 sm:left-3 sm:top-3">
+              {product.badges.map((b) => (
+                <span
+                  key={b}
+                  className={`jt-slant-sm px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider transition-transform duration-500 group-hover:translate-x-0.5 sm:px-3 sm:text-[10px] ${BADGE_STYLE[b]}`}
+                >
+                  {BADGE_LABEL[b]}
+                </span>
+              ))}
             </div>
-          )}
 
-          {/* Hover treatments */}
-          <span aria-hidden className="jt-card-shine pointer-events-none absolute inset-0" />
-          <span aria-hidden className="jt-card-border pointer-events-none absolute inset-0 rounded-xl" />
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-          />
-
-          {/* Badges */}
-          <div className="absolute left-2 top-2 flex flex-col gap-1 sm:left-3 sm:top-3">
-            {product.badges.map((b) => (
-              <span
-                key={b}
-                className={`jt-slant-sm px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider transition-transform duration-500 group-hover:translate-x-0.5 sm:px-3 sm:text-[10px] ${BADGE_STYLE[b]}`}
-              >
-                {BADGE_LABEL[b]}
+            <div className="pointer-events-none absolute inset-x-2 bottom-2 translate-y-4 opacity-0 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:translate-y-0 group-hover:opacity-100 sm:inset-x-3 sm:bottom-3">
+              <span className="jt-gradient-bg jt-slant flex items-center justify-between px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-jt-black">
+                View jersey
+                <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </span>
-            ))}
-          </div>
-
-          {/* Quick action slides up on hover */}
-          <div className="pointer-events-none absolute inset-x-2 bottom-2 translate-y-4 opacity-0 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:translate-y-0 group-hover:opacity-100 sm:inset-x-3 sm:bottom-3">
-            <span className="jt-gradient-bg jt-slant flex items-center justify-between px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-jt-black">
-              View jersey
-              <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </span>
+            </div>
           </div>
         </div>
 
         {!mediaOnly && (
-          <div className="mt-3 space-y-1">
+          <div className="mt-3 space-y-1" style={{ transform: "translateZ(18px)" }}>
             {product.category && (
               <p className="truncate text-[10px] uppercase tracking-[0.2em] text-jt-muted sm:text-[11px]">
                 {product.category}
@@ -158,7 +201,8 @@ export function ProductCard({
         whileTap={{ scale: 0.85 }}
         aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
         onClick={() => toggle(product.id)}
-        className="absolute right-2 top-2 rounded-full bg-black/55 p-2 text-white backdrop-blur transition-colors hover:bg-black/80 sm:right-3 sm:top-3"
+        className="absolute right-2 top-2 z-10 rounded-full bg-black/55 p-2 text-white backdrop-blur transition-colors hover:bg-black/80 sm:right-3 sm:top-3"
+        style={{ transform: "translateZ(28px)" }}
       >
         <Heart
           className={`h-4 w-4 transition-all duration-300 ${

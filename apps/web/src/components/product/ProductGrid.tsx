@@ -14,9 +14,9 @@ export function ProductGrid({
 }) {
   if (!products.length) return <p className={cn("text-sm text-jt-muted", className)}>{emptyText}</p>;
   return (
-    <StaggerGroup effect="3d" className={cn("jt-product-grid", className)}>
+    <StaggerGroup effect="3d" className={cn("jt-product-grid [perspective:1200px]", className)}>
       {products.map((p, i) => (
-        <StaggerItem key={p.id} effect="3d" className="min-w-0">
+        <StaggerItem key={p.id} effect="3d" className="min-w-0 [transform-style:preserve-3d]">
           <ProductCard product={p} priority={i < 4} />
         </StaggerItem>
       ))}
