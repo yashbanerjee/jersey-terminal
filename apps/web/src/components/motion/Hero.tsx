@@ -1,13 +1,16 @@
 "use client";
 
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ArrowRight, ChevronDown, Globe, PenLine, Shirt, Star, Zap } from "lucide-react";
-import { AnimatedGradientBg } from "@/components/motion/AnimatedGradientBg";
 import { MagneticButton } from "@/components/motion/MagneticButton";
+import { ProgressDots } from "@/components/motion/ProgressDots";
 import { formatAED } from "@/lib/format";
+
+const HERO_SLIDE_MS = 3000;
 
 export type HeroProduct = {
   id: number;
@@ -23,16 +26,50 @@ const STATS = [
   { icon: Globe, value: "190+", label: "Countries shipped", color: "text-jt-cyan" },
 ];
 
+const slide3d = {
+  enter: (dir: number) => ({
+    x: dir > 0 ? 120 : -120,
+    rotateY: dir > 0 ? -28 : 28,
+    opacity: 0,
+    scale: 0.88,
+  }),
+  center: {
+    x: 0,
+    rotateY: 0,
+    opacity: 1,
+    scale: 1,
+  },
+  exit: (dir: number) => ({
+    x: dir > 0 ? -120 : 120,
+    rotateY: dir > 0 ? 28 : -28,
+    opacity: 0,
+    scale: 0.88,
+  }),
+};
+
 export function Hero({ products = [] }: { products?: HeroProduct[] }) {
   const root = useRef<HTMLElement>(null);
-  const featured = products[0];
+  const reduced = useReducedMotion();
+  const [index, setIndex] = useState(0);
+  const [dir, setDir] = useState(1);
+  const [paused, setPaused] = useState(false);
+  const featured = products[index] ?? products[0];
 
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced || paused || products.length < 2) return;
+    const id = window.setInterval(() => {
+      setDir(1);
+      setIndex((i) => (i + 1) % products.length);
+    }, HERO_SLIDE_MS);
+    return () => window.clearInterval(id);
+  }, [paused, products.length, reduced]);
+
+  useEffect(() => {
+    const motionOff = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let kill: (() => void) | undefined;
 
     const ctx = gsap.context(() => {
-      if (reduced) {
+      if (motionOff) {
         gsap.set([".hero-line", ".hero-fade", ".hero-visual"], { opacity: 1, y: 0, x: 0, yPercent: 0 });
         return;
       }
@@ -67,7 +104,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
 
     // Parallax exit on scroll
     import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
-      if (reduced || !root.current) return;
+      if (motionOff || !root.current) return;
       gsap.registerPlugin(ScrollTrigger);
       const pctx = gsap.context(() => {
         gsap.to(".hero-copy", {
@@ -94,8 +131,6 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
 
   return (
     <section ref={root} className="relative w-full overflow-hidden pt-[var(--jt-header-h)]">
-      <AnimatedGradientBg intensity="full" />
-
       <div className="relative z-10 jt-container">
         <div className="grid min-h-[calc(100svh-var(--jt-header-h))] items-center gap-6 py-6 sm:gap-8 sm:py-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:py-12 xl:gap-16">
           {/* Copy */}
@@ -164,12 +199,14 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
             </div>
           </div>
 
-          {/* Featured jersey — chamfered frame */}
+          {/* Featured jersey — slides one-by-one with a light 3D rotate */}
           <div className="hero-visual order-1 lg:order-2">
             {featured?.image ? (
-              <Link
-                href={`/product/${featured.slug}`}
-                className="group relative mx-auto block w-full max-w-[280px] sm:max-w-[400px] lg:ml-auto lg:mr-0 lg:max-w-[480px]"
+              <div
+                className="relative mx-auto w-full max-w-[280px] sm:max-w-[400px] lg:ml-auto lg:mr-0 lg:max-w-[480px]"
+                style={{ perspective: "1100px" }}
+                onMouseEnter={() => setPaused(true)}
+                onMouseLeave={() => setPaused(false)}
               >
                 {/* Orange glow + smoke behind the frame */}
                 <div className="pointer-events-none absolute left-1/2 top-[55%] h-[110%] w-[115%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,122,26,0.42),rgba(255,122,26,0.1)_45%,transparent_70%)] blur-3xl" />
@@ -187,41 +224,59 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                   Personalise name &amp; number
                 </div>
 
-                {/* Chamfered frame: gradient border → dark inner */}
-                <div className="hero-jersey relative jt-drop-orange">
-                  <div className="jt-chamfer relative bg-[linear-gradient(135deg,rgba(46,230,255,0.9),rgba(255,255,255,0.35)_30%,rgba(255,122,26,0.9)_65%,rgba(255,176,32,0.9))] p-[2px]">
-                    <div className="jt-chamfer relative overflow-hidden bg-jt-dark">
-                      <div className="relative aspect-[4/5]">
-                        <Image
-                          src={featured.image.src}
-                          alt={featured.image.alt || featured.name}
-                          fill
-                          priority
-                          sizes="(max-width:1024px) 90vw, 40vw"
-                          className="object-cover transition duration-1000 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.05]"
-                        />
-                        {/* colour streaks inside the card */}
-                        <div className="pointer-events-none absolute -left-[30%] top-[20%] h-[3px] w-[160%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(46,230,255,0.9),transparent)] opacity-70 blur-[1px]" />
-                        <div className="pointer-events-none absolute -left-[30%] top-[70%] h-[4px] w-[160%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(255,122,26,0.9),transparent)] opacity-70 blur-[1.5px]" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-jt-black via-jt-black/15 to-transparent" />
-                        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[radial-gradient(ellipse_at_50%_100%,rgba(255,122,26,0.35),transparent_60%)]" />
-                        <span aria-hidden className="jt-card-shine pointer-events-none absolute inset-0" />
-                      </div>
+                <div className="hero-jersey relative jt-drop-orange" style={{ transformStyle: "preserve-3d" }}>
+                  <AnimatePresence mode="wait" custom={dir}>
+                    <motion.div
+                      key={featured.id}
+                      custom={dir}
+                      variants={slide3d}
+                      initial="enter"
+                      animate="center"
+                      exit="exit"
+                      transition={{ type: "spring", stiffness: 140, damping: 22, mass: 0.9 }}
+                      style={{ transformStyle: "preserve-3d" }}
+                    >
+                      <Link href={`/product/${featured.slug}`} className="group relative block">
+                        <div className="jt-chamfer relative bg-[linear-gradient(135deg,rgba(46,230,255,0.9),rgba(255,255,255,0.35)_30%,rgba(255,122,26,0.9)_65%,rgba(255,176,32,0.9))] p-[2px]">
+                          <div className="jt-chamfer relative overflow-hidden bg-jt-dark">
+                            <div className="relative aspect-[4/5]">
+                              <Image
+                                src={featured.image.src}
+                                alt={featured.image.alt || featured.name}
+                                fill
+                                priority={index === 0}
+                                sizes="(max-width:1024px) 90vw, 40vw"
+                                className="object-cover transition duration-1000 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.05]"
+                              />
+                              <div className="pointer-events-none absolute -left-[30%] top-[20%] h-[3px] w-[160%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(46,230,255,0.9),transparent)] opacity-70 blur-[1px]" />
+                              <div className="pointer-events-none absolute -left-[30%] top-[70%] h-[4px] w-[160%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(255,122,26,0.9),transparent)] opacity-70 blur-[1.5px]" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-jt-black via-jt-black/15 to-transparent" />
+                              <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[radial-gradient(ellipse_at_50%_100%,rgba(255,122,26,0.35),transparent_60%)]" />
+                              <span aria-hidden className="jt-card-shine pointer-events-none absolute inset-0" />
+                            </div>
 
-                      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 sm:p-6">
-                        <div className="min-w-0">
-                          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-jt-orange">Featured jersey</p>
-                          <h2 className="mt-1.5 jt-display text-2xl leading-[0.95] text-white sm:text-3xl">{featured.name}</h2>
+                            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 sm:p-6">
+                              <div className="min-w-0">
+                                <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-jt-orange">
+                                  Featured jersey
+                                </p>
+                                <h2 className="mt-1.5 jt-display text-2xl leading-[0.95] text-white sm:text-3xl">
+                                  {featured.name}
+                                </h2>
+                              </div>
+                              <div className="shrink-0 jt-slant bg-jt-black/90 px-4 py-2 text-right ring-1 ring-white/10">
+                                <p className="text-[9px] uppercase tracking-[0.2em] text-jt-muted">From</p>
+                                <p className="jt-display text-lg text-white sm:text-xl">{formatAED(featured.price)}</p>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <div className="shrink-0 jt-slant bg-jt-black/90 px-4 py-2 text-right ring-1 ring-white/10">
-                          <p className="text-[9px] uppercase tracking-[0.2em] text-jt-muted">From</p>
-                          <p className="jt-display text-lg text-white sm:text-xl">{formatAED(featured.price)}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                      </Link>
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
-              </Link>
+
+              </div>
             ) : (
               <div className="jt-chamfer mx-auto aspect-[4/5] w-full max-w-[400px] bg-jt-surface lg:ml-auto" />
             )}
@@ -229,11 +284,27 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
         </div>
       </div>
 
-      {/* Scroll cue */}
-      <div className="hero-fade pointer-events-none absolute bottom-5 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-1 text-[10px] uppercase tracking-[0.3em] text-jt-muted md:flex">
-        Scroll
-        <ChevronDown className="hero-scroll-dot h-4 w-4 text-jt-orange" />
-      </div>
+      {/* United Tigers–style animated progress bars — centered under the hero */}
+      {products.length > 1 && (
+        <div className="hero-fade absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2 sm:bottom-8">
+          <ProgressDots
+            size="hero"
+            count={products.length}
+            index={index}
+            durationMs={HERO_SLIDE_MS}
+            paused={paused || !!reduced}
+            labels={products.map((p) => p.name)}
+            onSelect={(i) => {
+              setDir(i > index ? 1 : -1);
+              setIndex(i);
+            }}
+          />
+          <div className="pointer-events-none hidden items-center gap-1 text-[10px] uppercase tracking-[0.3em] text-jt-muted md:flex">
+            Scroll
+            <ChevronDown className="hero-scroll-dot h-3.5 w-3.5 text-jt-orange" />
+          </div>
+        </div>
+      )}
     </section>
   );
 }

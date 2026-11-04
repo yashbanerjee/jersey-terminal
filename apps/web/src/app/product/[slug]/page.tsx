@@ -34,7 +34,7 @@ export default async function ProductPage({
 
   return (
     <div className="jt-page jt-container w-full">
-      <Reveal y={8}>
+      <Reveal effect="blur" y={8}>
         <Link
           href="/shop"
           className="group mb-5 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-jt-muted transition-colors hover:text-white"
@@ -45,7 +45,7 @@ export default async function ProductPage({
       </Reveal>
 
       <div className="grid w-full gap-8 lg:grid-cols-2 lg:gap-12 xl:gap-16">
-        <Reveal className="space-y-3" y={24}>
+        <Reveal effect="3d" className="space-y-3" y={24}>
           <div className="jt-card jt-glow-border group relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-jt-surface ring-1 ring-white/10 shadow-[0_40px_120px_-40px_rgba(255,122,26,0.4)] sm:aspect-[3/4]">
             <div className="pointer-events-none absolute left-1/2 top-1/2 h-[80%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,122,26,0.22),rgba(46,230,255,0.1)_45%,transparent_70%)] blur-3xl" />
             {product.images[0] ? (
@@ -55,7 +55,7 @@ export default async function ProductPage({
                   alt={product.images[0].alt || product.name}
                   fill
                   priority
-                  className="object-cover"
+                  className="object-cover transition duration-700 group-hover:scale-[1.04]"
                   sizes="(max-width:1024px) 100vw, 50vw"
                 />
               </div>

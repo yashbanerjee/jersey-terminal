@@ -16,7 +16,6 @@
   --jt-surface: #15181d;
   --jt-white: #ffffff;
   --jt-muted: #9aa3ad;
-
   --jt-gradient: linear-gradient(100deg, var(--jt-neon) 0%, var(--jt-lime) 100%);
   --jt-gradient-fire: linear-gradient(100deg, #ff5e00 0%, var(--jt-orange) 45%, var(--jt-amber) 100%);
   --jt-gradient-ice: linear-gradient(100deg, var(--jt-cyan) 0%, #a6f4ff 100%);
@@ -505,6 +504,46 @@ html.lenis body {
   animation: jt-pulse-orange 1.8s ease-out infinite;
 }
 
+/* Slide dots — fill from bottom → top */
+@keyframes jt-dot-fill-up {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+.jt-dot-fill-up {
+  transform-origin: bottom center;
+  animation-name: jt-dot-fill-up;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+/* Ambient rising particles — slow drift from bottom → top */
+@keyframes jt-rise-dot {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.45);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(var(--jt-rise-x, 12px), -115vh, 0) scale(1.05);
+    opacity: 0;
+  }
+}
+.jt-rise-dot {
+  animation-name: jt-rise-dot;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
 /* Soft float for decorative elements */
 @keyframes jt-float {
   0%,
@@ -582,6 +621,108 @@ html.lenis body {
   background: radial-gradient(circle, rgba(46, 230, 255, 0.3), transparent 65%);
 }
 
+/* ---- Stadium-night backdrop ----
+   Charcoal base with a cool (cyan) left / warm (orange) right split that
+   slowly drifts, plus two soft colour pools for ambient depth. */
+@keyframes jt-bg-drift {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+.jt-bg-base {
+  background-image: linear-gradient(
+    120deg,
+    #0b1216 0%,
+    #090b0e 25%,
+    #050607 50%,
+    #0d0908 75%,
+    #140c08 100%
+  );
+  background-size: 250% 250%;
+  animation: jt-bg-drift 40s ease-in-out infinite;
+}
+
+.jt-mesh {
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  filter: blur(70px);
+  will-change: transform;
+}
+.jt-mesh-orange {
+  background: radial-gradient(circle, rgba(255, 122, 26, 0.5) 0%, rgba(255, 94, 0, 0.18) 40%, transparent 70%);
+}
+.jt-mesh-cyan {
+  background: radial-gradient(circle, rgba(46, 230, 255, 0.45) 0%, rgba(46, 230, 255, 0.15) 40%, transparent 70%);
+}
+
+@keyframes jt-mesh-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(10vw, 6vh, 0) scale(1.15);
+  }
+  66% {
+    transform: translate3d(-5vw, 10vh, 0) scale(0.94);
+  }
+}
+@keyframes jt-mesh-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(-12vw, -8vh, 0) scale(0.92);
+  }
+  66% {
+    transform: translate3d(6vw, -3vh, 0) scale(1.18);
+  }
+}
+.jt-mesh-a {
+  animation: jt-mesh-a 30s ease-in-out infinite;
+}
+.jt-mesh-b {
+  animation: jt-mesh-b 38s ease-in-out infinite;
+}
+
+/* Brush-stroke speed streak: a long rotated band. Thick strokes use an
+   elliptical gradient + blur so they taper like a motion-blurred brush. */
+.jt-brush {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 999px;
+  transform-origin: center;
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+}
+
+/* Soft floodlight shaft (conic cone, faded toward the ground) */
+.jt-shaft {
+  position: absolute;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.7) 45%, transparent 85%);
+  mask-image: linear-gradient(180deg, #000 0%, rgba(0, 0, 0, 0.7) 45%, transparent 85%);
+}
+
+/* Stadium floodlight bank */
+.jt-lamp {
+  position: absolute;
+  border-radius: 3px;
+  background: #ffffff;
+  box-shadow:
+    0 0 10px 3px rgba(255, 255, 255, 0.95),
+    0 0 28px 10px rgba(190, 240, 255, 0.55),
+    0 0 70px 24px rgba(46, 230, 255, 0.22);
+}
 /* Diagonal light streak (speed lines) */
 .jt-streak {
   position: absolute;
@@ -605,7 +746,16 @@ html.lenis body {
   .jt-beam,
   .jt-spark,
   .jt-fog,
-  .jt-scan {
+  .jt-scan,
+  .jt-bg-base,
+  .jt-mesh,
+  .jt-brush,
+  .jt-lamp,
+  .jt-stadium-bloom,
+  .jt-stadium-shaft,
+  .jt-dot-fill,
+  .jt-dot-fill-up,
+  .jt-rise-dot {
     animation: none !important;
   }
   .jt-card-media img,

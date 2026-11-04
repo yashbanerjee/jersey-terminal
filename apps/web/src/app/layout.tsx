@@ -44,6 +44,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${sora.variable} ${exo2.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="preload" as="image" href="/bg/stadium-night.jpg" />
+      </head>
       <body className="relative flex min-h-full w-full flex-col overflow-x-hidden bg-jt-black text-white">
         <SmoothScroll />
         <PageAtmosphere />

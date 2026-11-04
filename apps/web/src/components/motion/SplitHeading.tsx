@@ -32,7 +32,7 @@ export function SplitHeading({
       className={cn("flex flex-wrap gap-x-[0.25em]", className)}
       initial={reduce ? false : "hidden"}
       whileInView="show"
-      viewport={{ once: true, margin: "-10% 0px" }}
+      viewport={{ once: true, amount: 0.4, margin: "0px 0px -8% 0px" }}
       transition={{ staggerChildren: 0.06, delayChildren: delay }}
       aria-label={text}
     >

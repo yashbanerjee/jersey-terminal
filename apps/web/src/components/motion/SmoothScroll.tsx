@@ -28,6 +28,11 @@ export function SmoothScroll() {
       lenis.on("scroll", ScrollTrigger.update);
     });
 
+    // Keep Framer Motion whileInView / IntersectionObserver in sync with Lenis
+    lenis.on("scroll", () => {
+      window.dispatchEvent(new Event("scroll"));
+    });
+
     const loop = (t: number) => {
       lenis.raf(t);
       raf = requestAnimationFrame(loop);

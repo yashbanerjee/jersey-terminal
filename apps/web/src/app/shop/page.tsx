@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { PageHeading } from "@/components/layout/PageHeading";
-import { Reveal } from "@/components/motion/Reveal";
+import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { getCategories, listProducts } from "@/lib/woo/products";
 
@@ -23,27 +23,30 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         count={products.length}
       />
 
-      <Reveal y={12} delay={0.2}>
-        <div className="mt-6 flex flex-col gap-4 sm:mt-8 lg:flex-row lg:items-center lg:justify-between">
-          <div className="jt-chip-row">
+      <div className="mt-6 flex flex-col gap-4 sm:mt-8 lg:flex-row lg:items-center lg:justify-between">
+        <StaggerGroup className="jt-chip-row">
+          <StaggerItem>
             <Link
               href="/shop"
-              className="jt-chip rounded-full border border-jt-neon bg-jt-neon/10 px-4 py-2 text-xs uppercase tracking-[0.16em] text-jt-neon"
+              className="jt-chip rounded-full border border-jt-neon bg-jt-neon/10 px-4 py-2 text-xs uppercase tracking-[0.16em] text-jt-neon transition hover:scale-105"
             >
               All
             </Link>
-            {categories.map((c) => (
+          </StaggerItem>
+          {categories.map((c) => (
+            <StaggerItem key={c.id}>
               <Link
-                key={c.id}
                 href={`/shop/${c.slug}`}
-                className="jt-chip rounded-full border border-white/15 px-4 py-2 text-xs uppercase tracking-[0.16em] text-jt-muted transition-colors hover:border-jt-neon/60 hover:text-white"
+                className="jt-chip rounded-full border border-white/15 px-4 py-2 text-xs uppercase tracking-[0.16em] text-jt-muted transition-colors hover:border-jt-neon/60 hover:text-white hover:scale-105"
               >
                 {c.name}
               </Link>
-            ))}
-          </div>
+            </StaggerItem>
+          ))}
+        </StaggerGroup>
 
-          <form className="relative w-full lg:max-w-sm">
+        <Reveal effect="right" delay={0.2} className="relative w-full lg:max-w-sm">
+          <form className="relative w-full">
             <label className="sr-only" htmlFor="q">
               Search
             </label>
@@ -56,8 +59,8 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
               className="min-h-12 w-full rounded-full border border-white/15 bg-white/[0.03] pl-11 pr-4 text-sm outline-none transition-colors focus:border-jt-neon"
             />
           </form>
-        </div>
-      </Reveal>
+        </Reveal>
+      </div>
 
       <ProductGrid
         className="mt-8 sm:mt-10"

@@ -58,9 +58,9 @@ export function LimitedSpotlight({ products, href }: { products: ProductCardMode
   return (
     <section ref={root} className="relative w-full overflow-hidden py-10 sm:py-14 md:py-20">
       {/* Orange "heat" band + diagonal streaks */}
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,transparent,rgba(255,94,0,0.16)_30%,rgba(255,122,26,0.12)_70%,transparent)]" />
-      <div aria-hidden className="jt-blob jt-blob-orange -left-[10%] top-1/2 -z-10 h-[70vh] w-[50vw] -translate-y-1/2 opacity-80" />
-      <div aria-hidden className="jt-blob jt-blob-cyan -right-[10%] bottom-0 -z-10 h-[50vh] w-[40vw] opacity-60" />
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(115deg,rgba(180,255,26,0.1)_0%,rgba(5,6,7,0.2)_40%,rgba(180,255,26,0.08)_100%)]" />
+      <div aria-hidden className="jt-blob jt-blob-orange -left-[10%] top-1/2 -z-10 h-[70vh] w-[50vw] -translate-y-1/2 opacity-70" />
+      <div aria-hidden className="jt-blob jt-blob-cyan -right-[10%] bottom-0 -z-10 h-[50vh] w-[40vw] opacity-70" />
       <div
         aria-hidden
         className="pointer-events-none absolute left-[-20%] top-[30%] -z-10 h-[3px] w-[140%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(255,122,26,0.7),transparent)] blur-[1px]"
@@ -79,7 +79,7 @@ export function LimitedSpotlight({ products, href }: { products: ProductCardMode
       <div className="jt-container">
         <div className="mb-6 flex flex-col gap-4 sm:mb-8 md:flex-row md:items-end md:justify-between">
           <div>
-            <Reveal y={12}>
+            <Reveal effect="left" y={12}>
               <p className="mb-2 inline-flex items-center gap-2 jt-slant-sm bg-jt-orange/15 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-jt-amber backdrop-blur">
                 <span className="jt-pulse-orange inline-block h-1.5 w-1.5 rounded-full bg-jt-orange" />
                 Limited edition · While stock lasts
@@ -101,10 +101,15 @@ export function LimitedSpotlight({ products, href }: { products: ProductCardMode
 
       <div className="ls-track jt-snap flex w-full gap-4 overflow-x-auto px-[var(--jt-pad-x)] pb-4 sm:gap-5">
         {items.map((p, i) => (
-          <Reveal key={p.id} delay={i * 0.08} className="w-[78vw] shrink-0 sm:w-[48vw] lg:w-[30vw] xl:w-[24vw]">
+          <Reveal
+            key={p.id}
+            effect="3d"
+            delay={i * 0.1}
+            className="w-[78vw] shrink-0 sm:w-[48vw] lg:w-[30vw] xl:w-[24vw]"
+          >
             <Link
               href={`/product/${p.slug}`}
-              className="jt-card jt-drop-orange group relative block bg-[linear-gradient(135deg,rgba(46,230,255,0.6),rgba(255,255,255,0.15)_35%,rgba(255,122,26,0.7))] p-px jt-chamfer"
+              className="jt-card jt-drop-orange group relative block bg-[linear-gradient(135deg,rgba(46,230,255,0.6),rgba(255,255,255,0.15)_35%,rgba(255,122,26,0.7))] p-px jt-chamfer transition-transform duration-500 hover:-translate-y-2"
             >
               <div className="jt-chamfer relative overflow-hidden bg-jt-surface">
               <div className="jt-card-media relative aspect-[4/5]">

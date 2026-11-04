@@ -73,7 +73,7 @@ export function ProductCard({ product, priority = false }: { product: ProductCar
               fill
               priority={priority}
               sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, (max-width:1536px) 25vw, 20vw"
-              className="object-cover"
+              className="object-cover transition duration-700 ease-out group-hover:scale-[1.06]"
             />
           ) : (
             <div className="flex h-full items-center justify-center jt-display text-4xl text-jt-muted">

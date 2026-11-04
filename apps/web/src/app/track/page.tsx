@@ -1,6 +1,9 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { FormEvent, useState } from "react";
+import { Reveal } from "@/components/motion/Reveal";
+import { SplitHeading } from "@/components/motion/SplitHeading";
 
 type Tracking = {
   orderNumber: string;
@@ -37,54 +40,81 @@ export default function TrackPage() {
 
   return (
     <div className="jt-page jt-container w-full max-w-3xl">
-      <h1 className="jt-display text-5xl tracking-wide">
-        Track order
-      </h1>
-      <p className="mt-2 text-sm text-jt-muted">
-        Live courier statuses only — we never invent tracking updates.
-      </p>
-      <form onSubmit={onSubmit} className="mt-8 space-y-3">
-        <input
-          name="order"
-          required
-          placeholder="Order number"
-          className="w-full border border-white/15 bg-jt-dark px-4 py-3 text-sm outline-none focus:border-jt-neon"
-        />
-        <input
-          name="email"
-          type="email"
-          placeholder="Order email (optional)"
-          className="w-full border border-white/15 bg-jt-dark px-4 py-3 text-sm outline-none focus:border-jt-neon"
-        />
-        <button
-          type="submit"
-          className="jt-gradient-bg px-6 py-3 text-sm font-semibold uppercase tracking-wider text-jt-black"
-        >
-          Track
-        </button>
-      </form>
-      {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
-      {data && (
-        <div className="mt-8 space-y-3 border border-white/10 bg-jt-dark p-6 text-sm">
-          <Row label="Order" value={`#${data.orderNumber}`} />
-          <Row label="Courier" value={data.courier?.toUpperCase() || "—"} />
-          <Row label="AWB" value={data.awb || "Not shipped yet"} />
-          <Row label="Status" value={data.status || "Awaiting shipment"} />
-          <Row label="ETA" value={data.estimatedDelivery || "—"} />
-          <Row label="Last update" value={data.lastUpdate || "—"} />
-          <Row label="Customs" value={data.customsArrangement || "DAP"} />
-          {data.trackingUrl && (
-            <a
-              href={data.trackingUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-block pt-2 text-jt-neon underline"
-            >
-              Open courier tracking
-            </a>
-          )}
-        </div>
-      )}
+      <Reveal effect="blur">
+        <p className="mb-2 text-[11px] uppercase tracking-[0.3em] text-jt-neon">Support</p>
+      </Reveal>
+      <SplitHeading as="h1" text="Track order" className="jt-display text-5xl tracking-wide sm:text-6xl" />
+      <Reveal y={12} delay={0.1}>
+        <p className="mt-2 text-sm text-jt-muted">Live courier statuses only — we never invent tracking updates.</p>
+      </Reveal>
+
+      <Reveal effect="3d" delay={0.15} className="mt-8">
+        <form onSubmit={onSubmit} className="space-y-3">
+          <input
+            name="order"
+            required
+            placeholder="Order number"
+            className="w-full border border-white/15 bg-jt-dark px-4 py-3 text-sm outline-none transition focus:border-jt-neon"
+          />
+          <input
+            name="email"
+            type="email"
+            placeholder="Order email (optional)"
+            className="w-full border border-white/15 bg-jt-dark px-4 py-3 text-sm outline-none transition focus:border-jt-neon"
+          />
+          <motion.button
+            type="submit"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="jt-gradient-bg jt-slant px-6 py-3 text-sm font-semibold uppercase tracking-wider text-jt-black"
+          >
+            Track
+          </motion.button>
+        </form>
+      </Reveal>
+
+      <AnimatePresence mode="wait">
+        {error && (
+          <motion.p
+            key="err"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="mt-4 text-sm text-red-400"
+          >
+            {error}
+          </motion.p>
+        )}
+        {data && (
+          <motion.div
+            key={data.orderNumber}
+            initial={{ opacity: 0, y: 20, rotateX: 8 }}
+            animate={{ opacity: 1, y: 0, rotateX: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            style={{ transformPerspective: 800 }}
+            className="mt-8 space-y-3 border border-white/10 bg-jt-dark p-6 text-sm"
+          >
+            <Row label="Order" value={`#${data.orderNumber}`} />
+            <Row label="Courier" value={data.courier?.toUpperCase() || "—"} />
+            <Row label="AWB" value={data.awb || "Not shipped yet"} />
+            <Row label="Status" value={data.status || "Awaiting shipment"} />
+            <Row label="ETA" value={data.estimatedDelivery || "—"} />
+            <Row label="Last update" value={data.lastUpdate || "—"} />
+            <Row label="Customs" value={data.customsArrangement || "DAP"} />
+            {data.trackingUrl && (
+              <a
+                href={data.trackingUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-block pt-2 text-jt-neon underline"
+              >
+                Open courier tracking
+              </a>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

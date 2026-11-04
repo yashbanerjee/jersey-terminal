@@ -47,13 +47,13 @@ export function FeatureStrip() {
     <section className="w-full py-6 sm:py-8">
       <div className="jt-container">
         <div className="jt-divider mb-6 sm:mb-8" />
-        <StaggerGroup className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
+        <StaggerGroup effect="3d" className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
           {FEATURES.map(({ icon: Icon, title, text, accent }) => {
             const a = ACCENTS[accent];
             return (
-              <StaggerItem key={title}>
+              <StaggerItem key={title} effect="3d">
                 <div
-                  className={`group flex h-full gap-3 jt-chamfer-sm border border-white/8 bg-white/[0.03] p-4 backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.06] sm:p-5 ${a.hoverBorder} ${a.hoverGlow}`}
+                  className={`group flex h-full gap-3 jt-chamfer-sm border border-white/8 bg-white/[0.03] p-4 backdrop-blur transition-all duration-300 hover:bg-white/[0.06] sm:p-5 ${a.hoverBorder} ${a.hoverGlow}`}
                 >
                   <span
                     className={`grid h-10 w-10 shrink-0 place-items-center jt-slant-sm transition-all duration-500 ${a.tile} ${a.hoverTile}`}

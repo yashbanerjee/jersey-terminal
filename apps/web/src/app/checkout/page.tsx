@@ -2,6 +2,8 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import { OrderSummary } from "@/components/checkout/OrderSummary";
+import { Reveal } from "@/components/motion/Reveal";
+import { SplitHeading } from "@/components/motion/SplitHeading";
 import {
   CHECKOUT_COUNTRIES,
   countryHasStates,
@@ -86,10 +88,16 @@ export default function CheckoutPage() {
 
   return (
     <div className="jt-page jt-container w-full max-w-6xl">
-      <h1 className="jt-display text-5xl tracking-wide">Checkout</h1>
-      <p className="mt-2 text-sm text-jt-muted">AED pricing. Pay securely by card with Stripe.</p>
+      <Reveal effect="blur">
+        <p className="mb-2 text-[11px] uppercase tracking-[0.3em] text-jt-neon">Secure</p>
+      </Reveal>
+      <SplitHeading as="h1" text="Checkout" className="jt-display text-5xl tracking-wide sm:text-6xl" />
+      <Reveal y={10} delay={0.1}>
+        <p className="mt-2 text-sm text-jt-muted">AED pricing. Pay securely by card with Stripe.</p>
+      </Reveal>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_380px] lg:gap-12">
+        <Reveal effect="left" delay={0.12}>
         <form onSubmit={onSubmit} className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             <input name="first_name" required placeholder="First name" autoComplete="given-name" className={fieldClass} />
@@ -199,8 +207,11 @@ export default function CheckoutPage() {
           </button>
           {status && <p className="text-sm text-jt-muted">{status}</p>}
         </form>
+        </Reveal>
 
-        <OrderSummary />
+        <Reveal effect="right" delay={0.2}>
+          <OrderSummary />
+        </Reveal>
       </div>
     </div>
   );

@@ -3,10 +3,10 @@
 import { motion, useMotionTemplate, useMotionValue, useSpring } from "framer-motion";
 import { useEffect } from "react";
 import { AnimatedGradientBg } from "@/components/motion/AnimatedGradientBg";
+import { RisingDots } from "@/components/motion/RisingDots";
 
 /**
- * Site-wide neon atmosphere (the hero layers a stronger version on top).
- * Includes a soft spotlight that follows the cursor on pointer devices.
+ * Site-wide stadium photo backdrop + soft lime cursor spotlight.
  */
 export function PageAtmosphere() {
   const mx = useMotionValue(-1000);
@@ -26,13 +26,12 @@ export function PageAtmosphere() {
     return () => window.removeEventListener("pointermove", onMove);
   }, [mx, my]);
 
-  const spotlight = useMotionTemplate`radial-gradient(520px circle at ${x}px ${y}px, rgba(255,122,26,0.11), rgba(46,230,255,0.05) 40%, transparent 70%)`;
+  const spotlight = useMotionTemplate`radial-gradient(480px circle at ${x}px ${y}px, rgba(180,255,26,0.1), transparent 65%)`;
 
   return (
     <div className="pointer-events-none fixed inset-0 -z-10">
-      <AnimatedGradientBg intensity="subtle" />
-      {/* Gentle readability wash — much lighter than before so colour shows through */}
-      <div className="absolute inset-0 bg-jt-black/15" />
+      <AnimatedGradientBg intensity="full" />
+      <RisingDots />
       <motion.div aria-hidden className="absolute inset-0" style={{ background: spotlight }} />
     </div>
   );

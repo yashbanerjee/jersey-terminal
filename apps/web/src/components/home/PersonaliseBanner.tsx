@@ -50,7 +50,7 @@ export function PersonaliseBanner() {
   return (
     <section ref={root} className="w-full py-8 sm:py-10 md:py-14">
       <div className="jt-container">
-        <Reveal>
+        <Reveal effect="3d" y={36}>
           {/* Chamfered panel with a gradient edge */}
           <div className="jt-chamfer jt-drop-orange relative bg-[linear-gradient(135deg,rgba(255,122,26,0.9),rgba(255,255,255,0.2)_40%,rgba(46,230,255,0.8))] p-px">
             <div className="jt-chamfer relative overflow-hidden bg-jt-dark">

@@ -1,8 +1,10 @@
+"use client";
+
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import type { ProductCardModel } from "@/lib/woo/types";
-import { ProductCard } from "@/components/product/ProductCard";
-import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
+import { JerseySlider } from "@/components/motion/JerseySlider";
+import { Reveal } from "@/components/motion/Reveal";
 import { SplitHeading } from "@/components/motion/SplitHeading";
 
 export function ProductRail({
@@ -24,8 +26,7 @@ export function ProductRail({
   const even = (index ?? 0) % 2 === 0;
 
   return (
-    <section className="relative w-full overflow-hidden py-8 sm:py-10 md:py-14">
-      {/* Ambient colour blob — alternates side & hue per section */}
+    <section className="relative w-full overflow-x-hidden py-8 sm:py-10 md:py-14">
       <div
         aria-hidden
         className={`jt-blob ${even ? "jt-blob-orange -right-[10%]" : "jt-blob-cyan -left-[10%]"} top-0 -z-10 h-[50vh] w-[50vw] opacity-50`}
@@ -42,7 +43,7 @@ export function ProductRail({
       <div className="jt-container">
         <div className="mb-5 flex items-end justify-between gap-4 sm:mb-7">
           <div className="min-w-0">
-            <Reveal y={12}>
+            <Reveal effect="left" y={16}>
               <p className="mb-2 flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-jt-neon">
                 {index !== undefined && (
                   <span className="jt-gradient-text-fire jt-display text-lg tracking-[0.15em]">
@@ -59,13 +60,13 @@ export function ProductRail({
               className="jt-display text-4xl leading-[0.95] sm:text-5xl md:text-6xl"
             />
             {subtitle && (
-              <Reveal y={12} delay={0.15}>
+              <Reveal y={16} delay={0.12}>
                 <p className="mt-2 max-w-md text-sm text-jt-muted sm:text-base">{subtitle}</p>
               </Reveal>
             )}
           </div>
           {href && (
-            <Reveal y={12} delay={0.2} className="shrink-0">
+            <Reveal effect="right" y={16} delay={0.15} className="shrink-0">
               <Link
                 href={href}
                 className="group jt-slant inline-flex bg-white/30 p-px transition-colors hover:bg-jt-orange"
@@ -80,13 +81,7 @@ export function ProductRail({
         </div>
 
         {products.length ? (
-          <StaggerGroup className="jt-product-grid">
-            {products.map((p) => (
-              <StaggerItem key={p.id} className="min-w-0">
-                <ProductCard product={p} />
-              </StaggerItem>
-            ))}
-          </StaggerGroup>
+          <JerseySlider products={products} />
         ) : (
           <p className="text-sm text-jt-muted">Connect WooCommerce to load live products for this collection.</p>
         )}

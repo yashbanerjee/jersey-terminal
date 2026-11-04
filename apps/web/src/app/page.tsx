@@ -11,15 +11,15 @@ const FEATURED_PRIORITY = ["shadow-strike-jersey", "champions-edition", "velocit
 export default async function HomePage() {
   const { newest, limited, all } = await getHomepageCollections();
 
-  const featured =
-    FEATURED_PRIORITY.map((slug) => all.find((p) => p.slug === slug)).find(Boolean) ??
-    limited[0] ??
-    newest[0] ??
-    all[0];
+  const priorityHits = FEATURED_PRIORITY.map((slug) => all.find((p) => p.slug === slug)).filter(
+    (p): p is NonNullable<typeof p> => Boolean(p),
+  );
+  const rest = all.filter((p) => !FEATURED_PRIORITY.includes(p.slug));
+  const heroProducts = [...priorityHits, ...rest].slice(0, 6);
 
   return (
     <div className="w-full">
-      <Hero products={featured ? [featured] : []} />
+      <Hero products={heroProducts} />
       <TickerStrip />
 
       <ProductRail
