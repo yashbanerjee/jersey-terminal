@@ -103,13 +103,14 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
             const product = products[i];
             const isActive = offset === 0;
             const x = offset * spread;
-            // Fan like a hand of cards — side cards tuck back & down
-            const rotateY = reduced ? 0 : offset * -28;
-            const rotateZ = reduced ? 0 : offset * 4;
-            const y = isActive ? -8 : 18;
-            const z = isActive ? 80 : -60;
-            const scale = isActive ? 1 : 0.78;
-            const opacity = isActive ? 1 : 0.42;
+            // Deeper fan — side cards tuck back hard; hero pops toward camera
+            const rotateY = reduced ? 0 : offset * -38;
+            const rotateZ = reduced ? 0 : offset * 6;
+            const rotateX = reduced ? 0 : isActive ? -4 : 8;
+            const y = isActive ? -14 : 26;
+            const z = isActive ? 120 : -90;
+            const scale = isActive ? 1.04 : 0.74;
+            const opacity = isActive ? 1 : 0.38;
 
             return (
               <motion.div
@@ -138,42 +139,42 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
                         x,
                         y,
                         z,
+                        rotateX,
                         rotateY,
                         rotateZ,
                         scale,
                         opacity,
                         filter: isActive
-                          ? "brightness(1.05) saturate(1.05)"
-                          : "brightness(0.55) saturate(0.75)",
+                          ? "brightness(1.08) saturate(1.1)"
+                          : "brightness(0.48) saturate(0.7)",
                       }
                     : {
                         opacity: 0,
-                        y: 100,
-                        rotateY: offset === 0 ? 40 : offset * -50,
-                        z: -120,
-                        scale: 0.7,
+                        y: 110,
+                        rotateY: offset === 0 ? 48 : offset * -56,
+                        z: -140,
+                        scale: 0.68,
                       }
                 }
                 transition={{
                   type: "spring",
-                  stiffness: 110,
-                  damping: 16,
-                  mass: 0.95,
-                  delay: show && !entered ? Math.abs(offset) * 0.12 : 0,
+                  stiffness: 100,
+                  damping: 15,
+                  mass: 0.9,
+                  delay: show && !entered ? Math.abs(offset) * 0.14 : 0,
                 }}
                 aria-hidden={!isActive}
               >
-                {/* Idle float on the active card — like holding it in hand */}
                 <motion.div
                   className={isActive ? "pointer-events-auto" : "pointer-events-none select-none"}
                   animate={
                     isActive && show && !reduced
-                      ? { y: [0, -6, 0], rotateZ: [0, 0.6, 0] }
-                      : { y: 0, rotateZ: 0 }
+                      ? { y: [0, -10, 0], rotateZ: [0, 1.2, 0], rotateY: [0, 3, 0, -3, 0] }
+                      : { y: 0, rotateZ: 0, rotateY: 0 }
                   }
                   transition={
                     isActive
-                      ? { duration: 3.6, repeat: Infinity, ease: "easeInOut" }
+                      ? { duration: 4.2, repeat: Infinity, ease: "easeInOut" }
                       : { duration: 0.3 }
                   }
                 >
