@@ -85,6 +85,15 @@ svg {
   height: auto;
 }
 
+/* Next/Image `fill` must own the box — global height:auto stretches product art. */
+img[data-nimg="fill"] {
+  max-width: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
 ::selection {
   background: color-mix(in oklab, var(--jt-orange) 60%, black);
   color: var(--jt-white);

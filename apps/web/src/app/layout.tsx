@@ -4,6 +4,7 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 import { PageAtmosphere } from "@/components/layout/PageAtmosphere";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { BootSplash } from "@/components/motion/BootSplash";
 import { PageTransition } from "@/components/motion/PageTransition";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import "./globals.css";
@@ -48,14 +49,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <link rel="preload" as="image" href="/bg/stadium-night.jpg" />
       </head>
       <body className="relative flex min-h-full w-full flex-col overflow-x-hidden bg-jt-black text-white">
-        <SmoothScroll />
-        <PageAtmosphere />
-        <SiteHeader />
-        <main className="relative z-10 w-full flex-1">
-          <PageTransition>{children}</PageTransition>
-        </main>
-        <SiteFooter />
-        <CartDrawer />
+        <BootSplash>
+          <SmoothScroll />
+          <PageAtmosphere />
+          <SiteHeader />
+          <main className="relative z-10 w-full flex-1">
+            <PageTransition>{children}</PageTransition>
+          </main>
+          <SiteFooter />
+          <CartDrawer />
+        </BootSplash>
       </body>
     </html>
   );

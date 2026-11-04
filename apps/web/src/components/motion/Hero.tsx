@@ -253,7 +253,10 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                   <div className="hero-smoke pointer-events-none absolute -bottom-[8%] right-[-10%] h-[45%] w-[55%] rounded-full bg-[radial-gradient(ellipse,rgba(255,255,255,0.16),transparent_65%)] blur-2xl" />
                   <div className="pointer-events-none absolute -right-[8%] top-[6%] h-[40%] w-[42%] rounded-full bg-[radial-gradient(circle,rgba(46,230,255,0.32),transparent_65%)] blur-3xl" />
 
-                  <div className="hero-jersey relative min-h-0 flex-1" style={{ transformStyle: "preserve-3d" }}>
+                  <div
+                    className="hero-jersey relative mx-auto w-full max-w-[min(100%,calc(66svh*0.75))]"
+                    style={{ transformStyle: "preserve-3d" }}
+                  >
                     <SlideImpact triggerKey={featured.id} />
                     <AnimatePresence mode="wait" custom={dir}>
                       <motion.div
@@ -264,20 +267,20 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                         animate="center"
                         exit="exit"
                         transition={{ type: "spring", stiffness: 140, damping: 22, mass: 0.9 }}
-                        className="absolute inset-0"
                         style={{ transformStyle: "preserve-3d" }}
                       >
-                        <Link href={`/product/${featured.slug}`} className="group relative block h-full">
-                          <div className="jt-chamfer relative h-full min-h-[52svh] bg-[linear-gradient(135deg,rgba(46,230,255,0.95),rgba(255,255,255,0.4)_28%,rgba(255,122,26,0.95)_62%,rgba(255,176,32,0.95))] p-[2px] shadow-[0_40px_100px_-24px_rgba(255,122,26,0.65)] sm:min-h-[56svh] lg:min-h-0">
-                            <div className="jt-chamfer relative h-full overflow-hidden bg-jt-dark">
-                              <div className="relative h-full min-h-[inherit]">
+                        <Link href={`/product/${featured.slug}`} className="group relative block">
+                          <div className="jt-chamfer relative bg-[linear-gradient(135deg,rgba(46,230,255,0.95),rgba(255,255,255,0.4)_28%,rgba(255,122,26,0.95)_62%,rgba(255,176,32,0.95))] p-[2px] shadow-[0_40px_100px_-24px_rgba(255,122,26,0.65)]">
+                            <div className="jt-chamfer relative overflow-hidden bg-jt-dark">
+                              {/* True portrait box — width capped so aspect never collapses into a wide stretch */}
+                              <div className="relative aspect-[3/4] w-full">
                                 <Image
                                   src={featured.image.src}
                                   alt={featured.image.alt || featured.name}
                                   fill
                                   priority={index === 0}
-                                  sizes="(max-width:1024px) 100vw, 54vw"
-                                  className="object-cover object-center transition duration-1000 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.04]"
+                                  sizes="(max-width:1024px) 92vw, 42vw"
+                                  className="!h-full !w-full object-cover object-[center_18%] transition duration-1000 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.04]"
                                 />
                                 <div className="pointer-events-none absolute -left-[30%] top-[18%] h-[3px] w-[160%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(46,230,255,0.95),transparent)] opacity-80 blur-[1px]" />
                                 <div className="pointer-events-none absolute -left-[30%] top-[68%] h-[4px] w-[160%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(255,122,26,0.95),transparent)] opacity-80 blur-[1.5px]" />
@@ -354,14 +357,20 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                             setDir(i > index ? 1 : -1);
                             setIndex(i);
                           }}
-                          className={`relative aspect-square overflow-hidden rounded-lg bg-jt-surface ring-1 transition ${
+                          className={`relative aspect-[3/4] overflow-hidden rounded-lg bg-jt-surface ring-1 transition ${
                             i === index
                               ? "ring-jt-neon shadow-[0_0_18px_-4px_rgba(180,255,26,0.75)]"
                               : "ring-white/10 opacity-70 hover:opacity-100"
                           }`}
                         >
                           {p.image ? (
-                            <Image src={p.image.src} alt="" fill className="object-cover" sizes="80px" />
+                            <Image
+                              src={p.image.src}
+                              alt=""
+                              fill
+                              sizes="96px"
+                              className="!h-full !w-full object-cover object-[center_20%]"
+                            />
                           ) : null}
                           <span
                             aria-hidden
@@ -373,7 +382,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                   )}
                 </div>
               ) : (
-                <div className="jt-chamfer min-h-[52svh] w-full flex-1 bg-jt-surface lg:min-h-0" />
+                <div className="jt-chamfer mx-auto aspect-[3/4] w-full max-w-[min(100%,calc(66svh*0.75))] bg-jt-surface" />
               )}
             </div>
           </div>
