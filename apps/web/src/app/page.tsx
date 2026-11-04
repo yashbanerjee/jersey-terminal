@@ -9,8 +9,11 @@ import { Reviews } from "@/components/home/Reviews";
 import { TickerStrip } from "@/components/home/TickerStrip";
 import { getHomepageCollections } from "@/lib/woo/products";
 
-/** ISR — catalogue is cached; webhooks/revalidate bust tags. */
-export const revalidate = 120;
+/**
+ * Request-time render so we never bake an empty homepage during Docker builds
+ * (private WP host is unreachable at build). Data is still cached via unstable_cache.
+ */
+export const dynamic = "force-dynamic";
 
 const FEATURED_PRIORITY = ["shadow-strike-jersey", "champions-edition", "velocity-jersey", "red-horizon"];
 

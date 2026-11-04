@@ -8,27 +8,33 @@ function required(name: string, value: string | undefined): string {
   return value;
 }
 
-/** Public CMS URL (browser / image hosts). */
-const wordpressPublicUrl =
-  process.env.WORDPRESS_URL ?? "http://localhost:8080";
+/** Public CMS URL (browser / image hosts / Docker build). */
+const wordpressPublicUrl = (
+  process.env.WORDPRESS_URL ?? "http://localhost:8080"
+).replace(/\/$/, "");
 
 /**
  * Server-side CMS base. Prefer Railway private networking when set —
- * avoids slow public edge hops between web ↔ wordpress.
+ * falls back to the public URL (private host is unreachable during image builds).
  */
-const wordpressServerUrl =
-  process.env.WORDPRESS_INTERNAL_URL?.replace(/\/$/, "") ||
-  wordpressPublicUrl.replace(/\/$/, "");
+const wordpressInternalUrl = process.env.WORDPRESS_INTERNAL_URL?.replace(
+  /\/$/,
+  "",
+);
+const wordpressServerUrl = wordpressInternalUrl || wordpressPublicUrl;
 
 export const env = {
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
   /** Absolute public WordPress origin (for absolute asset URLs if needed). */
-  wordpressPublicUrl: wordpressPublicUrl.replace(/\/$/, ""),
+  wordpressPublicUrl,
   /** Origin used by server fetch (may be *.railway.internal). */
   wordpressUrl: wordpressServerUrl,
+  wordpressPublicApiUrl: `${wordpressPublicUrl}/wp-json`,
   wordpressApiUrl:
     process.env.WORDPRESS_API_URL?.replace(/\/$/, "") ||
     `${wordpressServerUrl}/wp-json`,
+  /** True when an internal CMS URL is configured (runtime-only). */
+  hasInternalWordpress: Boolean(wordpressInternalUrl),
   wooKey: process.env.WOOCOMMERCE_CONSUMER_KEY ?? "",
   wooSecret: process.env.WOOCOMMERCE_CONSUMER_SECRET ?? "",
   wooWebhookSecret: process.env.WOOCOMMERCE_WEBHOOK_SECRET ?? "",

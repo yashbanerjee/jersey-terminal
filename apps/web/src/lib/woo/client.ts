@@ -30,15 +30,44 @@ async function readJsonBody<T>(res: Response, label: string): Promise<T> {
   }
 }
 
+/** Prefer private Railway URL, fall back to public CMS if internal is down (e.g. build). */
+function wordpressBases(): string[] {
+  const primary = env.wordpressUrl.replace(/\/$/, "");
+  const pub = env.wordpressPublicUrl.replace(/\/$/, "");
+  if (pub && pub !== primary) return [primary, pub];
+  return [primary];
+}
+
+async function fetchWordpress(
+  pathWithQuery: string,
+  init?: RequestInit & { next?: NextFetchRequestConfig },
+): Promise<Response> {
+  let lastError: unknown;
+  for (const base of wordpressBases()) {
+    try {
+      const res = await fetch(`${base}${pathWithQuery}`, init);
+      // Connection worked — even 4xx/5xx should not fall back (auth/content errors).
+      return res;
+    } catch (err) {
+      lastError = err;
+    }
+  }
+  throw lastError instanceof Error
+    ? lastError
+    : new Error("WordPress fetch failed");
+}
+
 export async function wooRest<T>(
   path: string,
   init?: RequestInit & { next?: NextFetchRequestConfig },
 ): Promise<T> {
-  const base = env.wordpressUrl.replace(/\/$/, "");
-  const url = new URL(`${base}/wp-json/wc/v3${path.startsWith("/") ? path : `/${path}`}`);
-  restAuthQuery(url);
+  const rel = `/wp-json/wc/v3${path.startsWith("/") ? path : `/${path}`}`;
+  // Attach auth using a throwaway URL built against the public host (query only).
+  const probe = new URL(`https://example.invalid${rel}`);
+  restAuthQuery(probe);
+  const withAuth = `${probe.pathname}?${probe.searchParams.toString()}`;
 
-  const res = await fetch(url, {
+  const res = await fetchWordpress(withAuth, {
     ...init,
     headers: {
       "Content-Type": "application/json",
@@ -64,9 +93,8 @@ export async function wooStore<T>(
     next?: NextFetchRequestConfig;
   } = {},
 ): Promise<{ data: T; cartToken?: string; nonce?: string }> {
-  const base = env.wordpressUrl.replace(/\/$/, "");
-  const url = `${base}/wp-json/wc/store/v1${path.startsWith("/") ? path : `/${path}`}`;
   const { session, next, ...rest } = init;
+  const rel = `/wp-json/wc/store/v1${path.startsWith("/") ? path : `/${path}`}`;
 
   const headers: HeadersInit = {
     "Content-Type": "application/json",
@@ -80,7 +108,7 @@ export async function wooStore<T>(
     (headers as Record<string, string>)["Nonce"] = session.nonce;
   }
 
-  const res = await fetch(url, {
+  const res = await fetchWordpress(rel, {
     ...rest,
     headers,
     cache: next ? undefined : "no-store",
@@ -92,7 +120,6 @@ export async function wooStore<T>(
   const text = await res.text();
 
   if (!res.ok) {
-    // Surface WooCommerce's human-readable message when present (e.g. validation errors)
     let message = `Woo Store API ${res.status}: ${text}`;
     try {
       const parsed = JSON.parse(text) as { message?: string };
@@ -128,9 +155,8 @@ export async function jtSports<T>(
   path: string,
   init?: RequestInit,
 ): Promise<T> {
-  const base = env.wordpressApiUrl.replace(/\/$/, "");
-  const url = `${base}/jt-sports/v1${path.startsWith("/") ? path : `/${path}`}`;
-  const res = await fetch(url, {
+  const rel = `/wp-json/jt-sports/v1${path.startsWith("/") ? path : `/${path}`}`;
+  const res = await fetchWordpress(rel, {
     ...init,
     headers: {
       "Content-Type": "application/json",
