@@ -46,8 +46,8 @@ export default async function ProductPage({
 
       <div className="grid w-full gap-8 lg:grid-cols-2 lg:gap-12 xl:gap-16">
         <Reveal className="space-y-3" y={24}>
-          <div className="jt-card jt-glow-border group relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-jt-surface ring-1 ring-white/10 shadow-[0_40px_120px_-40px_rgba(164,255,20,0.35)] sm:aspect-[3/4]">
-            <div className="pointer-events-none absolute left-1/2 top-1/2 h-[80%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(164,255,20,0.2),rgba(139,92,246,0.12)_45%,transparent_70%)] blur-3xl" />
+          <div className="jt-card jt-glow-border group relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-jt-surface ring-1 ring-white/10 shadow-[0_40px_120px_-40px_rgba(255,122,26,0.4)] sm:aspect-[3/4]">
+            <div className="pointer-events-none absolute left-1/2 top-1/2 h-[80%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,122,26,0.22),rgba(46,230,255,0.1)_45%,transparent_70%)] blur-3xl" />
             {product.images[0] ? (
               <div className="jt-card-media absolute inset-0">
                 <Image

@@ -28,7 +28,15 @@ export function ProductRail({
       {/* Ambient colour blob — alternates side & hue per section */}
       <div
         aria-hidden
-        className={`jt-blob ${even ? "jt-blob-violet -right-[10%]" : "jt-blob-lime -left-[10%]"} top-0 -z-10 h-[50vh] w-[50vw] opacity-60`}
+        className={`jt-blob ${even ? "jt-blob-orange -right-[10%]" : "jt-blob-cyan -left-[10%]"} top-0 -z-10 h-[50vh] w-[50vw] opacity-50`}
+      />
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute left-[-20%] -z-10 h-[2px] w-[140%] -rotate-[22deg] blur-[1px] ${
+          even
+            ? "top-[40%] bg-[linear-gradient(90deg,transparent,rgba(255,122,26,0.5),transparent)]"
+            : "top-[60%] bg-[linear-gradient(90deg,transparent,rgba(46,230,255,0.45),transparent)]"
+        }`}
       />
 
       <div className="jt-container">
@@ -37,7 +45,7 @@ export function ProductRail({
             <Reveal y={12}>
               <p className="mb-2 flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-jt-neon">
                 {index !== undefined && (
-                  <span className="jt-gradient-text-violet jt-display text-lg tracking-[0.15em]">
+                  <span className="jt-gradient-text-fire jt-display text-lg tracking-[0.15em]">
                     {String(index).padStart(2, "0")}
                   </span>
                 )}
@@ -60,10 +68,12 @@ export function ProductRail({
             <Reveal y={12} delay={0.2} className="shrink-0">
               <Link
                 href={href}
-                className="group inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/[0.03] px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur transition-all hover:border-jt-neon hover:bg-jt-neon/10 hover:text-jt-neon hover:shadow-[0_10px_30px_-12px_rgba(164,255,20,0.6)] sm:text-xs"
+                className="group jt-slant inline-flex bg-white/30 p-px transition-colors hover:bg-jt-orange"
               >
-                View all
-                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+                <span className="jt-slant inline-flex items-center gap-2 bg-jt-black/85 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur transition-colors group-hover:text-jt-amber sm:text-xs">
+                  View all
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+                </span>
               </Link>
             </Reveal>
           )}

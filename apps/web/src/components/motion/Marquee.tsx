@@ -8,8 +8,8 @@ type Props = {
   reverse?: boolean;
 };
 
-const DOT_COLORS = ["jt-gradient-bg", "bg-jt-violet", "bg-jt-cyan", "bg-jt-lime"];
-const TEXT_COLORS = ["text-white", "jt-gradient-text", "text-white", "text-[#c9b8ff]"];
+const DOT_COLORS = ["bg-jt-orange", "bg-jt-cyan", "jt-gradient-bg", "bg-jt-amber"];
+const TEXT_COLORS = ["text-white", "jt-gradient-text-fire", "text-white", "text-jt-cyan"];
 
 /** Infinite horizontal ticker (CSS-driven, pauses on hover). */
 export function Marquee({ items, className, speed = 28, reverse = false }: Props) {

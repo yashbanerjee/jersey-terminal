@@ -74,7 +74,7 @@ export function PersonalizationForm({
         {/* Jersey back preview */}
         <div className="mx-auto w-full max-w-[150px]">
           <div className="jt-glow-border relative aspect-[4/5] overflow-hidden rounded-xl bg-jt-black ring-1 ring-white/10">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(139,92,246,0.25),transparent_60%),radial-gradient(ellipse_at_50%_100%,rgba(164,255,20,0.15),transparent_55%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(255,122,26,0.25),transparent_60%),radial-gradient(ellipse_at_50%_100%,rgba(180,255,26,0.15),transparent_55%)]" />
             <div className="absolute inset-x-5 top-4 h-4 rounded-b-full border-b-2 border-white/15" />
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 px-2">
               <AnimatePresence mode="popLayout" initial={false}>

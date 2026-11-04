@@ -22,7 +22,7 @@ export function SiteFooter() {
   return (
     <footer className="relative w-full overflow-hidden border-t border-white/10 bg-jt-black/80 backdrop-blur-sm">
       <div className="jt-divider pointer-events-none absolute inset-x-0 top-0" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(164,255,20,0.14),transparent_50%),radial-gradient(ellipse_at_85%_10%,rgba(139,92,246,0.2),transparent_50%),radial-gradient(ellipse_at_50%_100%,rgba(34,211,238,0.1),transparent_50%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(180,255,26,0.14),transparent_50%),radial-gradient(ellipse_at_85%_10%,rgba(255,122,26,0.2),transparent_50%),radial-gradient(ellipse_at_50%_100%,rgba(46,230,255,0.1),transparent_50%)]" />
       <div className="jt-grain pointer-events-none absolute inset-0 opacity-[0.06]" />
 
       <div className="relative jt-container py-8 sm:py-10 md:py-14">
@@ -39,7 +39,7 @@ export function SiteFooter() {
             </p>
             <Link
               href="/shop"
-              className="group mt-4 inline-flex items-center gap-2 rounded-md border border-jt-neon/30 bg-jt-neon/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-jt-neon transition-all hover:bg-jt-neon/20 hover:shadow-[0_10px_30px_-12px_rgba(164,255,20,0.6)] sm:mt-6 sm:text-sm"
+              className="group jt-slant mt-4 inline-flex items-center gap-2 bg-jt-neon/12 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-jt-neon transition-all hover:bg-jt-neon hover:text-jt-black sm:mt-6 sm:text-sm"
             >
               Shop the collection
               <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -64,7 +64,7 @@ export function SiteFooter() {
             </Reveal>
 
             <Reveal delay={0.12}>
-              <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#c9b8ff] sm:mb-4 sm:text-xs">
+              <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-jt-orange sm:mb-4 sm:text-xs">
                 Support
               </h3>
               <ul className="space-y-2 text-sm text-jt-muted sm:space-y-2.5">
@@ -93,7 +93,7 @@ export function SiteFooter() {
           <Reveal y={40}>
             <p
               aria-hidden
-              className="jt-gradient-text-aurora -mb-[0.1em] select-none whitespace-nowrap jt-display text-[clamp(4rem,13.5vw,15rem)] leading-none opacity-30"
+              className="jt-gradient-text-aurora -mb-[0.1em] select-none whitespace-nowrap jt-display text-[clamp(3rem,9.6vw,11rem)] leading-none opacity-30"
             >
               JERSEY TERMINAL
             </p>

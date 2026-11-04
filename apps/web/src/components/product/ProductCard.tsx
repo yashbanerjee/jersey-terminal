@@ -4,7 +4,7 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowUpRight, Heart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, type MouseEvent } from "react";
+import { useRef, useSyncExternalStore, type MouseEvent } from "react";
 import type { ProductCardModel } from "@/lib/woo/types";
 import { formatAED } from "@/lib/format";
 import { useWishlistStore } from "@/store/wishlist";
@@ -18,15 +18,23 @@ const BADGE_LABEL: Record<ProductCardModel["badges"][number], string> = {
 
 /** Each badge type gets its own hue so a grid of cards reads as a colourful mix. */
 const BADGE_STYLE: Record<ProductCardModel["badges"][number], string> = {
-  new: "jt-gradient-bg text-jt-black shadow-[0_6px_18px_-6px_rgba(164,255,20,0.8)]",
-  bestseller: "bg-white text-jt-black shadow-[0_6px_18px_-6px_rgba(255,255,255,0.6)]",
-  limited: "jt-gradient-bg-violet text-white shadow-[0_6px_18px_-6px_rgba(139,92,246,0.9)]",
-  sale: "bg-jt-coral text-white shadow-[0_6px_18px_-6px_rgba(255,92,108,0.9)]",
+  new: "jt-gradient-bg text-jt-black",
+  bestseller: "bg-jt-cyan text-jt-black",
+  limited: "jt-gradient-bg-fire text-jt-black",
+  sale: "bg-jt-coral text-white",
 };
 
 export function ProductCard({ product, priority = false }: { product: ProductCardModel; priority?: boolean }) {
   const toggle = useWishlistStore((s) => s.toggle);
-  const wished = useWishlistStore((s) => s.ids.includes(product.id));
+  const wishedStored = useWishlistStore((s) => s.ids.includes(product.id));
+  // The wishlist is persisted in localStorage; only read it once hydrated so the
+  // first client render matches the server HTML (avoids a hydration mismatch).
+  const hydrated = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+  const wished = hydrated && wishedStored;
 
   // Subtle 3D tilt that follows the cursor.
   const ref = useRef<HTMLElement>(null);
@@ -57,7 +65,7 @@ export function ProductCard({ product, priority = false }: { product: ProductCar
       className="jt-card group relative w-full min-w-0 will-change-transform"
     >
       <Link href={`/product/${product.slug}`} className="block">
-        <div className="jt-card-media relative aspect-[3/4] w-full overflow-hidden rounded-xl bg-gradient-to-br from-jt-surface via-jt-dark to-jt-surface ring-1 ring-white/[0.06]">
+        <div className="jt-card-media jt-chamfer-sm relative aspect-[3/4] w-full overflow-hidden bg-gradient-to-br from-jt-surface via-jt-dark to-jt-surface ring-1 ring-white/[0.06]">
           {product.image ? (
             <Image
               src={product.image.src}
@@ -86,7 +94,7 @@ export function ProductCard({ product, priority = false }: { product: ProductCar
             {product.badges.map((b) => (
               <span
                 key={b}
-                className={`rounded-sm px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider sm:px-2 sm:text-[10px] ${BADGE_STYLE[b]}`}
+                className={`jt-slant-sm px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider sm:px-3 sm:text-[10px] ${BADGE_STYLE[b]}`}
               >
                 {BADGE_LABEL[b]}
               </span>
@@ -95,7 +103,7 @@ export function ProductCard({ product, priority = false }: { product: ProductCar
 
           {/* Quick action slides up on hover */}
           <div className="pointer-events-none absolute inset-x-2 bottom-2 translate-y-3 opacity-0 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:translate-y-0 group-hover:opacity-100 sm:inset-x-3 sm:bottom-3">
-            <span className="jt-gradient-bg flex items-center justify-between rounded-lg px-3 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-jt-black shadow-[0_10px_30px_-10px_rgba(164,255,20,0.8)]">
+            <span className="jt-gradient-bg jt-slant flex items-center justify-between px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-jt-black">
               View jersey
               <ArrowUpRight className="h-4 w-4" />
             </span>
@@ -108,7 +116,7 @@ export function ProductCard({ product, priority = false }: { product: ProductCar
               {product.category}
             </p>
           )}
-          <h3 className="line-clamp-2 text-sm font-medium text-white transition-colors duration-300 group-hover:text-jt-neon md:text-base">
+          <h3 className="line-clamp-2 text-sm font-medium text-white transition-colors duration-300 group-hover:text-jt-amber md:text-base">
             {product.name}
           </h3>
           <div className="flex flex-wrap items-center gap-2 text-sm">

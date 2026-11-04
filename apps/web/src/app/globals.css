@@ -1,31 +1,34 @@
 @import "tailwindcss";
 
 :root {
-  /* ---- Brand core (matches the JT logo gradient) ---- */
-  --jt-neon: #a4ff14;
-  --jt-lime: #e9ff3a;
-  /* ---- Supporting hues ---- */
-  --jt-violet: #8b5cf6;
-  --jt-violet-deep: #5b21b6;
-  --jt-cyan: #22d3ee;
-  --jt-coral: #ff5c6c;
-  /* ---- Surfaces: deep ink instead of flat black ---- */
-  --jt-black: #06070d;
-  --jt-dark: #0c0e18;
-  --jt-surface: #131627;
+  /* ---- Action colour: lime (CTAs, eyebrows, live states) ---- */
+  --jt-neon: #b4ff1a;
+  --jt-lime: #d9ff3d;
+  /* ---- Hero accent: orange / amber ---- */
+  --jt-orange: #ff7a1a;
+  --jt-amber: #ffb020;
+  /* ---- Highlight: electric cyan ---- */
+  --jt-cyan: #2ee6ff;
+  --jt-coral: #ff4d5e;
+  /* ---- Surfaces: stadium-night black ---- */
+  --jt-black: #050607;
+  --jt-dark: #0c0e11;
+  --jt-surface: #15181d;
   --jt-white: #ffffff;
-  --jt-muted: #9ca4bc;
+  --jt-muted: #9aa3ad;
 
-  --jt-gradient: linear-gradient(110deg, var(--jt-neon) 0%, var(--jt-lime) 100%);
+  --jt-gradient: linear-gradient(100deg, var(--jt-neon) 0%, var(--jt-lime) 100%);
+  --jt-gradient-fire: linear-gradient(100deg, #ff5e00 0%, var(--jt-orange) 45%, var(--jt-amber) 100%);
+  --jt-gradient-ice: linear-gradient(100deg, var(--jt-cyan) 0%, #a6f4ff 100%);
+  --jt-gradient-steel: linear-gradient(180deg, #ffffff 0%, #d7dde6 55%, #aab3c0 100%);
   --jt-gradient-aurora: linear-gradient(
-    110deg,
-    var(--jt-neon) 0%,
-    var(--jt-lime) 28%,
+    100deg,
+    var(--jt-orange) 0%,
+    var(--jt-amber) 25%,
     var(--jt-cyan) 55%,
-    var(--jt-violet) 80%,
-    var(--jt-neon) 100%
+    var(--jt-neon) 80%,
+    var(--jt-orange) 100%
   );
-  --jt-gradient-violet: linear-gradient(110deg, var(--jt-violet) 0%, #c084fc 100%);
 
   --background: var(--jt-black);
   --foreground: var(--jt-white);
@@ -38,15 +41,15 @@
   --color-foreground: var(--foreground);
   --color-jt-neon: var(--jt-neon);
   --color-jt-lime: var(--jt-lime);
-  --color-jt-violet: var(--jt-violet);
-  --color-jt-violet-deep: var(--jt-violet-deep);
+  --color-jt-orange: var(--jt-orange);
+  --color-jt-amber: var(--jt-amber);
   --color-jt-cyan: var(--jt-cyan);
   --color-jt-coral: var(--jt-coral);
   --color-jt-black: var(--jt-black);
   --color-jt-dark: var(--jt-dark);
   --color-jt-surface: var(--jt-surface);
   --color-jt-muted: var(--jt-muted);
-  --font-display: var(--font-big-shoulders);
+  --font-display: var(--font-exo2);
   --font-sans: var(--font-sora);
 }
 
@@ -74,7 +77,6 @@ body {
   background: var(--jt-black);
   color: var(--jt-white);
   font-family: var(--font-sora), system-ui, sans-serif;
-  font-feature-settings: "ss01", "cv11";
 }
 
 img,
@@ -85,7 +87,7 @@ svg {
 }
 
 ::selection {
-  background: color-mix(in oklab, var(--jt-neon) 55%, black);
+  background: color-mix(in oklab, var(--jt-orange) 60%, black);
   color: var(--jt-white);
 }
 
@@ -98,25 +100,46 @@ svg {
   background: var(--jt-black);
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--jt-neon), var(--jt-violet));
+  background: linear-gradient(180deg, var(--jt-orange), var(--jt-cyan));
   border-radius: 999px;
   border: 2px solid var(--jt-black);
 }
 
 /* ---------- Typography ---------- */
 
-/* Athletic display face. Big Shoulders has lowercase glyphs, so we force caps
-   to keep the poster-style look the layout was designed around. */
+/* Heavy italic extended display face — the "speed" look of the reference. */
 .jt-display {
-  font-family: var(--font-big-shoulders), "Impact", "Arial Narrow", sans-serif;
-  font-weight: 800;
-  font-optical-sizing: auto;
+  font-family: var(--font-exo2), "Arial Black", Impact, sans-serif;
+  font-weight: 900;
+  font-style: italic;
   text-transform: uppercase;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.01em;
 }
 
 .jt-gradient-text {
   background: var(--jt-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.jt-gradient-text-fire {
+  background: var(--jt-gradient-fire);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.jt-gradient-text-ice {
+  background: var(--jt-gradient-ice);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Brushed-steel white used for the main headline lines */
+.jt-gradient-text-steel {
+  background: var(--jt-gradient-steel);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -131,13 +154,6 @@ svg {
   animation: jt-shine 6s linear infinite;
 }
 
-.jt-gradient-text-violet {
-  background: var(--jt-gradient-violet);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
 @keyframes jt-shine {
   to {
     background-position: 250% center;
@@ -147,7 +163,7 @@ svg {
 /* Hollow / outlined display text for watermarks */
 .jt-outline-text {
   color: transparent;
-  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.1);
+  -webkit-text-stroke: 1.5px rgba(46, 230, 255, 0.14);
 }
 
 /* Registered as utilities so variants like group-hover:jt-gradient-bg work */
@@ -155,8 +171,12 @@ svg {
   background: var(--jt-gradient);
 }
 
-@utility jt-gradient-bg-violet {
-  background: var(--jt-gradient-violet);
+@utility jt-gradient-bg-fire {
+  background: var(--jt-gradient-fire);
+}
+
+@utility jt-gradient-bg-ice {
+  background: var(--jt-gradient-ice);
 }
 
 .jt-gradient-bg-aurora {
@@ -165,21 +185,72 @@ svg {
   animation: jt-shine 8s linear infinite;
 }
 
-/* Film grain overlay — makes dark surfaces feel textured instead of flat */
+/* ---------- Shapes ---------- */
+
+/* Slanted parallelogram — buttons, tags, price plates */
+@utility jt-slant {
+  clip-path: polygon(0.65rem 0, 100% 0, calc(100% - 0.65rem) 100%, 0 100%);
+}
+@utility jt-slant-sm {
+  clip-path: polygon(0.4rem 0, 100% 0, calc(100% - 0.4rem) 100%, 0 100%);
+}
+
+/* Chamfered card — top-left & bottom-right corners cut */
+@utility jt-chamfer {
+  clip-path: polygon(
+    2rem 0,
+    100% 0,
+    100% calc(100% - 2rem),
+    calc(100% - 2rem) 100%,
+    0 100%,
+    0 2rem
+  );
+}
+@utility jt-chamfer-sm {
+  clip-path: polygon(
+    1rem 0,
+    100% 0,
+    100% calc(100% - 1rem),
+    calc(100% - 1rem) 100%,
+    0 100%,
+    0 1rem
+  );
+}
+
+/* Drop shadows that follow clip-path shapes (box-shadow gets clipped) */
+.jt-drop-lime {
+  filter: drop-shadow(0 12px 28px rgba(180, 255, 26, 0.35));
+  transition: filter 0.4s ease;
+}
+.jt-drop-lime:hover {
+  filter: drop-shadow(0 16px 40px rgba(180, 255, 26, 0.6));
+}
+.jt-drop-orange {
+  filter: drop-shadow(0 12px 28px rgba(255, 122, 26, 0.35));
+}
+
+/* Film grain overlay */
 .jt-grain {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 160px 160px;
   mix-blend-mode: overlay;
 }
 
+/* Halftone dot texture (reference has dot-matrix patches) */
+.jt-dots {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.35) 1px, transparent 1.2px);
+  background-size: 8px 8px;
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%);
+}
+
 .jt-noise {
   background-image:
-    radial-gradient(circle at 20% 20%, rgba(164, 255, 20, 0.1), transparent 40%),
-    radial-gradient(circle at 80% 0%, rgba(139, 92, 246, 0.12), transparent 35%),
+    radial-gradient(circle at 20% 20%, rgba(255, 122, 26, 0.1), transparent 40%),
+    radial-gradient(circle at 80% 0%, rgba(46, 230, 255, 0.1), transparent 35%),
     linear-gradient(180deg, var(--jt-black) 0%, var(--jt-dark) 100%);
 }
 
-/* Full-width shell — stretches across the viewport on desktop */
+/* Full-width shell */
 .jt-container {
   width: 100%;
   max-width: 100%;
@@ -298,39 +369,24 @@ html.lenis body {
   }
 }
 
-/* Button sheen sweep + glow */
+/* Button sheen sweep */
 .jt-btn-sheen {
   transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .jt-btn:hover .jt-btn-sheen {
   transform: translateX(420%) skewX(-20deg);
 }
-.jt-btn-glow {
-  box-shadow:
-    0 0 0 0 rgba(164, 255, 20, 0),
-    0 10px 30px -12px rgba(164, 255, 20, 0.55);
-  transition:
-    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.3s;
-}
-.jt-btn-glow:hover {
-  box-shadow:
-    0 0 0 4px rgba(164, 255, 20, 0.14),
-    0 18px 50px -12px rgba(164, 255, 20, 0.75),
-    0 0 80px -20px rgba(139, 92, 246, 0.6);
-}
 
-/* Product card media zoom + shine + glow */
-.jt-card-media {
-  transition: box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+/* Product card media zoom + shine + glow.
+   Media is clipped (chamfer), so the glow is a drop-shadow on the card root. */
+.jt-card {
+  transition: filter 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.jt-card:hover {
+  filter: drop-shadow(0 24px 32px rgba(255, 122, 26, 0.28)) drop-shadow(0 0 24px rgba(46, 230, 255, 0.12));
 }
 .jt-card-media img {
   transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.jt-card:hover .jt-card-media {
-  box-shadow:
-    0 30px 60px -25px rgba(164, 255, 20, 0.35),
-    0 0 50px -20px rgba(139, 92, 246, 0.4);
 }
 .jt-card:hover .jt-card-media img {
   transform: scale(1.07);
@@ -346,10 +402,10 @@ html.lenis body {
 .jt-card-border {
   background: linear-gradient(
     135deg,
-    rgba(164, 255, 20, 0.8),
-    rgba(34, 211, 238, 0.5) 35%,
+    rgba(46, 230, 255, 0.8),
+    rgba(255, 122, 26, 0.5) 35%,
     transparent 50%,
-    rgba(139, 92, 246, 0.7)
+    rgba(255, 176, 32, 0.8)
   );
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
@@ -364,7 +420,7 @@ html.lenis body {
   opacity: 1;
 }
 
-/* Rotating conic gradient border (hero jersey, previews) */
+/* Rotating conic gradient border */
 @property --jt-angle {
   syntax: "<angle>";
   initial-value: 0deg;
@@ -382,12 +438,12 @@ html.lenis body {
   padding: 1.5px;
   background: conic-gradient(
     from var(--jt-angle),
-    rgba(164, 255, 20, 0.9),
-    rgba(34, 211, 238, 0.6),
-    rgba(139, 92, 246, 0.8),
+    rgba(46, 230, 255, 0.9),
+    rgba(255, 122, 26, 0.9),
+    rgba(255, 176, 32, 0.6),
     transparent 55%,
-    rgba(233, 255, 58, 0.7),
-    rgba(164, 255, 20, 0.9)
+    rgba(46, 230, 255, 0.6),
+    rgba(46, 230, 255, 0.9)
   );
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
@@ -414,7 +470,7 @@ html.lenis body {
   bottom: -2px;
   height: 1px;
   width: 100%;
-  background: var(--jt-gradient);
+  background: var(--jt-gradient-fire);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
@@ -423,30 +479,30 @@ html.lenis body {
   transform: scaleX(1);
 }
 
-/* Glow pulse used for live/drop badges */
+/* Glow pulses */
 @keyframes jt-pulse {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(164, 255, 20, 0.7);
+    box-shadow: 0 0 0 0 rgba(180, 255, 26, 0.7);
   }
   70% {
-    box-shadow: 0 0 0 8px rgba(164, 255, 20, 0);
+    box-shadow: 0 0 0 8px rgba(180, 255, 26, 0);
   }
 }
 .jt-pulse {
   animation: jt-pulse 1.8s ease-out infinite;
 }
-@keyframes jt-pulse-violet {
+@keyframes jt-pulse-orange {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7);
+    box-shadow: 0 0 0 0 rgba(255, 122, 26, 0.7);
   }
   70% {
-    box-shadow: 0 0 0 8px rgba(139, 92, 246, 0);
+    box-shadow: 0 0 0 8px rgba(255, 122, 26, 0);
   }
 }
-.jt-pulse-violet {
-  animation: jt-pulse-violet 1.8s ease-out infinite;
+.jt-pulse-orange {
+  animation: jt-pulse-orange 1.8s ease-out infinite;
 }
 
 /* Soft float for decorative elements */
@@ -461,6 +517,26 @@ html.lenis body {
 }
 .jt-float {
   animation: jt-float 5s ease-in-out infinite;
+}
+
+/* Floodlight flicker */
+@keyframes jt-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0.86;
+  }
+  50% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 0.92;
+  }
+}
+.jt-flicker {
+  animation: jt-flicker 4s ease-in-out infinite;
 }
 
 /* Horizontal snap scroller */
@@ -482,14 +558,14 @@ html.lenis body {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(164, 255, 20, 0.6),
-    rgba(34, 211, 238, 0.5),
-    rgba(139, 92, 246, 0.6),
+    rgba(255, 122, 26, 0.7),
+    rgba(46, 230, 255, 0.6),
+    rgba(180, 255, 26, 0.5),
     transparent
   );
 }
 
-/* Decorative ambient blobs for sections */
+/* Decorative ambient blobs */
 .jt-blob {
   position: absolute;
   border-radius: 9999px;
@@ -497,29 +573,38 @@ html.lenis body {
   filter: blur(60px);
 }
 .jt-blob-lime {
-  background: radial-gradient(circle, rgba(164, 255, 20, 0.35), transparent 65%);
+  background: radial-gradient(circle, rgba(180, 255, 26, 0.3), transparent 65%);
 }
-.jt-blob-violet {
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.4), transparent 65%);
+.jt-blob-orange {
+  background: radial-gradient(circle, rgba(255, 122, 26, 0.4), transparent 65%);
 }
 .jt-blob-cyan {
-  background: radial-gradient(circle, rgba(34, 211, 238, 0.3), transparent 65%);
+  background: radial-gradient(circle, rgba(46, 230, 255, 0.3), transparent 65%);
+}
+
+/* Diagonal light streak (speed lines) */
+.jt-streak {
+  position: absolute;
+  pointer-events: none;
+  height: 2px;
+  width: 60vw;
+  border-radius: 999px;
+  transform-origin: center;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .jt-marquee-track,
   .jt-pulse,
-  .jt-pulse-violet,
+  .jt-pulse-orange,
   .jt-float,
+  .jt-flicker,
   .jt-gradient-text-aurora,
   .jt-gradient-bg-aurora,
   .jt-glow-border::before,
-  .jt-aurora,
-  .jt-aurora-2,
+  .jt-streak,
   .jt-beam,
-  .jt-ring,
   .jt-spark,
-  .jt-blob-anim,
+  .jt-fog,
   .jt-scan {
     animation: none !important;
   }

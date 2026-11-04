@@ -48,7 +48,7 @@ export function SiteHeader() {
       className={cn(
         "fixed inset-x-0 top-0 z-50 border-b transition-[background-color,border-color,box-shadow] duration-500",
         scrolled || mobileOpen
-          ? "border-white/10 bg-jt-black/70 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.9),0_1px_0_0_rgba(164,255,20,0.08)] backdrop-blur-xl"
+          ? "border-white/10 bg-jt-black/70 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.9),0_1px_0_0_rgba(180,255,26,0.08)] backdrop-blur-xl"
           : "border-transparent bg-transparent",
       )}
     >
@@ -56,7 +56,7 @@ export function SiteHeader() {
       <motion.span
         aria-hidden
         style={{ scaleX: progress }}
-        className="jt-gradient-bg-aurora absolute inset-x-0 top-0 h-[2px] origin-left shadow-[0_0_12px_rgba(164,255,20,0.6)]"
+        className="jt-gradient-bg-aurora absolute inset-x-0 top-0 h-[2px] origin-left shadow-[0_0_12px_rgba(180,255,26,0.6)]"
       />
 
       <div className="jt-container flex h-16 items-center justify-between md:h-20">
@@ -84,15 +84,15 @@ export function SiteHeader() {
                 key={l.href}
                 href={l.href}
                 className={cn(
-                  "jt-link text-[13px] font-medium uppercase tracking-[0.18em] transition-colors",
-                  active ? "text-jt-neon" : "text-white/70 hover:text-white",
+                  "jt-link text-[13px] font-semibold uppercase tracking-[0.18em] transition-colors",
+                  active ? "text-jt-neon" : "text-white/80 hover:text-white",
                 )}
               >
                 {l.label}
                 {active && (
                   <motion.span
                     layoutId="nav-active"
-                    className="absolute -bottom-[2px] left-0 h-px w-full jt-gradient-bg"
+                    className="absolute -bottom-[2px] left-0 h-[2px] w-full jt-gradient-bg"
                     transition={{ type: "spring", stiffness: 400, damping: 36 }}
                   />
                 )}
@@ -132,7 +132,7 @@ export function SiteHeader() {
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.4, opacity: 0 }}
                   transition={{ type: "spring", stiffness: 500, damping: 22 }}
-                  className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full jt-gradient-bg px-1 text-[10px] font-bold text-jt-black shadow-[0_0_12px_rgba(164,255,20,0.8)]"
+                  className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full jt-gradient-bg px-1 text-[10px] font-bold text-jt-black shadow-[0_0_12px_rgba(180,255,26,0.8)]"
                 >
                   {count}
                 </motion.span>
@@ -176,7 +176,7 @@ export function SiteHeader() {
                     className="flex items-center justify-between border-b border-white/5 py-4 jt-display text-3xl text-white transition-colors hover:text-jt-neon"
                   >
                     {l.label}
-                    <span className="jt-gradient-text-violet jt-display text-base">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="jt-gradient-text-fire jt-display text-base">{String(i + 1).padStart(2, "0")}</span>
                   </Link>
                 </motion.li>
               ))}

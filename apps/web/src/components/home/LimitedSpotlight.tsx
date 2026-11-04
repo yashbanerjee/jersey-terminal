@@ -57,13 +57,21 @@ export function LimitedSpotlight({ products, href }: { products: ProductCardMode
 
   return (
     <section ref={root} className="relative w-full overflow-hidden py-10 sm:py-14 md:py-20">
-      {/* Violet "premium" band */}
-      <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,transparent,rgba(91,33,182,0.22)_30%,rgba(139,92,246,0.16)_70%,transparent)]" />
-      <div aria-hidden className="jt-blob jt-blob-violet -left-[10%] top-1/2 -z-10 h-[70vh] w-[50vw] -translate-y-1/2 opacity-80" />
+      {/* Orange "heat" band + diagonal streaks */}
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,transparent,rgba(255,94,0,0.16)_30%,rgba(255,122,26,0.12)_70%,transparent)]" />
+      <div aria-hidden className="jt-blob jt-blob-orange -left-[10%] top-1/2 -z-10 h-[70vh] w-[50vw] -translate-y-1/2 opacity-80" />
       <div aria-hidden className="jt-blob jt-blob-cyan -right-[10%] bottom-0 -z-10 h-[50vh] w-[40vw] opacity-60" />
       <div
         aria-hidden
-        className="ls-watermark jt-outline-text pointer-events-none absolute left-0 top-1/2 -z-10 -translate-y-1/2 whitespace-nowrap jt-display text-[28vw] leading-none select-none"
+        className="pointer-events-none absolute left-[-20%] top-[30%] -z-10 h-[3px] w-[140%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(255,122,26,0.7),transparent)] blur-[1px]"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-[-20%] top-[65%] -z-10 h-[2px] w-[140%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(46,230,255,0.6),transparent)] blur-[1px]"
+      />
+      <div
+        aria-hidden
+        className="ls-watermark jt-outline-text pointer-events-none absolute left-0 top-1/2 -z-10 -translate-y-1/2 whitespace-nowrap jt-display text-[20vw] leading-none select-none"
       >
         LIMITED EDITION LIMITED EDITION
       </div>
@@ -72,8 +80,8 @@ export function LimitedSpotlight({ products, href }: { products: ProductCardMode
         <div className="mb-6 flex flex-col gap-4 sm:mb-8 md:flex-row md:items-end md:justify-between">
           <div>
             <Reveal y={12}>
-              <p className="mb-2 inline-flex items-center gap-2 rounded-full border border-jt-violet/40 bg-jt-violet/15 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#d8c8ff] shadow-[0_0_30px_-8px_rgba(139,92,246,0.7)] backdrop-blur">
-                <span className="jt-pulse-violet inline-block h-1.5 w-1.5 rounded-full bg-jt-violet" />
+              <p className="mb-2 inline-flex items-center gap-2 jt-slant-sm bg-jt-orange/15 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-jt-amber backdrop-blur">
+                <span className="jt-pulse-orange inline-block h-1.5 w-1.5 rounded-full bg-jt-orange" />
                 Limited edition · While stock lasts
               </p>
             </Reveal>
@@ -96,9 +104,10 @@ export function LimitedSpotlight({ products, href }: { products: ProductCardMode
           <Reveal key={p.id} delay={i * 0.08} className="w-[78vw] shrink-0 sm:w-[48vw] lg:w-[30vw] xl:w-[24vw]">
             <Link
               href={`/product/${p.slug}`}
-              className="jt-card group relative block overflow-hidden rounded-2xl bg-jt-surface ring-1 ring-white/10 shadow-[0_30px_80px_-40px_rgba(139,92,246,0.6)]"
+              className="jt-card jt-drop-orange group relative block bg-[linear-gradient(135deg,rgba(46,230,255,0.6),rgba(255,255,255,0.15)_35%,rgba(255,122,26,0.7))] p-px jt-chamfer"
             >
-              <div className="jt-card-media relative aspect-[4/5] rounded-2xl">
+              <div className="jt-chamfer relative overflow-hidden bg-jt-surface">
+              <div className="jt-card-media relative aspect-[4/5]">
                 {p.image ? (
                   <Image
                     src={p.image.src}
@@ -109,26 +118,26 @@ export function LimitedSpotlight({ products, href }: { products: ProductCardMode
                   />
                 ) : null}
                 <div className="absolute inset-0 bg-gradient-to-t from-jt-black/95 via-jt-black/25 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-br from-jt-violet/15 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                <div className="absolute inset-0 bg-gradient-to-br from-jt-orange/15 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
                 <span aria-hidden className="jt-card-shine pointer-events-none absolute inset-0" />
-                <span aria-hidden className="jt-card-border pointer-events-none absolute inset-0 rounded-2xl" />
-                <span className="jt-gradient-text-violet absolute left-4 top-3 jt-display text-6xl opacity-70">
+                <span className="jt-gradient-text-fire absolute left-5 top-2 jt-display text-6xl opacity-80">
                   {String(i + 1).padStart(2, "0")}
                 </span>
               </div>
               <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5">
                 <div className="min-w-0">
-                  <p className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#d8c8ff]">
-                    <span className="h-1 w-1 rounded-full bg-jt-violet" />
+                  <p className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-jt-orange">
+                    <span className="h-1 w-1 rounded-full bg-jt-orange" />
                     Limited
                   </p>
-                  <h3 className="mt-1 line-clamp-2 jt-display text-2xl leading-[0.95] text-white sm:text-3xl">
+                  <h3 className="mt-1 line-clamp-2 break-words jt-display text-xl leading-[0.95] text-white sm:text-2xl">
                     {p.name}
                   </h3>
                 </div>
-                <span className="jt-gradient-bg shrink-0 rounded-full px-3 py-1.5 text-sm font-bold text-jt-black shadow-[0_8px_24px_-8px_rgba(164,255,20,0.8)]">
+                <span className="jt-gradient-bg jt-slant-sm shrink-0 px-3.5 py-1.5 text-sm font-bold text-jt-black">
                   {formatAED(p.price)}
                 </span>
+              </div>
               </div>
             </Link>
           </Reveal>

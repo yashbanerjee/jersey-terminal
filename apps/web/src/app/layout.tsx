@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Big_Shoulders, Sora } from "next/font/google";
+import { Exo_2, Sora } from "next/font/google";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { PageAtmosphere } from "@/components/layout/PageAtmosphere";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -16,14 +16,14 @@ const sora = Sora({
 });
 
 /**
- * Display face — a bold athletic condensed grotesque. The optical-size axis
- * lets the browser pick the high-contrast "display" cut at headline sizes.
+ * Display face — heavy italic extended grotesque with a motorsport / sports-
+ * broadcast feel. Used in Black Italic for all headlines.
  */
-const bigShoulders = Big_Shoulders({
-  variable: "--font-big-shoulders",
+const exo2 = Exo_2({
+  variable: "--font-exo2",
   subsets: ["latin"],
+  style: ["normal", "italic"],
   display: "swap",
-  axes: ["opsz"],
 });
 
 export const metadata: Metadata = {
@@ -42,7 +42,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${sora.variable} ${bigShoulders.variable} h-full antialiased`}
+      className={`${sora.variable} ${exo2.variable} h-full antialiased`}
     >
       <body className="relative flex min-h-full w-full flex-col overflow-x-hidden bg-jt-black text-white">
         <SmoothScroll />

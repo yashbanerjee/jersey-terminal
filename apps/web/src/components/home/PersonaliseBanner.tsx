@@ -51,61 +51,65 @@ export function PersonaliseBanner() {
     <section ref={root} className="w-full py-8 sm:py-10 md:py-14">
       <div className="jt-container">
         <Reveal>
-          <div className="relative overflow-hidden rounded-3xl ring-1 ring-white/20 shadow-[0_40px_120px_-40px_rgba(164,255,20,0.5),0_30px_80px_-40px_rgba(139,92,246,0.5)]">
-            {/* Lime base + animated colour wash */}
-            <div className="absolute inset-0 jt-gradient-bg" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(6,7,13,0.35),transparent_55%)]" />
-            <div className="jt-float absolute -right-10 -top-16 h-72 w-72 rounded-full bg-jt-cyan/40 blur-3xl" />
-            <div className="jt-float absolute -bottom-20 left-1/3 h-72 w-72 rounded-full bg-jt-violet/40 blur-3xl [animation-delay:-2.5s]" />
-            <div className="absolute -left-10 -top-10 h-56 w-56 rounded-full bg-white/30 blur-3xl" />
-            <div className="jt-grain absolute inset-0 opacity-20" />
+          {/* Chamfered panel with a gradient edge */}
+          <div className="jt-chamfer jt-drop-orange relative bg-[linear-gradient(135deg,rgba(255,122,26,0.9),rgba(255,255,255,0.2)_40%,rgba(46,230,255,0.8))] p-px">
+            <div className="jt-chamfer relative overflow-hidden bg-jt-dark">
+              {/* Streaks + glows */}
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_0%_100%,rgba(255,122,26,0.35),transparent_55%),radial-gradient(ellipse_at_100%_0%,rgba(46,230,255,0.22),transparent_55%)]" />
+              <div className="pointer-events-none absolute left-[-20%] top-[22%] h-[3px] w-[140%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(255,122,26,0.9),transparent)] blur-[1px]" />
+              <div className="pointer-events-none absolute left-[-20%] top-[58%] h-[2px] w-[140%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(46,230,255,0.8),transparent)] blur-[1px]" />
+              <div className="pointer-events-none absolute left-[-20%] top-[80%] h-[6px] w-[140%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(255,176,32,0.5),transparent)] blur-[4px]" />
+              <div className="jt-float absolute -bottom-24 left-1/4 h-72 w-72 rounded-full bg-jt-orange/25 blur-3xl" />
+              <div className="jt-dots absolute right-[-2%] top-[-10%] h-[70%] w-[30%] opacity-20" />
+              <div className="jt-grain absolute inset-0 opacity-[0.08]" />
 
-            <div className="relative grid gap-8 p-6 sm:p-10 md:grid-cols-[1.1fr_0.9fr] md:items-center md:p-14">
-              <div className="text-jt-black">
-                <p className="inline-flex items-center gap-2 rounded-full bg-jt-black/85 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.28em] text-jt-neon">
-                  <span className="h-1.5 w-1.5 rounded-full bg-jt-neon" />
-                  Personalisation
-                </p>
-                <SplitHeading
-                  text="Your name. Your number. Your jersey."
-                  className="mt-4 jt-display text-4xl leading-[0.95] sm:text-5xl md:text-6xl"
-                />
-                <p className="mt-4 max-w-md text-sm font-medium text-jt-black/80 sm:text-base">
-                  Pick any jersey, add your name and lucky number at checkout, and we print it match-ready
-                  before it ships.
-                </p>
-                <div className="mt-6">
-                  <MagneticButton
-                    href="/shop"
-                    className="!bg-jt-black !bg-none !text-white !shadow-[0_20px_50px_-15px_rgba(6,7,13,0.7)] hover:!shadow-[0_20px_60px_-15px_rgba(139,92,246,0.7)]"
-                  >
-                    Start customising <ArrowRight className="h-4 w-4" />
-                  </MagneticButton>
-                </div>
-              </div>
-
-              {/* Jersey back preview */}
-              <div className="mx-auto w-full max-w-[300px] md:ml-auto">
-                <div className="jt-glow-border relative aspect-[4/5] overflow-hidden rounded-2xl bg-jt-black shadow-[0_30px_80px_-20px_rgba(6,7,13,0.8)] ring-1 ring-black/30">
-                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(139,92,246,0.3),transparent_60%),radial-gradient(ellipse_at_50%_100%,rgba(164,255,20,0.18),transparent_55%)]" />
-                  <div className="absolute inset-x-6 top-6 h-6 rounded-b-full border-b-2 border-white/15" />
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 overflow-hidden">
-                    <span className="overflow-hidden">
-                      <span
-                        ref={nameRef}
-                        className="jt-gradient-text block jt-display text-3xl tracking-[0.2em] sm:text-4xl"
-                      >
-                        {EXAMPLES[0][0]}
-                      </span>
-                    </span>
-                    <span
-                      ref={numRef}
-                      className="block jt-display text-[9rem] leading-none text-white drop-shadow-[0_0_30px_rgba(164,255,20,0.35)] sm:text-[10rem]"
-                    >
-                      {EXAMPLES[0][1]}
-                    </span>
+              <div className="relative grid gap-8 p-6 sm:p-10 md:grid-cols-[1.1fr_0.9fr] md:items-center md:p-14">
+                <div>
+                  <p className="inline-flex items-center gap-2 jt-slant-sm bg-jt-neon/12 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.28em] text-jt-neon">
+                    <span className="h-1.5 w-1.5 rounded-full bg-jt-neon" />
+                    Personalisation
+                  </p>
+                  <SplitHeading
+                    text="Your name. Your number. Your jersey."
+                    accentWords={[5, 6]}
+                    className="mt-4 jt-display text-4xl leading-[0.95] text-white sm:text-5xl md:text-6xl"
+                  />
+                  <p className="mt-4 max-w-md text-sm text-white/70 sm:text-base">
+                    Pick any jersey, add your name and lucky number at checkout, and we print it match-ready
+                    before it ships.
+                  </p>
+                  <div className="mt-7">
+                    <MagneticButton href="/shop">
+                      Start customising <ArrowRight className="h-4 w-4" />
+                    </MagneticButton>
                   </div>
-                  <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-jt-black/70 to-transparent" />
+                </div>
+
+                {/* Jersey back preview */}
+                <div className="mx-auto w-full max-w-[300px] md:ml-auto">
+                  <div className="jt-chamfer-sm relative bg-[linear-gradient(160deg,rgba(46,230,255,0.8),rgba(255,255,255,0.15)_45%,rgba(255,122,26,0.8))] p-px">
+                    <div className="jt-chamfer-sm relative aspect-[4/5] overflow-hidden bg-jt-black">
+                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_25%,rgba(255,122,26,0.28),transparent_60%),radial-gradient(ellipse_at_50%_100%,rgba(46,230,255,0.16),transparent_55%)]" />
+                      <div className="absolute inset-x-6 top-6 h-6 rounded-b-full border-b-2 border-white/15" />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 overflow-hidden">
+                        <span className="overflow-hidden">
+                          <span
+                            ref={nameRef}
+                            className="jt-gradient-text-fire block jt-display text-3xl tracking-[0.12em] sm:text-4xl"
+                          >
+                            {EXAMPLES[0][0]}
+                          </span>
+                        </span>
+                        <span
+                          ref={numRef}
+                          className="block jt-display text-[9rem] leading-none text-white drop-shadow-[0_0_30px_rgba(255,122,26,0.4)] sm:text-[10rem]"
+                        >
+                          {EXAMPLES[0][1]}
+                        </span>
+                      </div>
+                      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-jt-black/80 to-transparent" />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

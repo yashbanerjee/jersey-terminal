@@ -36,7 +36,7 @@ export function BrandStory() {
       ref={ref}
       className="relative w-full overflow-hidden border-y border-white/5 bg-jt-dark/70 py-16 backdrop-blur-sm sm:py-20 md:py-24"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_left,rgba(164,255,20,0.14),transparent_45%),radial-gradient(circle_at_right,rgba(139,92,246,0.18),transparent_45%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_left,rgba(180,255,26,0.14),transparent_45%),radial-gradient(circle_at_right,rgba(255,122,26,0.18),transparent_45%)]" />
       <div className="relative jt-container text-center">
         <p className="story-line text-xs uppercase tracking-[0.3em] text-jt-neon">
           The JT Standard

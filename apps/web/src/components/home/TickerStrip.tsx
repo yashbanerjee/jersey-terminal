@@ -16,7 +16,7 @@ export function TickerStrip() {
       <div className="jt-divider absolute inset-x-0 top-0" />
       <div className="jt-divider absolute inset-x-0 bottom-0" />
       {/* Tinted band */}
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(139,92,246,0.14),rgba(6,7,13,0.6)_30%,rgba(6,7,13,0.6)_70%,rgba(164,255,20,0.12))] backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,122,26,0.16),rgba(5,6,7,0.7)_30%,rgba(5,6,7,0.7)_70%,rgba(46,230,255,0.14))] backdrop-blur-sm" />
       <div className="relative">
         <Marquee items={ITEMS} speed={36} />
       </div>

@@ -26,7 +26,7 @@ export function PageAtmosphere() {
     return () => window.removeEventListener("pointermove", onMove);
   }, [mx, my]);
 
-  const spotlight = useMotionTemplate`radial-gradient(520px circle at ${x}px ${y}px, rgba(164,255,20,0.12), rgba(139,92,246,0.06) 40%, transparent 70%)`;
+  const spotlight = useMotionTemplate`radial-gradient(520px circle at ${x}px ${y}px, rgba(255,122,26,0.11), rgba(46,230,255,0.05) 40%, transparent 70%)`;
 
   return (
     <div className="pointer-events-none fixed inset-0 -z-10">
