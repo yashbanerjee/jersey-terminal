@@ -33,13 +33,12 @@ export function BrandLogo({
   return (
     <span
       className={cn(
-        "relative inline-flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-jt-black sm:h-12 sm:w-12",
+        "relative inline-flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden sm:h-12 sm:w-12",
         className,
       )}
     >
       {/*
-        Emblem touches the PNG edges — pad + mild zoom so the circle reads
-        sharp in the header without top/bottom clipping or stretch.
+        Transparent-bg mark — mild pad/zoom so the circle isn't edge-clipped.
       */}
       <Image
         src="/brand/jt-mark.png"
@@ -47,7 +46,7 @@ export function BrandLogo({
         fill
         sizes="56px"
         priority={priority}
-        className="object-contain object-center p-[7%] scale-[1.08]"
+        className="object-contain object-center p-[6%] scale-[1.06]"
       />
     </span>
   );
