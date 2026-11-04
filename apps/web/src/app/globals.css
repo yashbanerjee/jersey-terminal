@@ -368,8 +368,11 @@ html.lenis body {
 .jt-marquee-reverse {
   animation-direction: reverse;
 }
-.jt-marquee:hover .jt-marquee-track {
-  animation-play-state: paused;
+/* Pause only on real hover — sticky :hover on touch can freeze the ticker */
+@media (hover: hover) and (pointer: fine) {
+  .jt-marquee:hover .jt-marquee-track {
+    animation-play-state: paused;
+  }
 }
 @keyframes jt-marquee {
   from {

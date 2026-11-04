@@ -88,10 +88,10 @@ export function LimitedSpotlight({ products, href }: { products: ProductCardMode
             <SplitHeading
               text="Own the rare ones"
               accentWords={[3, 4]}
-              className="jt-display mt-2 text-5xl leading-[0.92] sm:text-6xl md:text-7xl"
+              className="jt-display mt-2 text-[clamp(2.4rem,9vw,4.5rem)] leading-[0.92] sm:text-6xl md:text-7xl"
             />
           </div>
-          <Reveal y={12} delay={0.2}>
+          <Reveal y={12} delay={0.2} className="shrink-0 self-start md:self-end">
             <MagneticButton href={href} variant="outline">
               All limited drops <ArrowRight className="h-4 w-4" />
             </MagneticButton>
@@ -129,17 +129,17 @@ export function LimitedSpotlight({ products, href }: { products: ProductCardMode
                   {String(i + 1).padStart(2, "0")}
                 </span>
               </div>
-              <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5">
-                <div className="min-w-0">
+              <div className="absolute inset-x-0 bottom-0 flex flex-col gap-3 p-4 sm:flex-row sm:items-end sm:justify-between sm:gap-3 sm:p-5">
+                <div className="min-w-0 flex-1">
                   <p className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-jt-orange">
                     <span className="h-1 w-1 rounded-full bg-jt-orange" />
                     Limited
                   </p>
-                  <h3 className="mt-1 line-clamp-2 break-words jt-display text-xl leading-[0.95] text-white sm:text-2xl">
+                  <h3 className="mt-1 line-clamp-2 break-words jt-display text-lg leading-[0.95] text-white sm:text-xl md:text-2xl">
                     {p.name}
                   </h3>
                 </div>
-                <span className="jt-gradient-bg jt-slant-sm shrink-0 px-3.5 py-1.5 text-sm font-bold text-jt-black">
+                <span className="jt-gradient-bg jt-slant-sm w-fit shrink-0 px-3.5 py-1.5 text-sm font-bold text-jt-black">
                   {formatAED(p.price)}
                 </span>
               </div>

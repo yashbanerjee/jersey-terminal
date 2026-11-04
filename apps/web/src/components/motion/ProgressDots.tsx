@@ -1,7 +1,5 @@
 "use client";
 
-import { useReducedMotion } from "framer-motion";
-
 type Props = {
   count: number;
   index: number;
@@ -17,6 +15,8 @@ type Props = {
 /**
  * Small circular slide dots — active one fills from bottom → top over the
  * autoplay window (United Tigers–style timer, round form).
+ * Animation respects prefers-reduced-motion via globals.css (no JS branch,
+ * so SSR and client markup stay identical).
  */
 export function ProgressDots({
   count,
@@ -29,7 +29,6 @@ export function ProgressDots({
   tone = "lime",
   size = "hero",
 }: Props) {
-  const reduced = useReducedMotion();
   if (count < 2) return null;
 
   const fillClass =
@@ -82,14 +81,10 @@ export function ProgressDots({
                   key={`fill-${index}`}
                   aria-hidden
                   className={`jt-dot-fill-up absolute inset-x-0 bottom-0 h-full w-full rounded-full ${fillClass}`}
-                  style={
-                    reduced
-                      ? { transform: "scaleY(1)" }
-                      : {
-                          animationDuration: `${durationMs}ms`,
-                          animationPlayState: paused ? "paused" : "running",
-                        }
-                  }
+                  style={{
+                    animationDuration: `${durationMs}ms`,
+                    animationPlayState: paused ? "paused" : "running",
+                  }}
                 />
               )}
             </span>

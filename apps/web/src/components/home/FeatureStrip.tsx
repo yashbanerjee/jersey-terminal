@@ -47,7 +47,7 @@ export function FeatureStrip() {
     <section className="w-full py-6 sm:py-8">
       <div className="jt-container">
         <div className="jt-divider mb-6 sm:mb-8" />
-        <StaggerGroup effect="3d" className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
+        <StaggerGroup effect="3d" className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-6">
           {FEATURES.map(({ icon: Icon, title, text, accent }) => {
             const a = ACCENTS[accent];
             return (
@@ -61,8 +61,8 @@ export function FeatureStrip() {
                     <Icon className="h-5 w-5" />
                   </span>
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-white">{title}</p>
-                    <p className="mt-1 text-xs leading-relaxed text-jt-muted">{text}</p>
+                    <p className="text-sm font-semibold leading-snug text-white">{title}</p>
+                    <p className="mt-1 text-pretty text-xs leading-relaxed text-jt-muted">{text}</p>
                   </div>
                 </div>
               </StaggerItem>

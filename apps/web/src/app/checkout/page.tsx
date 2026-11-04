@@ -126,7 +126,7 @@ export default function CheckoutPage() {
 
             <label className="block">
               <span className="mb-1.5 block text-xs uppercase tracking-[0.16em] text-jt-muted">Phone</span>
-              <span className="flex">
+              <span className="flex min-w-0">
                 <span className="inline-flex shrink-0 items-center border border-r-0 border-white/15 bg-jt-surface px-3 text-sm text-jt-muted">
                   {dial}
                 </span>
@@ -137,7 +137,7 @@ export default function CheckoutPage() {
                   inputMode="tel"
                   autoComplete="tel-national"
                   placeholder="Mobile number"
-                  className={`${fieldClass} rounded-l-none`}
+                  className={`${fieldClass} min-w-0 flex-1 rounded-l-none`}
                 />
               </span>
             </label>

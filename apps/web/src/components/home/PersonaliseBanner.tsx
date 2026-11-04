@@ -102,7 +102,7 @@ export function PersonaliseBanner() {
                         </span>
                         <span
                           ref={numRef}
-                          className="block jt-display text-[9rem] leading-none text-white drop-shadow-[0_0_30px_rgba(255,122,26,0.4)] sm:text-[10rem]"
+                          className="block jt-display text-[clamp(5.5rem,28vw,10rem)] leading-none text-white drop-shadow-[0_0_30px_rgba(255,122,26,0.4)]"
                         >
                           {EXAMPLES[0][1]}
                         </span>

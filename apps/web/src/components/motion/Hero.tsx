@@ -64,6 +64,15 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
     return () => window.clearInterval(id);
   }, [paused, products.length, reduced]);
 
+  // Unstick pause after returning from a background tab
+  useEffect(() => {
+    const onVis = () => {
+      if (document.visibilityState === "visible") setPaused(false);
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, []);
+
   useEffect(() => {
     const motionOff = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let kill: (() => void) | undefined;
@@ -132,7 +141,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
   return (
     <section ref={root} className="relative w-full overflow-hidden pt-[var(--jt-header-h)]">
       <div className="relative z-10 jt-container">
-        <div className="grid min-h-[calc(100svh-var(--jt-header-h))] items-center gap-6 py-6 sm:gap-8 sm:py-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:py-12 xl:gap-16">
+        <div className="grid min-h-[calc(100svh-var(--jt-header-h))] items-center gap-6 pb-16 pt-6 sm:gap-8 sm:pb-20 sm:pt-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:pb-24 lg:pt-12 xl:gap-16">
           {/* Copy */}
           <div className="hero-copy order-2 flex flex-col justify-center lg:order-1">
             <p className="hero-fade inline-flex w-fit items-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-jt-neon">
@@ -205,8 +214,10 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
               <div
                 className="relative mx-auto w-full max-w-[280px] sm:max-w-[400px] lg:ml-auto lg:mr-0 lg:max-w-[480px]"
                 style={{ perspective: "1100px" }}
-                onMouseEnter={() => setPaused(true)}
-                onMouseLeave={() => setPaused(false)}
+                onPointerEnter={(e) => {
+                  if (e.pointerType === "mouse") setPaused(true);
+                }}
+                onPointerLeave={() => setPaused(false)}
               >
                 {/* Orange glow + smoke behind the frame */}
                 <div className="pointer-events-none absolute left-1/2 top-[55%] h-[110%] w-[115%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,122,26,0.42),rgba(255,122,26,0.1)_45%,transparent_70%)] blur-3xl" />
@@ -255,16 +266,16 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                               <span aria-hidden className="jt-card-shine pointer-events-none absolute inset-0" />
                             </div>
 
-                            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 sm:p-6">
-                              <div className="min-w-0">
+                            <div className="absolute inset-x-0 bottom-0 flex flex-col gap-3 p-4 sm:flex-row sm:items-end sm:justify-between sm:gap-4 sm:p-6">
+                              <div className="min-w-0 flex-1">
                                 <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-jt-orange">
                                   Featured jersey
                                 </p>
-                                <h2 className="mt-1.5 jt-display text-2xl leading-[0.95] text-white sm:text-3xl">
+                                <h2 className="mt-1.5 line-clamp-2 break-words jt-display text-xl leading-[0.95] text-white sm:text-2xl md:text-3xl">
                                   {featured.name}
                                 </h2>
                               </div>
-                              <div className="shrink-0 jt-slant bg-jt-black/90 px-4 py-2 text-right ring-1 ring-white/10">
+                              <div className="w-fit shrink-0 jt-slant bg-jt-black/90 px-4 py-2 text-left ring-1 ring-white/10 sm:text-right">
                                 <p className="text-[9px] uppercase tracking-[0.2em] text-jt-muted">From</p>
                                 <p className="jt-display text-lg text-white sm:text-xl">{formatAED(featured.price)}</p>
                               </div>
@@ -284,21 +295,23 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
         </div>
       </div>
 
-      {/* United Tigers–style animated progress bars — centered under the hero */}
+      {/* Progress dots sit in reserved bottom space (not over copy/stats) */}
       {products.length > 1 && (
-        <div className="hero-fade absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2 sm:bottom-8">
-          <ProgressDots
-            size="hero"
-            count={products.length}
-            index={index}
-            durationMs={HERO_SLIDE_MS}
-            paused={paused || !!reduced}
-            labels={products.map((p) => p.name)}
-            onSelect={(i) => {
-              setDir(i > index ? 1 : -1);
-              setIndex(i);
-            }}
-          />
+        <div className="hero-fade pointer-events-none absolute inset-x-0 bottom-4 z-20 flex flex-col items-center gap-2 sm:bottom-6">
+          <div className="pointer-events-auto">
+            <ProgressDots
+              size="hero"
+              count={products.length}
+              index={index}
+              durationMs={HERO_SLIDE_MS}
+              paused={paused || !!reduced}
+              labels={products.map((p) => p.name)}
+              onSelect={(i) => {
+                setDir(i > index ? 1 : -1);
+                setIndex(i);
+              }}
+            />
+          </div>
           <div className="pointer-events-none hidden items-center gap-1 text-[10px] uppercase tracking-[0.3em] text-jt-muted md:flex">
             Scroll
             <ChevronDown className="hero-scroll-dot h-3.5 w-3.5 text-jt-orange" />

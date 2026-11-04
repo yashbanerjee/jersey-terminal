@@ -4,7 +4,7 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowUpRight, Heart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useSyncExternalStore, type MouseEvent } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type MouseEvent } from "react";
 import type { ProductCardModel } from "@/lib/woo/types";
 import { formatAED } from "@/lib/format";
 import { useWishlistStore } from "@/store/wishlist";
@@ -24,7 +24,16 @@ const BADGE_STYLE: Record<ProductCardModel["badges"][number], string> = {
   sale: "bg-jt-coral text-white",
 };
 
-export function ProductCard({ product, priority = false }: { product: ProductCardModel; priority?: boolean }) {
+export function ProductCard({
+  product,
+  priority = false,
+  /** Image + badges only — used inside the coverflow slider to avoid text overlap */
+  mediaOnly = false,
+}: {
+  product: ProductCardModel;
+  priority?: boolean;
+  mediaOnly?: boolean;
+}) {
   const toggle = useWishlistStore((s) => s.toggle);
   const wishedStored = useWishlistStore((s) => s.ids.includes(product.id));
   // The wishlist is persisted in localStorage; only read it once hydrated so the
@@ -36,7 +45,10 @@ export function ProductCard({ product, priority = false }: { product: ProductCar
   );
   const wished = hydrated && wishedStored;
 
-  // Subtle 3D tilt that follows the cursor.
+  // Enable pointer tilt only after mount so SSR HTML matches the first client paint.
+  const [tiltReady, setTiltReady] = useState(false);
+  useEffect(() => setTiltReady(true), []);
+
   const ref = useRef<HTMLElement>(null);
   const px = useMotionValue(0.5);
   const py = useMotionValue(0.5);
@@ -44,6 +56,7 @@ export function ProductCard({ product, priority = false }: { product: ProductCar
   const rotateY = useSpring(useTransform(px, [0, 1], [-6, 6]), { stiffness: 200, damping: 20 });
 
   function onMove(e: MouseEvent<HTMLElement>) {
+    if (!tiltReady || mediaOnly) return;
     const r = ref.current?.getBoundingClientRect();
     if (!r) return;
     px.set((e.clientX - r.left) / r.width);
@@ -59,8 +72,12 @@ export function ProductCard({ product, priority = false }: { product: ProductCar
       ref={ref}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
-      style={{ rotateX, rotateY, transformPerspective: 1000 }}
-      whileHover={{ y: -6 }}
+      style={
+        tiltReady && !mediaOnly
+          ? { rotateX, rotateY, transformPerspective: 1000 }
+          : undefined
+      }
+      whileHover={tiltReady && !mediaOnly ? { y: -6 } : undefined}
       transition={{ type: "spring", stiffness: 300, damping: 24 }}
       className="jt-card group relative w-full min-w-0 will-change-transform"
     >
@@ -110,27 +127,29 @@ export function ProductCard({ product, priority = false }: { product: ProductCar
           </div>
         </div>
 
-        <div className="mt-3 space-y-1">
-          {product.category && (
-            <p className="truncate text-[10px] uppercase tracking-[0.2em] text-jt-muted sm:text-[11px]">
-              {product.category}
-            </p>
-          )}
-          <h3 className="line-clamp-2 text-sm font-medium text-white transition-colors duration-300 group-hover:text-jt-amber md:text-base">
-            {product.name}
-          </h3>
-          <div className="flex flex-wrap items-center gap-2 text-sm">
-            <span className="font-semibold text-white">{formatAED(product.price)}</span>
-            {product.onSale && product.regularPrice && (
-              <>
-                <span className="text-jt-muted line-through">{formatAED(product.regularPrice)}</span>
-                <span className="rounded-sm bg-jt-coral/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-jt-coral">
-                  -{Math.round((1 - Number(product.price) / Number(product.regularPrice)) * 100)}%
-                </span>
-              </>
+        {!mediaOnly && (
+          <div className="mt-3 space-y-1">
+            {product.category && (
+              <p className="truncate text-[10px] uppercase tracking-[0.2em] text-jt-muted sm:text-[11px]">
+                {product.category}
+              </p>
             )}
+            <h3 className="line-clamp-2 text-sm font-medium text-white transition-colors duration-300 group-hover:text-jt-amber md:text-base">
+              {product.name}
+            </h3>
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <span className="font-semibold text-white">{formatAED(product.price)}</span>
+              {product.onSale && product.regularPrice && (
+                <>
+                  <span className="text-jt-muted line-through">{formatAED(product.regularPrice)}</span>
+                  <span className="rounded-sm bg-jt-coral/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-jt-coral">
+                    -{Math.round((1 - Number(product.price) / Number(product.regularPrice)) * 100)}%
+                  </span>
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </Link>
 
       <motion.button
