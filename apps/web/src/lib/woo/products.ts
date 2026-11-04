@@ -277,6 +277,8 @@ export async function getHomepageCollections() {
       try {
         const all = await listProductsUncached({ orderby: "date", perPage: 24 });
         const featuredNames = new Set([
+          "united-tiger-match-jersey",
+          "united-tiger-training-jersey",
           "champions-edition",
           "shadow-strike-jersey",
           "velocity-jersey",

@@ -39,7 +39,8 @@ if command -v wp >/dev/null 2>&1 && [ -f "${WP_PATH}/wp-config.php" ]; then
   ensure_plugin_from_image "woocommerce" 1
   ensure_plugin_from_image "jt-sports-commerce-extensions"
   mkdir -p "${WP_PATH}/jt-import"
-  if [ -d /usr/src/wordpress/jt-import ] && [ ! -f "${WP_PATH}/jt-import/import-catalog.php" ]; then
+  # Always refresh import scripts/assets from the image (volume may hold stale copies).
+  if [ -d /usr/src/wordpress/jt-import ]; then
     cp -a /usr/src/wordpress/jt-import/. "${WP_PATH}/jt-import/"
   fi
 
@@ -64,6 +65,13 @@ if command -v wp >/dev/null 2>&1 && [ -f "${WP_PATH}/wp-config.php" ]; then
     echo "[jt-sports] Seeding catalog (${PRODUCT_COUNT} products)..."
     wp eval-file "${WP_PATH}/jt-import/import-catalog.php" --path="$WP_PATH" --allow-root \
       || echo "[jt-sports] Catalog import failed (non-fatal)"
+  fi
+
+  # Idempotent upsert for United Tigers jerseys (match + training).
+  if [ -f "${WP_PATH}/jt-import/import-united-tigers.php" ]; then
+    echo "[jt-sports] Upserting United Tigers jerseys..."
+    wp eval-file "${WP_PATH}/jt-import/import-united-tigers.php" --path="$WP_PATH" --allow-root \
+      || echo "[jt-sports] United Tigers import failed (non-fatal)"
   fi
 fi
 

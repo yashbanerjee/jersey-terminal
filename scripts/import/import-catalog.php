@@ -141,8 +141,20 @@ foreach (['pa_size', 'pa_color'] as $tax) {
     }
 }
 
-$featured_slugs = ['shadow-strike-jersey', 'velocity-jersey', 'champions-edition'];
-$new_slugs = ['red-horizon', 'titan-white', 'elite-gold'];
+$featured_slugs = [
+    'united-tiger-match-jersey',
+    'united-tiger-training-jersey',
+    'shadow-strike-jersey',
+    'velocity-jersey',
+    'champions-edition',
+];
+$new_slugs = [
+    'united-tiger-match-jersey',
+    'united-tiger-training-jersey',
+    'red-horizon',
+    'titan-white',
+    'elite-gold',
+];
 
 $imported = 0;
 

@@ -1,0 +1,39 @@
+[
+  {
+    "sku": "UT-MATCH-2026",
+    "name": "United Tiger Match Jersey",
+    "slug": "united-tiger-match-jersey",
+    "price": 100,
+    "featured": true,
+    "categories": ["jerseys", "united-tigers"],
+    "short_description": "<p>The official United Tigers match jersey for the 2026 Abu Dhabi T10. An all-over TIGERS print in purple and pink, with the United Tigers crest on the left chest, gold side stripes and pink cuff trim.</p>",
+    "description": "<p>The official United Tigers match jersey for the 2026 Abu Dhabi T10. An all-over TIGERS print in purple and pink, with the United Tigers crest on the left chest, gold side stripes and pink cuff trim.</p>\n<ul>\n<li>Official match kit for Abu Dhabi T10 2026</li>\n<li>All-over TIGERS print in purple and pink</li>\n<li>United Tigers crest on the left chest</li>\n<li>Gold side stripes and pink cuff trim</li>\n<li>Sizes S–XXL</li>\n</ul>",
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "images": [
+      "https://www.unitedtigers.ae/media/uploads/2026/10/d95068e2-d2c3-4370-9758-4e42d5235c05.webp",
+      "https://www.unitedtigers.ae/media/uploads/2026/10/c02b2e91-9af7-482f-9a7f-f12b384cf7e4.webp",
+      "https://www.unitedtigers.ae/media/uploads/2026/10/f1588788-4b7e-4be7-a46d-196ad69f8b2d.webp",
+      "https://www.unitedtigers.ae/media/uploads/2026/10/f25ca7d6-997f-438c-aa8f-dc7b714a56d6.webp",
+      "https://www.unitedtigers.ae/media/uploads/2026/10/70848fc6-e3c7-4cef-b005-08af602baeb7.webp",
+      "https://www.unitedtigers.ae/media/uploads/2026/10/a91e610f-7769-442c-ae3a-3e1e0df62551.webp"
+    ]
+  },
+  {
+    "sku": "UT-TRAIN-2026",
+    "name": "United Tiger Training Jersey",
+    "slug": "united-tiger-training-jersey",
+    "price": 90,
+    "featured": true,
+    "categories": ["jerseys", "training-wear", "united-tigers"],
+    "short_description": "<p>The official United Tigers training jersey for 2026. Deep purple tiger-stripe fabric with gold collar and cuff trim, the United Tigers crest on the left chest and the gold tiger across the front.</p>",
+    "description": "<p>The official United Tigers training jersey for 2026. Deep purple tiger-stripe fabric with gold collar and cuff trim, the United Tigers crest on the left chest and the gold tiger across the front.</p>\n<ul>\n<li>Official training kit for 2026</li>\n<li>Deep purple tiger-stripe fabric</li>\n<li>Gold collar and cuff trim</li>\n<li>United Tigers crest + gold tiger front graphic</li>\n<li>Sizes S–XXL</li>\n</ul>",
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "images": [
+      "https://www.unitedtigers.ae/media/uploads/2026/10/23d60b52-fc42-405b-aec2-d6a8fad6df95.webp",
+      "https://www.unitedtigers.ae/media/uploads/2026/10/463551ae-aa37-4b76-9fe5-3cac25fbf33b.webp",
+      "https://www.unitedtigers.ae/media/uploads/2026/10/d4f3241f-1e6d-44bf-ba7c-7ff52b2191bb.webp",
+      "https://www.unitedtigers.ae/media/uploads/2026/10/cf5e47ad-c01b-4f49-969f-8a92f073c62d.webp",
+      "https://www.unitedtigers.ae/media/uploads/2026/10/d77df1da-904e-481a-a0f0-29566ec2b9d4.webp"
+    ]
+  }
+]
