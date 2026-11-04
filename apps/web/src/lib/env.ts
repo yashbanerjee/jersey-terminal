@@ -8,12 +8,27 @@ function required(name: string, value: string | undefined): string {
   return value;
 }
 
+/** Public CMS URL (browser / image hosts). */
+const wordpressPublicUrl =
+  process.env.WORDPRESS_URL ?? "http://localhost:8080";
+
+/**
+ * Server-side CMS base. Prefer Railway private networking when set —
+ * avoids slow public edge hops between web ↔ wordpress.
+ */
+const wordpressServerUrl =
+  process.env.WORDPRESS_INTERNAL_URL?.replace(/\/$/, "") ||
+  wordpressPublicUrl.replace(/\/$/, "");
+
 export const env = {
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  wordpressUrl: process.env.WORDPRESS_URL ?? "http://localhost:8080",
+  /** Absolute public WordPress origin (for absolute asset URLs if needed). */
+  wordpressPublicUrl: wordpressPublicUrl.replace(/\/$/, ""),
+  /** Origin used by server fetch (may be *.railway.internal). */
+  wordpressUrl: wordpressServerUrl,
   wordpressApiUrl:
-    process.env.WORDPRESS_API_URL ??
-    `${process.env.WORDPRESS_URL ?? "http://localhost:8080"}/wp-json`,
+    process.env.WORDPRESS_API_URL?.replace(/\/$/, "") ||
+    `${wordpressServerUrl}/wp-json`,
   wooKey: process.env.WOOCOMMERCE_CONSUMER_KEY ?? "",
   wooSecret: process.env.WOOCOMMERCE_CONSUMER_SECRET ?? "",
   wooWebhookSecret: process.env.WOOCOMMERCE_WEBHOOK_SECRET ?? "",
@@ -29,5 +44,5 @@ export const env = {
 };
 
 export function assertServerSecrets() {
-  required("WORDPRESS_URL", env.wordpressUrl);
+  required("WORDPRESS_URL", env.wordpressPublicUrl);
 }

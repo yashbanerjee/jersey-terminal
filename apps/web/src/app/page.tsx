@@ -9,8 +9,8 @@ import { Reviews } from "@/components/home/Reviews";
 import { TickerStrip } from "@/components/home/TickerStrip";
 import { getHomepageCollections } from "@/lib/woo/products";
 
-/** Always render at request time so Docker builds don't need live Woo/WordPress. */
-export const dynamic = "force-dynamic";
+/** ISR — catalogue is cached; webhooks/revalidate bust tags. */
+export const revalidate = 120;
 
 const FEATURED_PRIORITY = ["shadow-strike-jersey", "champions-edition", "velocity-jersey", "red-horizon"];
 

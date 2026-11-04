@@ -5,7 +5,7 @@ import { ProductGrid } from "@/components/product/ProductGrid";
 import { ShopChips } from "@/components/shop/ShopChips";
 import { getCategories, listProducts } from "@/lib/woo/products";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 120;
 
 export default async function ShopPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q } = await searchParams;

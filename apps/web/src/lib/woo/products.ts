@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import { env } from "@/lib/env";
 import { wooRest, wooStore, jtSports } from "./client";
 import { displayCategory, storeToCard, storeToVariation, storeToWooProduct } from "./store-map";
@@ -63,12 +64,12 @@ async function listViaStore(params: {
   if (params.onSale) q.set("on_sale", "true");
 
   const { data } = await wooStore<unknown[]>(`/products?${q}`, {
-    next: { revalidate: 30, tags: ["products"] },
+    next: { revalidate: 120, tags: ["products"] },
   } as RequestInit & { session?: undefined });
   return (data as Parameters<typeof storeToCard>[0][]).map(storeToCard);
 }
 
-export async function listProducts(params: {
+async function listProductsUncached(params: {
   category?: string;
   tag?: string;
   featured?: boolean;
@@ -95,7 +96,7 @@ export async function listProducts(params: {
     if (params.orderby) q.set("orderby", params.orderby);
 
     const products = await wooRest<WooProduct[]>(`/products?${q}`, {
-      next: { revalidate: 60, tags: ["products"] },
+      next: { revalidate: 120, tags: ["products"] },
     });
     return products.map(toCard);
   } catch {
@@ -107,69 +108,121 @@ export async function listProducts(params: {
   }
 }
 
-export async function getProductBySlug(slug: string): Promise<WooProduct | null> {
-  try {
-    if (!hasRestAuth()) {
-      const { data } = await wooStore<unknown[]>(
-        `/products?slug=${encodeURIComponent(slug)}`,
-      );
-      const first = (data as Parameters<typeof storeToWooProduct>[0][])[0];
-      return first ? storeToWooProduct(first) : null;
-    }
-    const products = await wooRest<WooProduct[]>(
-      `/products?slug=${encodeURIComponent(slug)}`,
-      { next: { revalidate: 60, tags: ["products", `product-slug-${slug}`] } },
-    );
-    return products[0] ?? null;
-  } catch {
-    try {
-      const { data } = await wooStore<unknown[]>(
-        `/products?slug=${encodeURIComponent(slug)}`,
-      );
-      const first = (data as Parameters<typeof storeToWooProduct>[0][])[0];
-      return first ? storeToWooProduct(first) : null;
-    } catch {
-      return null;
-    }
+/** Cached catalogue listing — skips live Woo on repeat page views. */
+export async function listProducts(params: {
+  category?: string;
+  tag?: string;
+  featured?: boolean;
+  onSale?: boolean;
+  search?: string;
+  page?: number;
+  perPage?: number;
+  orderby?: string;
+}): Promise<ProductCardModel[]> {
+  // Searches stay live; everything else is cached briefly.
+  if (params.search?.trim()) {
+    return listProductsUncached(params);
   }
+
+  const key = [
+    "products",
+    params.category ?? "",
+    params.tag ?? "",
+    params.featured ? "1" : "0",
+    params.onSale ? "1" : "0",
+    String(params.page ?? 1),
+    String(params.perPage ?? 12),
+    params.orderby ?? "date",
+  ];
+
+  return unstable_cache(
+    () => listProductsUncached(params),
+    key,
+    { revalidate: 120, tags: ["products"] },
+  )();
+}
+
+export async function getProductBySlug(slug: string): Promise<WooProduct | null> {
+  return unstable_cache(
+    async () => {
+      try {
+        if (!hasRestAuth()) {
+          const { data } = await wooStore<unknown[]>(
+            `/products?slug=${encodeURIComponent(slug)}`,
+            { next: { revalidate: 120, tags: ["products", `product-slug-${slug}`] } },
+          );
+          const first = (data as Parameters<typeof storeToWooProduct>[0][])[0];
+          return first ? storeToWooProduct(first) : null;
+        }
+        const products = await wooRest<WooProduct[]>(
+          `/products?slug=${encodeURIComponent(slug)}`,
+          { next: { revalidate: 120, tags: ["products", `product-slug-${slug}`] } },
+        );
+        return products[0] ?? null;
+      } catch {
+        try {
+          const { data } = await wooStore<unknown[]>(
+            `/products?slug=${encodeURIComponent(slug)}`,
+            { next: { revalidate: 120, tags: ["products", `product-slug-${slug}`] } },
+          );
+          const first = (data as Parameters<typeof storeToWooProduct>[0][])[0];
+          return first ? storeToWooProduct(first) : null;
+        } catch {
+          return null;
+        }
+      }
+    },
+    ["product-slug", slug],
+    { revalidate: 120, tags: ["products", `product-slug-${slug}`] },
+  )();
 }
 
 export async function getProductVariations(
   productId: number,
 ): Promise<WooVariation[]> {
-  try {
-    if (!hasRestAuth()) {
-      const { data } = await wooStore<unknown[]>(
-        `/products?type=variation&parent=${productId}&per_page=100`,
-      );
-      return (data as Parameters<typeof storeToVariation>[0][]).map(
-        storeToVariation,
-      );
-    }
-    return await wooRest<WooVariation[]>(
-      `/products/${productId}/variations?per_page=100`,
-      { next: { revalidate: 60, tags: ["products", `product-${productId}`] } },
-    );
-  } catch {
-    try {
-      const { data } = await wooStore<unknown[]>(
-        `/products?type=variation&parent=${productId}&per_page=100`,
-      );
-      return (data as Parameters<typeof storeToVariation>[0][]).map(
-        storeToVariation,
-      );
-    } catch {
-      return [];
-    }
-  }
+  return unstable_cache(
+    async () => {
+      try {
+        if (!hasRestAuth()) {
+          const { data } = await wooStore<unknown[]>(
+            `/products?type=variation&parent=${productId}&per_page=100`,
+            { next: { revalidate: 120, tags: ["products", `product-${productId}`] } },
+          );
+          return (data as Parameters<typeof storeToVariation>[0][]).map(
+            storeToVariation,
+          );
+        }
+        return await wooRest<WooVariation[]>(
+          `/products/${productId}/variations?per_page=100`,
+          { next: { revalidate: 120, tags: ["products", `product-${productId}`] } },
+        );
+      } catch {
+        try {
+          const { data } = await wooStore<unknown[]>(
+            `/products?type=variation&parent=${productId}&per_page=100`,
+            { next: { revalidate: 120, tags: ["products", `product-${productId}`] } },
+          );
+          return (data as Parameters<typeof storeToVariation>[0][]).map(
+            storeToVariation,
+          );
+        } catch {
+          return [];
+        }
+      }
+    },
+    ["product-variations", String(productId)],
+    { revalidate: 120, tags: ["products", `product-${productId}`] },
+  )();
 }
 
-export async function getCategories() {
+async function getCategoriesUncached() {
   try {
     if (!hasRestAuth()) {
       const { data } = await wooStore<
         Array<{ id: number; name: string; slug: string; count: number }>
-      >("/products/categories?per_page=100");
+      >("/products/categories?per_page=100", {
+        next: { revalidate: 300, tags: ["categories"] },
+      });
       return data.filter((c) => c.slug !== "uncategorized");
     }
     return await wooRest<
@@ -181,12 +234,21 @@ export async function getCategories() {
     try {
       const { data } = await wooStore<
         Array<{ id: number; name: string; slug: string; count: number }>
-      >("/products/categories?per_page=100");
+      >("/products/categories?per_page=100", {
+        next: { revalidate: 300, tags: ["categories"] },
+      });
       return data.filter((c) => c.slug !== "uncategorized");
     } catch {
       return [];
     }
   }
+}
+
+export async function getCategories() {
+  return unstable_cache(getCategoriesUncached, ["categories"], {
+    revalidate: 300,
+    tags: ["categories"],
+  })();
 }
 
 export async function getProductExtensions(productId: number) {
@@ -205,45 +267,38 @@ export async function getProductExtensions(productId: number) {
   }
 }
 
+/**
+ * Homepage data in one product round-trip.
+ * Previously fired 3 product list requests every page load.
+ */
 export async function getHomepageCollections() {
-  try {
-    const cats = await getCategories();
-    const newId = cats.find((c) => c.slug === "new-arrivals")?.id;
-    const limitedId = cats.find(
-      (c) => c.slug === "limited-editions" || c.slug === "limited",
-    )?.id;
-    const featuredId = cats.find((c) => c.slug === "featured")?.id;
+  return unstable_cache(
+    async () => {
+      try {
+        const all = await listProductsUncached({ orderby: "date", perPage: 24 });
+        const featuredNames = new Set([
+          "champions-edition",
+          "shadow-strike-jersey",
+          "velocity-jersey",
+        ]);
 
-    const [newest, limitedRaw, all] = await Promise.all([
-      listProducts({
-        category: newId ? String(newId) : undefined,
-        orderby: "date",
-        perPage: 12,
-      }),
-      listProducts({
-        category: limitedId
-          ? String(limitedId)
-          : featuredId
-            ? String(featuredId)
-            : undefined,
-        featured: !limitedId,
-        perPage: 12,
-      }),
-      listProducts({ orderby: "date", perPage: 24 }),
-    ]);
+        const newestRaw = all.filter((p) => p.badges.includes("new"));
+        const limitedRaw = all.filter(
+          (p) => p.badges.includes("limited") || p.badges.includes("bestseller"),
+        );
 
-    // If limited category is empty, fall back to featured / top of catalog
-    const limited =
-      limitedRaw.length > 0
-        ? limitedRaw
-        : all.filter((p) =>
-            ["champions-edition", "shadow-strike-jersey", "velocity-jersey"].includes(
-              p.slug,
-            ),
-          );
+        const newest = newestRaw.length > 0 ? newestRaw.slice(0, 12) : all.slice(0, 12);
+        const limited =
+          limitedRaw.length > 0
+            ? limitedRaw.slice(0, 12)
+            : all.filter((p) => featuredNames.has(p.slug));
 
-    return { newest, limited, all };
-  } catch {
-    return { newest: [], limited: [], all: [] };
-  }
+        return { newest, limited, all };
+      } catch {
+        return { newest: [], limited: [], all: [] };
+      }
+    },
+    ["homepage-collections"],
+    { revalidate: 120, tags: ["products", "categories"] },
+  )();
 }

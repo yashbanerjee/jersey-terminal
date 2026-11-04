@@ -126,6 +126,7 @@ export function storeToCard(p: StoreProduct): ProductCardModel {
   const cats = new Set((p.categories ?? []).map((c) => c.slug));
   if (cats.has("new-arrivals")) badges.push("new");
   if (cats.has("featured")) badges.push("bestseller");
+  if (cats.has("limited-editions") || cats.has("limited")) badges.push("limited");
   return {
     id: woo.id,
     slug: woo.slug,
