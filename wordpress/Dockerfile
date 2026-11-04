@@ -25,9 +25,11 @@ RUN curl -fsSL -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/bui
   && chmod +x /usr/local/bin/wp
 
 # Bundle WooCommerce into the image so Store API exists after first boot
+# (wordpress image has no unzip binary — use PHP ZipArchive instead)
 RUN curl -fsSL -o /tmp/woocommerce.zip https://downloads.wordpress.org/plugin/woocommerce.latest-stable.zip \
-  && unzip -q /tmp/woocommerce.zip -d /usr/src/wordpress/wp-content/plugins \
-  && rm /tmp/woocommerce.zip
+  && php -r '$z=new ZipArchive; if($z->open("/tmp/woocommerce.zip")!==true){fwrite(STDERR,"zip open failed\n"); exit(1);} $z->extractTo("/usr/src/wordpress/wp-content/plugins"); $z->close();' \
+  && rm /tmp/woocommerce.zip \
+  && test -d /usr/src/wordpress/wp-content/plugins/woocommerce
 
 # Custom JT plugin + catalog import assets (build context = repo root)
 COPY wordpress/wp-content/plugins/jt-sports-commerce-extensions \
