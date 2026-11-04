@@ -62,16 +62,16 @@ export function SiteHeader() {
       <div className="jt-container flex h-16 items-center justify-between md:h-20">
         <Link
           href="/"
-          className="group flex min-w-0 items-center gap-2 sm:gap-3"
+          className="group flex min-w-0 items-center gap-2.5 sm:gap-3"
           aria-label="Jersey Terminal home"
           onClick={() => setMobileOpen(false)}
         >
           <BrandLogo
             variant="mark"
             priority
-            className="h-11 w-11 shrink-0 transition-transform duration-500 group-hover:rotate-[-4deg] group-hover:scale-[1.04] sm:h-12 sm:w-12"
+            className="transition-transform duration-500 group-hover:rotate-[-3deg] group-hover:scale-[1.05]"
           />
-          <span className="hidden truncate jt-display text-xl leading-none text-white transition-all duration-500 group-hover:jt-gradient-text md:inline md:text-2xl">
+          <span className="truncate jt-display text-lg leading-none tracking-wide text-white transition-all duration-300 group-hover:jt-gradient-text sm:text-xl md:text-2xl">
             JERSEY TERMINAL
           </span>
         </Link>

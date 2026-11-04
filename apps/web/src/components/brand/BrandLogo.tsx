@@ -8,9 +8,9 @@ type Props = {
 };
 
 /**
- * Official Jersey Terminal logo (same /brand/jt-logo.png asset).
- * - mark: emblem framed for header / compact use (no stretch, no edge clip)
- * - lockup: full mark + wordmark
+ * Jersey Terminal logo.
+ * - mark: circular JT emblem (`jt-mark.png`)
+ * - lockup: full lockup PNG (mark + wordmark)
  */
 export function BrandLogo({
   variant = "mark",
@@ -23,7 +23,7 @@ export function BrandLogo({
         src="/brand/jt-logo.png"
         alt="Jersey Terminal"
         width={320}
-        height={360}
+        height={240}
         priority={priority}
         className={cn("h-auto w-auto max-h-full object-contain", className)}
       />
@@ -33,27 +33,22 @@ export function BrandLogo({
   return (
     <span
       className={cn(
-        "relative inline-flex shrink-0 overflow-hidden rounded-2xl bg-jt-black",
-        "ring-1 ring-jt-neon/40 shadow-[0_0_28px_-8px_rgba(180,255,26,0.65)]",
+        "relative inline-flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-jt-black sm:h-12 sm:w-12",
+        "ring-1 ring-jt-neon/35 shadow-[0_0_26px_-6px_rgba(180,255,26,0.7)]",
         className,
       )}
     >
       {/*
-        The PNG is a full lockup (mark + wordmark). Frame the emblem with
-        object-cover + a top-biased position — never scale past 1, which was
-        clipping the circle top/bottom and making it look stretched.
+        Emblem touches the PNG edges — pad + mild zoom so the circle reads
+        sharp in the header without top/bottom clipping or stretch.
       */}
       <Image
-        src="/brand/jt-logo.png"
+        src="/brand/jt-mark.png"
         alt="Jersey Terminal"
         fill
         sizes="56px"
         priority={priority}
-        className="object-cover object-[center_16%]"
-      />
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 rounded-[inherit] bg-gradient-to-br from-jt-neon/10 via-transparent to-jt-orange/10"
+        className="object-contain object-center p-[7%] scale-[1.08]"
       />
     </span>
   );
