@@ -34,7 +34,6 @@ export function BrandLogo({
     <span
       className={cn(
         "relative inline-flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-jt-black sm:h-12 sm:w-12",
-        "ring-1 ring-jt-neon/35 shadow-[0_0_26px_-6px_rgba(180,255,26,0.7)]",
         className,
       )}
     >
