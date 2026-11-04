@@ -1,3 +1,5 @@
+"use client";
+
 import type { ProductCardModel } from "@/lib/woo/types";
 import { ProductCard } from "@/components/product/ProductCard";
 import { StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
@@ -14,9 +16,15 @@ export function ProductGrid({
 }) {
   if (!products.length) return <p className={cn("text-sm text-jt-muted", className)}>{emptyText}</p>;
   return (
-    <StaggerGroup effect="3d" className={cn("jt-product-grid [perspective:1200px]", className)}>
+    <StaggerGroup effect="3d" className={cn("jt-product-grid [perspective:1400px]", className)}>
       {products.map((p, i) => (
-        <StaggerItem key={p.id} effect="3d" className="min-w-0 [transform-style:preserve-3d]">
+        <StaggerItem
+          key={p.id}
+          effect="3d"
+          idle="float"
+          phase={i % 5}
+          className="min-w-0 [transform-style:preserve-3d]"
+        >
           <ProductCard product={p} priority={i < 4} />
         </StaggerItem>
       ))}

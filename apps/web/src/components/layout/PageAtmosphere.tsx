@@ -6,13 +6,16 @@ import { AnimatedGradientBg } from "@/components/motion/AnimatedGradientBg";
 import { RisingDots } from "@/components/motion/RisingDots";
 
 /**
- * Site-wide stadium photo backdrop + soft lime cursor spotlight.
+ * Site-wide stadium photo backdrop + dual cursor glow (lime + orange trail).
  */
 export function PageAtmosphere() {
   const mx = useMotionValue(-1000);
   const my = useMotionValue(-1000);
-  const x = useSpring(mx, { stiffness: 60, damping: 20, mass: 0.6 });
-  const y = useSpring(my, { stiffness: 60, damping: 20, mass: 0.6 });
+  const x = useSpring(mx, { stiffness: 70, damping: 18, mass: 0.55 });
+  const y = useSpring(my, { stiffness: 70, damping: 18, mass: 0.55 });
+  // Lagging trail for a richer cursor aura
+  const tx = useSpring(mx, { stiffness: 28, damping: 18, mass: 0.9 });
+  const ty = useSpring(my, { stiffness: 28, damping: 18, mass: 0.9 });
 
   useEffect(() => {
     const fine = window.matchMedia("(pointer: fine)").matches;
@@ -26,12 +29,14 @@ export function PageAtmosphere() {
     return () => window.removeEventListener("pointermove", onMove);
   }, [mx, my]);
 
-  const spotlight = useMotionTemplate`radial-gradient(480px circle at ${x}px ${y}px, rgba(180,255,26,0.1), transparent 65%)`;
+  const spotlight = useMotionTemplate`radial-gradient(420px circle at ${x}px ${y}px, rgba(180,255,26,0.14), transparent 62%)`;
+  const trail = useMotionTemplate`radial-gradient(560px circle at ${tx}px ${ty}px, rgba(255,122,26,0.12), rgba(46,230,255,0.06) 45%, transparent 70%)`;
 
   return (
     <div className="pointer-events-none fixed inset-0 -z-10">
       <AnimatedGradientBg intensity="full" />
       <RisingDots />
+      <motion.div aria-hidden className="absolute inset-0 mix-blend-screen" style={{ background: trail }} />
       <motion.div aria-hidden className="absolute inset-0" style={{ background: spotlight }} />
     </div>
   );

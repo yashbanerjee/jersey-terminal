@@ -7,6 +7,7 @@ import { Menu, Search, ShoppingBag, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { FadeIn } from "@/components/motion/FadeIn";
+import { HoverScramble } from "@/components/motion/HoverScramble";
 import { lockScroll } from "@/components/motion/SmoothScroll";
 import { useCartStore } from "@/store/cart";
 import { cn } from "@/lib/format";
@@ -73,9 +74,10 @@ export function SiteHeader() {
               priority
               className="transition-transform duration-500 group-hover:rotate-[-3deg] group-hover:scale-[1.05]"
             />
-            <span className="truncate jt-display text-lg leading-none tracking-wide text-white transition-all duration-300 group-hover:jt-gradient-text sm:text-xl md:text-2xl">
-              Jersey Terminal
-            </span>
+            <HoverScramble
+              text="Jersey Terminal"
+              className="truncate jt-display text-lg leading-none tracking-wide text-white transition-all duration-300 group-hover:jt-gradient-text sm:text-xl md:text-2xl"
+            />
           </Link>
         </FadeIn>
 

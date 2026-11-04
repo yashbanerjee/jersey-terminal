@@ -7,9 +7,10 @@ import gsap from "gsap";
 import { ArrowRight } from "lucide-react";
 import type { ProductCardModel } from "@/lib/woo/types";
 import { formatAED } from "@/lib/format";
-import { Reveal } from "@/components/motion/Reveal";
-import { SplitHeading } from "@/components/motion/SplitHeading";
 import { MagneticButton } from "@/components/motion/MagneticButton";
+import { Reveal } from "@/components/motion/Reveal";
+import { SectionScan } from "@/components/motion/SectionScan";
+import { SplitHeading } from "@/components/motion/SplitHeading";
 
 /**
  * Cinematic "Limited Edition" block: giant watermark text moves with scroll,
@@ -57,6 +58,7 @@ export function LimitedSpotlight({ products, href }: { products: ProductCardMode
 
   return (
     <section ref={root} className="relative w-full overflow-hidden py-10 sm:py-14 md:py-20">
+      <SectionScan />
       {/* Orange "heat" band + diagonal streaks */}
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(115deg,rgba(180,255,26,0.1)_0%,rgba(5,6,7,0.2)_40%,rgba(180,255,26,0.08)_100%)]" />
       <div aria-hidden className="jt-blob jt-blob-orange -left-[10%] top-1/2 -z-10 h-[70vh] w-[50vw] -translate-y-1/2 opacity-70" />

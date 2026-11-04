@@ -3,9 +3,11 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import type { ProductCardModel } from "@/lib/woo/types";
+import { HoverScramble } from "@/components/motion/HoverScramble";
 import { JerseySlider } from "@/components/motion/JerseySlider";
 import { Reveal } from "@/components/motion/Reveal";
 import { ScrollParallax } from "@/components/motion/ScrollParallax";
+import { SectionScan } from "@/components/motion/SectionScan";
 import { SplitHeading } from "@/components/motion/SplitHeading";
 
 export function ProductRail({
@@ -27,6 +29,7 @@ export function ProductRail({
 
   return (
     <section className="relative w-full overflow-x-hidden py-8 sm:py-10 md:py-14">
+      <SectionScan />
       <ScrollParallax
         distance={80}
         xDistance={even ? 40 : -40}
@@ -59,7 +62,7 @@ export function ProductRail({
                   </span>
                 )}
                 <span className="h-px w-8 bg-gradient-to-r from-jt-neon to-transparent" />
-                {eyebrow ?? "Collection"}
+                <HoverScramble text={(eyebrow ?? "Collection").toUpperCase()} />
               </p>
             </Reveal>
             <SplitHeading

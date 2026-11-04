@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ArrowRight, ChevronDown, Globe, PenLine, Shirt, Star, Zap } from "lucide-react";
+import { CountUp } from "@/components/motion/CountUp";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { ProgressDots } from "@/components/motion/ProgressDots";
 import { formatAED } from "@/lib/format";
@@ -198,7 +199,9 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                     <Icon className="h-4 w-4" strokeWidth={1.75} />
                   </span>
                   <div className="min-w-0 leading-none">
-                    <p className="jt-display text-lg text-white sm:text-xl xl:text-2xl">{value}</p>
+                    <p className="jt-display text-lg text-white sm:text-xl xl:text-2xl">
+                      <CountUp value={value} />
+                    </p>
                     <p className="mt-1 text-[9px] uppercase leading-tight tracking-[0.12em] text-jt-muted sm:text-[10px] sm:tracking-[0.18em]">
                       {label}
                     </p>

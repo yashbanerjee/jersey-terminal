@@ -98,13 +98,13 @@ export function SiteFooter() {
         </div>
       </div>
 
-      {/* Giant wordmark — desktop only; on mobile it creates a large empty band */}
+      {/* Giant wordmark — desktop only; drifts while in view */}
       <div className="relative hidden overflow-hidden md:block">
         <div className="jt-container">
-          <Reveal y={40}>
+          <Reveal y={48} idle="float" effect="blur">
             <p
               aria-hidden
-              className="jt-gradient-text-aurora -mb-[0.1em] select-none whitespace-nowrap jt-display text-[clamp(3rem,9.6vw,11rem)] leading-none opacity-30"
+              className="jt-gradient-text-aurora -mb-[0.1em] select-none whitespace-nowrap jt-display text-[clamp(3rem,9.6vw,11rem)] leading-none opacity-35 transition-opacity duration-500 hover:opacity-55"
             >
               JERSEY TERMINAL
             </p>
