@@ -16,6 +16,11 @@ COPY packages/shared ./packages/shared
 COPY apps/web ./apps/web
 COPY package.json pnpm-workspace.yaml ./
 ENV NEXT_TELEMETRY_DISABLED=1
+# Bake CMS host into next.config remotePatterns so /_next/image allows product media.
+ARG WORDPRESS_URL=https://wordpress-production-b3bb.up.railway.app
+ARG NEXT_PUBLIC_SITE_URL=https://web-production-0ed38.up.railway.app
+ENV WORDPRESS_URL=$WORDPRESS_URL
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 RUN pnpm --filter @jt/shared build && pnpm --filter web build
 
 FROM node:20-alpine AS runner

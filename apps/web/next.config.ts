@@ -13,7 +13,12 @@ const nextConfig: NextConfig = {
     dangerouslyAllowLocalIP: true,
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
-      { protocol: "https", hostname: wordpressHost },
+      // Always allow the configured CMS host (also passed as Docker build ARG).
+      { protocol: "https", hostname: wordpressHost, pathname: "/wp-content/uploads/**" },
+      { protocol: "http", hostname: wordpressHost, pathname: "/wp-content/uploads/**" },
+      // Railway public domains — WORDPRESS_URL may be missing at image-build time.
+      { protocol: "https", hostname: "*.up.railway.app", pathname: "/wp-content/uploads/**" },
+      { protocol: "https", hostname: "**.up.railway.app", pathname: "/wp-content/uploads/**" },
       { protocol: "http", hostname: "localhost", port: "8080", pathname: "/wp-content/uploads/**" },
       { protocol: "http", hostname: "127.0.0.1", port: "8080", pathname: "/wp-content/uploads/**" },
       { protocol: "https", hostname: "jerseyterminal.com", pathname: "/wp-content/uploads/**" },
