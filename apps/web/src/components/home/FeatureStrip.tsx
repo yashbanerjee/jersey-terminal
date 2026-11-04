@@ -46,24 +46,24 @@ const FEATURES = [
 
 export function FeatureStrip() {
   return (
-    <section className="w-full py-6 sm:py-8">
+    <section className="w-full py-4 sm:py-5">
       <div className="jt-container">
-        <div className="jt-divider mb-6 sm:mb-8" />
+        <div className="jt-divider mb-4 sm:mb-5" />
         <StaggerGroup
           effect="3d"
-          className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-6"
+          className="grid grid-cols-1 gap-2.5 min-[420px]:grid-cols-2 sm:gap-3 lg:grid-cols-4 lg:gap-4"
         >
           {FEATURES.map(({ icon: Icon, title, text, accent }, i) => {
             const a = ACCENTS[accent];
             return (
               <StaggerItem key={title} effect="3d" idle="float" phase={i}>
                 <div
-                  className={`group flex h-full gap-3 jt-chamfer-sm border border-white/8 bg-white/[0.03] p-4 backdrop-blur transition-all duration-500 hover:-translate-y-1 hover:bg-white/[0.06] sm:p-5 ${a.hoverBorder} ${a.hoverGlow}`}
+                  className={`group flex h-full gap-3 jt-chamfer-sm border border-white/8 bg-white/[0.03] p-3.5 backdrop-blur transition-all duration-500 hover:-translate-y-1 hover:bg-white/[0.06] sm:p-4 ${a.hoverBorder} ${a.hoverGlow}`}
                 >
                   <span
-                    className={`grid h-10 w-10 shrink-0 place-items-center jt-slant-sm transition-all duration-500 group-hover:scale-110 group-hover:rotate-[-6deg] ${a.tile} ${a.hoverTile}`}
+                    className={`grid h-9 w-9 shrink-0 place-items-center jt-slant-sm transition-all duration-500 group-hover:scale-110 group-hover:rotate-[-6deg] ${a.tile} ${a.hoverTile}`}
                   >
-                    <Icon className="h-5 w-5 transition-transform duration-500" />
+                    <Icon className="h-4 w-4 transition-transform duration-500" />
                   </span>
                   <div className="min-w-0">
                     <p className="text-sm font-semibold leading-snug text-white">{title}</p>
@@ -74,7 +74,7 @@ export function FeatureStrip() {
             );
           })}
         </StaggerGroup>
-        <div className="jt-divider mt-6 sm:mt-8" />
+        <div className="jt-divider mt-4 sm:mt-5" />
       </div>
     </section>
   );

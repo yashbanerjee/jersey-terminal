@@ -145,7 +145,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
     <section ref={root} className="relative w-full overflow-hidden pt-[var(--jt-header-h)]">
       <HeroAmbientVideo />
       <div className="relative z-10 jt-container">
-        <div className="grid min-h-[calc(100svh-var(--jt-header-h))] items-center gap-6 pb-16 pt-6 sm:gap-8 sm:pb-20 sm:pt-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:pb-24 lg:pt-12 xl:gap-16">
+        <div className="grid min-h-[min(88svh,860px)] items-center gap-5 pb-14 pt-5 sm:gap-6 sm:pb-16 sm:pt-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:pb-16 lg:pt-10 xl:gap-12">
           {/* Copy */}
           <div className="hero-copy order-2 flex flex-col justify-center lg:order-1">
             <p className="hero-fade inline-flex w-fit items-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-jt-neon">
@@ -155,7 +155,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
               Live now
             </p>
 
-            <h1 className="mt-5 jt-display text-[clamp(2.6rem,5.6vw,5.1rem)] leading-[0.94] text-white drop-shadow-[0_12px_40px_rgba(0,0,0,0.7)]">
+            <h1 className="mt-4 jt-display text-[clamp(2.35rem,5.2vw,4.5rem)] leading-[0.94] text-white drop-shadow-[0_12px_40px_rgba(0,0,0,0.7)]">
               <span className="block overflow-hidden pb-[0.08em] pr-[0.1em]">
                 <span className="hero-line jt-gradient-text-steel block">Premium</span>
               </span>
@@ -169,12 +169,12 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
               </span>
             </h1>
 
-            <p className="hero-fade mt-6 max-w-md text-sm leading-relaxed text-white/70 sm:text-base md:text-[17px]">
+            <p className="hero-fade mt-4 max-w-md text-sm leading-relaxed text-white/70 sm:text-[15px] md:text-base">
               Premium football jerseys and fanwear built for true supporters — from match day to the streets.
               Designed in the UAE. Shipped worldwide.
             </p>
 
-            <div className="hero-fade mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="hero-fade mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
               <MagneticButton href="/shop">
                 Shop all jerseys <ArrowRight className="h-4 w-4" />
               </MagneticButton>
@@ -186,7 +186,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
             </div>
 
             {/* Stats with icons + slash dividers */}
-            <div className="hero-fade mt-9 grid grid-cols-3 border-t border-white/10 pt-6">
+            <div className="hero-fade mt-7 grid grid-cols-3 border-t border-white/10 pt-5">
               {STATS.map(({ icon: Icon, value, label, color }, i) => (
                 <div
                   key={label}

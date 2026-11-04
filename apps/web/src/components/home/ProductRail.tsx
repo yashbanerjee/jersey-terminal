@@ -9,6 +9,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { ScrollParallax } from "@/components/motion/ScrollParallax";
 import { SectionScan } from "@/components/motion/SectionScan";
 import { SplitHeading } from "@/components/motion/SplitHeading";
+import { ProductGrid } from "@/components/product/ProductGrid";
 
 export function ProductRail({
   title,
@@ -17,6 +18,8 @@ export function ProductRail({
   products,
   href,
   index,
+  layout = "grid",
+  limit = 8,
 }: {
   title: string;
   subtitle?: string;
@@ -24,11 +27,16 @@ export function ProductRail({
   products: ProductCardModel[];
   href?: string;
   index?: number;
+  /** `deck` = 3D coverflow; `grid` = dense product tiles (default). */
+  layout?: "deck" | "grid" | "deck+grid";
+  limit?: number;
 }) {
   const even = (index ?? 0) % 2 === 0;
+  const shown = products.slice(0, limit);
+  const countLabel = products.length ? `${products.length} styles` : null;
 
   return (
-    <section className="relative w-full overflow-x-hidden py-8 sm:py-10 md:py-14">
+    <section className="relative w-full overflow-x-hidden py-6 sm:py-8 md:py-10">
       <SectionScan />
       <ScrollParallax
         distance={80}
@@ -37,7 +45,7 @@ export function ProductRail({
       >
         <div
           aria-hidden
-          className={`jt-blob ${even ? "jt-blob-orange -right-[10%]" : "jt-blob-cyan -left-[10%]"} top-0 h-[50vh] w-[50vw] opacity-55`}
+          className={`jt-blob ${even ? "jt-blob-orange -right-[10%]" : "jt-blob-cyan -left-[10%]"} top-0 h-[42vh] w-[48vw] opacity-55`}
         />
       </ScrollParallax>
       <ScrollParallax distance={40} xDistance={even ? -30 : 30} className="pointer-events-none absolute inset-0 -z-10">
@@ -52,10 +60,10 @@ export function ProductRail({
       </ScrollParallax>
 
       <div className="jt-container">
-        <div className="mb-5 flex flex-col gap-4 sm:mb-7 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
+        <div className="mb-4 flex flex-col gap-3 sm:mb-5 sm:flex-row sm:items-end sm:justify-between sm:gap-5">
           <div className="min-w-0 flex-1">
             <Reveal effect="left" y={20} idle="float">
-              <p className="mb-2 flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-jt-neon">
+              <p className="mb-1.5 flex flex-wrap items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-jt-neon">
                 {index !== undefined && (
                   <span className="jt-gradient-text-fire jt-display text-lg tracking-[0.15em]">
                     {String(index).padStart(2, "0")}
@@ -63,16 +71,21 @@ export function ProductRail({
                 )}
                 <span className="h-px w-8 bg-gradient-to-r from-jt-neon to-transparent" />
                 <HoverScramble text={(eyebrow ?? "Collection").toUpperCase()} />
+                {countLabel && (
+                  <span className="rounded-full border border-white/15 bg-white/[0.04] px-2.5 py-1 text-[10px] tracking-[0.18em] text-white/65">
+                    {countLabel}
+                  </span>
+                )}
               </p>
             </Reveal>
             <SplitHeading
               text={title}
               accentWords={[title.split(" ").length]}
-              className="jt-display text-[clamp(2.1rem,8vw,3.75rem)] leading-[0.95] sm:text-5xl md:text-6xl"
+              className="jt-display text-[clamp(1.85rem,6.5vw,3.1rem)] leading-[0.95] sm:text-4xl md:text-5xl"
             />
             {subtitle && (
               <Reveal y={20} delay={0.12} idle="breathe">
-                <p className="mt-2 max-w-md text-pretty text-sm text-jt-muted sm:text-base">{subtitle}</p>
+                <p className="mt-1.5 max-w-xl text-pretty text-sm text-jt-muted sm:text-[15px]">{subtitle}</p>
               </Reveal>
             )}
           </div>
@@ -91,13 +104,24 @@ export function ProductRail({
           )}
         </div>
 
-        <Reveal effect="3d" y={52} delay={0.08}>
-          {products.length ? (
-            <JerseySlider products={products} />
-          ) : (
-            <p className="text-sm text-jt-muted">Connect WooCommerce to load live products for this collection.</p>
-          )}
-        </Reveal>
+        {!products.length ? (
+          <p className="text-sm text-jt-muted">Connect WooCommerce to load live products for this collection.</p>
+        ) : (
+          <>
+            {(layout === "deck" || layout === "deck+grid") && (
+              <Reveal effect="3d" y={40} delay={0.06} className="mb-6 sm:mb-8">
+                <JerseySlider products={shown} />
+              </Reveal>
+            )}
+            {(layout === "grid" || layout === "deck+grid") && (
+              <Reveal effect="3d" y={36} delay={layout === "deck+grid" ? 0.12 : 0.06}>
+                <ProductGrid
+                  products={layout === "deck+grid" ? products.slice(0, Math.max(limit, 8)) : shown}
+                />
+              </Reveal>
+            )}
+          </>
+        )}
       </div>
     </section>
   );

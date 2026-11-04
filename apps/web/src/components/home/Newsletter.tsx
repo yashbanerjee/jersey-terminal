@@ -11,16 +11,18 @@ export function Newsletter() {
   }
 
   return (
-    <section className="w-full py-12 sm:py-16 md:py-20">
+    <section className="w-full py-7 sm:py-9 md:py-10">
       <div className="jt-container">
-        <div className="relative w-full overflow-hidden bg-jt-surface px-5 py-10 sm:px-8 sm:py-12 md:px-12">
+        <div className="jt-chamfer relative w-full overflow-hidden border border-white/10 bg-jt-surface px-5 py-7 sm:px-8 sm:py-8 md:px-10">
           <div className="absolute inset-0 jt-gradient-bg opacity-10" />
-          <div className="relative grid w-full gap-6 md:grid-cols-[1.2fr_1fr] md:items-center md:gap-8">
+          <div className="pointer-events-none absolute left-[-20%] top-[40%] h-[2px] w-[140%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(180,255,26,0.55),transparent)]" />
+          <div className="relative grid w-full gap-5 md:grid-cols-[1.15fr_1fr] md:items-center md:gap-8">
             <div>
-              <h2 className="jt-display text-3xl tracking-wide sm:text-4xl md:text-5xl">
+              <p className="text-[11px] uppercase tracking-[0.28em] text-jt-neon">Stay early</p>
+              <h2 className="mt-1.5 jt-display text-[clamp(1.85rem,5vw,2.75rem)] leading-[0.95] tracking-wide">
                 Drop alerts. First access.
               </h2>
-              <p className="mt-3 text-sm text-jt-muted">
+              <p className="mt-2 max-w-md text-sm text-jt-muted">
                 Limited editions and match kits land here first. AED storefront. UAE + international.
               </p>
             </div>

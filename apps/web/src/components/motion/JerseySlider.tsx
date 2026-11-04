@@ -74,7 +74,7 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
 
   const slots = total === 1 ? [0] : total === 2 ? [-1, 0] : [-1, 0, 1];
   const show = inView || reduced;
-  const spread = narrow ? 118 : 200;
+  const spread = narrow ? 102 : 168;
 
   return (
     <div
@@ -96,7 +96,7 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
         />
 
         <div
-          className="relative mx-auto aspect-[5/7] w-[min(68vw,230px)] overflow-visible sm:w-[270px] md:w-[290px] lg:w-[310px]"
+          className="relative mx-auto aspect-[5/7] w-[min(58vw,210px)] overflow-visible sm:w-[240px] md:w-[260px] lg:w-[280px]"
           style={{ transformStyle: "preserve-3d" }}
         >
           {entered && <SlideImpact triggerKey={index} />}
@@ -105,14 +105,14 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
             const product = products[i];
             const isActive = offset === 0;
             const x = offset * spread;
-            // Deeper fan — side cards tuck back hard; hero pops toward camera
-            const rotateY = reduced ? 0 : offset * -38;
-            const rotateZ = reduced ? 0 : offset * 6;
-            const rotateX = reduced ? 0 : isActive ? -4 : 8;
-            const y = isActive ? -14 : 26;
-            const z = isActive ? 120 : -90;
-            const scale = isActive ? 1.04 : 0.74;
-            const opacity = isActive ? 1 : 0.38;
+            // Deeper fan — side cards stay readable so the deck fills the band
+            const rotateY = reduced ? 0 : offset * -32;
+            const rotateZ = reduced ? 0 : offset * 5;
+            const rotateX = reduced ? 0 : isActive ? -4 : 6;
+            const y = isActive ? -10 : 18;
+            const z = isActive ? 110 : -70;
+            const scale = isActive ? 1.02 : 0.8;
+            const opacity = isActive ? 1 : 0.55;
 
             return (
               <motion.div
