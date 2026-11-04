@@ -81,94 +81,22 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
   }, []);
 
   useEffect(() => {
-    const motionOff = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const mobile =
-      window.matchMedia("(pointer: coarse)").matches ||
-      window.matchMedia("(max-width: 768px)").matches;
-    let kill: (() => void) | undefined;
-    let booted = false;
-    let fallbackTimer = 0;
-    let playIntro: () => void = () => {};
-
+    // Instant visible hero — no ScrollTrigger scrub / infinite floats (scroll jank).
     const ctx = gsap.context(() => {
-      if (motionOff || mobile) {
-        // Instant show on phones — continuous GSAP floats + scrub kill scroll FPS.
-        gsap.set([".hero-line", ".hero-fade", ".hero-visual", ".hero-chip"], {
-          opacity: 1,
-          y: 0,
-          x: 0,
-          yPercent: 0,
-          scale: 1,
-          rotate: 0,
-          skewX: 0,
-        });
-        return;
-      }
-
-      gsap.set(".hero-line", { yPercent: 120, skewX: -10 });
-      gsap.set(".hero-fade", { opacity: 0, y: 28 });
-      gsap.set(".hero-visual", { opacity: 0, x: 90, scale: 0.9, rotate: 4 });
-      gsap.set(".hero-chip", { opacity: 0, scale: 0.8, y: 14 });
-
-      playIntro = () => {
-        if (booted) return;
-        booted = true;
-        window.clearTimeout(fallbackTimer);
-
-        const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
-        tl.to(".hero-line", { yPercent: 0, skewX: 0, duration: 1.15, stagger: 0.1 }, 0.05)
-          .to(".hero-fade", { opacity: 1, y: 0, duration: 0.75, stagger: 0.09 }, 0.4)
-          .to(".hero-visual", { opacity: 1, x: 0, scale: 1, rotate: 0, duration: 1.25 }, 0.12)
-          .to(".hero-chip", { opacity: 1, scale: 1, y: 0, duration: 0.6, stagger: 0.1 }, 0.85);
-
-        gsap.to(".hero-jersey", { y: -8, duration: 3.6, repeat: -1, yoyo: true, ease: "sine.inOut" });
-        gsap.to(".hero-chip-a", { y: -5, duration: 2.8, repeat: -1, yoyo: true, ease: "sine.inOut", delay: 0.3 });
-        gsap.to(".hero-chip-b", { y: 5, duration: 3.1, repeat: -1, yoyo: true, ease: "sine.inOut" });
-        gsap.to(".hero-scroll-dot", { y: 10, opacity: 0, duration: 1.4, repeat: -1, ease: "power1.in" });
-        gsap.to(".hero-smoke", {
-          x: "+=24",
-          y: "-=16",
-          scale: 1.12,
-          duration: 8,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-          stagger: 1.4,
-        });
-      };
-
-      window.addEventListener("jt:booted", playIntro, { once: true });
-      fallbackTimer = window.setTimeout(playIntro, 3400);
+      gsap.set([".hero-line", ".hero-fade", ".hero-visual", ".hero-chip"], {
+        opacity: 1,
+        y: 0,
+        x: 0,
+        yPercent: 0,
+        scale: 1,
+        rotate: 0,
+        skewX: 0,
+      });
     }, root);
 
-    if (!motionOff && !mobile) {
-      import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
-        if (!root.current) return;
-        gsap.registerPlugin(ScrollTrigger);
-        const pctx = gsap.context(() => {
-          gsap.to(".hero-copy", {
-            yPercent: -12,
-            opacity: 0.25,
-            ease: "none",
-            scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
-          });
-          gsap.to(".hero-visual", {
-            yPercent: 8,
-            scale: 0.96,
-            ease: "none",
-            scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
-          });
-        }, root);
-        kill = () => pctx.revert();
-      });
-    }
+    window.dispatchEvent(new CustomEvent("jt:booted"));
 
-    return () => {
-      window.removeEventListener("jt:booted", playIntro);
-      window.clearTimeout(fallbackTimer);
-      ctx.revert();
-      kill?.();
-    };
+    return () => ctx.revert();
   }, []);
 
   return (

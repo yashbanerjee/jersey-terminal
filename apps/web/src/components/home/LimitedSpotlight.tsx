@@ -2,62 +2,20 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
 import { ArrowRight } from "lucide-react";
 import type { ProductCardModel } from "@/lib/woo/types";
 import { formatAED } from "@/lib/format";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { Reveal } from "@/components/motion/Reveal";
-import { SectionScan } from "@/components/motion/SectionScan";
 import { SplitHeading } from "@/components/motion/SplitHeading";
 
-/**
- * Cinematic "Limited Edition" block: giant watermark text moves with scroll,
- * cards drift horizontally in opposite direction (parallax).
- */
+/** Limited edition product block — static layout for smooth scrolling. */
 export function LimitedSpotlight({ products, href }: { products: ProductCardModel[]; href: string }) {
-  const root = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    if (!root.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let kill: (() => void) | undefined;
-    import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
-      gsap.registerPlugin(ScrollTrigger);
-      const ctx = gsap.context(() => {
-        gsap.fromTo(
-          ".ls-watermark",
-          { xPercent: 10 },
-          {
-            xPercent: -25,
-            ease: "none",
-            scrollTrigger: { trigger: root.current, start: "top bottom", end: "bottom top", scrub: 0.6 },
-          },
-        );
-        const mm = gsap.matchMedia();
-        mm.add("(min-width: 1024px)", () => {
-          gsap.fromTo(
-            ".ls-track",
-            { x: 40 },
-            {
-              x: -40,
-              ease: "none",
-              scrollTrigger: { trigger: root.current, start: "top bottom", end: "bottom top", scrub: 0.8 },
-            },
-          );
-        });
-      }, root);
-      kill = () => ctx.revert();
-    });
-    return () => kill?.();
-  }, []);
-
   if (!products.length) return null;
   const items = products.slice(0, 8);
 
   return (
-    <section ref={root} className="relative w-full overflow-hidden py-7 sm:py-9 md:py-12">
-      <SectionScan />
+    <section className="relative w-full overflow-hidden py-7 sm:py-9 md:py-12">
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(115deg,rgba(180,255,26,0.1)_0%,rgba(5,6,7,0.2)_40%,rgba(180,255,26,0.08)_100%)]" />
       <div aria-hidden className="jt-blob jt-blob-orange -left-[10%] top-1/2 -z-10 h-[55vh] w-[45vw] -translate-y-1/2 opacity-70" />
       <div aria-hidden className="jt-blob jt-blob-cyan -right-[10%] bottom-0 -z-10 h-[40vh] w-[36vw] opacity-70" />

@@ -34,9 +34,9 @@ function initialFor(effect: RevealEffect, y: number, x: number, reduce: boolean 
     case "scale":
       return { opacity: 0, scale: 0.86 };
     case "blur":
-      return { opacity: 0, y: y * 0.55, filter: "blur(16px)" };
+      return { opacity: 0, y: y * 0.4 };
     case "3d":
-      return { opacity: 0, y: y * 0.8, rotateX: 18, rotateY: -12, scale: 0.9 };
+      return { opacity: 0, y: y * 0.5, scale: 0.96 };
     case "pop":
       return { opacity: 0, scale: 0.68, y: 22 };
     case "clip":
@@ -56,9 +56,9 @@ function visibleFor(effect: RevealEffect) {
     case "pop":
       return { opacity: 1, scale: 1, y: 0 };
     case "blur":
-      return { opacity: 1, y: 0, filter: "blur(0px)" };
+      return { opacity: 1, y: 0 };
     case "3d":
-      return { opacity: 1, y: 0, rotateX: 0, rotateY: 0, scale: 1 };
+      return { opacity: 1, y: 0, scale: 1 };
     case "clip":
       return { opacity: 1, y: 0, clipPath: "inset(0% 0 0% 0)" };
     case "down":

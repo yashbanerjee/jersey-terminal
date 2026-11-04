@@ -50,7 +50,7 @@ export function SiteHeader() {
       className={cn(
         "fixed inset-x-0 top-0 z-50 border-b transition-[background-color,border-color,box-shadow] duration-500",
         scrolled || mobileOpen
-          ? "border-white/10 bg-jt-black/70 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.9),0_1px_0_0_rgba(180,255,26,0.08)] backdrop-blur-xl"
+          ? "border-white/10 bg-jt-black/95 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.9),0_1px_0_0_rgba(180,255,26,0.08)]"
           : "border-transparent bg-transparent",
       )}
     >
@@ -184,7 +184,7 @@ export function SiteHeader() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="overflow-hidden border-t border-white/5 bg-jt-black/95 backdrop-blur-xl lg:hidden"
+            className="overflow-hidden border-t border-white/5 bg-jt-black lg:hidden"
             aria-label="Mobile"
           >
             <ul className="jt-container flex max-h-[calc(100svh-4rem)] flex-col overflow-y-auto py-3">

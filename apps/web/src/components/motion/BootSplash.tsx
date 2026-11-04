@@ -4,7 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { lockScroll } from "@/components/motion/SmoothScroll";
-import { isMobilePerfTarget, withTimeout } from "@/lib/perf";
+import { withTimeout } from "@/lib/perf";
 
 type Phase = "boot" | "burst" | "open" | "done";
 
@@ -73,21 +73,20 @@ export function BootSplash({ children }: { children: ReactNode }) {
       return;
     }
 
-    const mobile = isMobilePerfTarget();
-    setLite(mobile);
+    // Always use the lite path — cinematic boot was lagging open on every device.
+    setLite(true);
 
     let cancelled = false;
     let raf = 0;
     const started = performance.now();
-    // Phones: short branded flash. Desktop: fuller sequence.
-    const minMs = mobile ? 900 : 2200;
-    const hardCapMs = mobile ? 2800 : 5200;
+    const minMs = 700;
+    const hardCapMs = 2000;
 
     lockScroll(true);
 
     const statusTimer = window.setInterval(() => {
       setStatusIdx((i) => Math.min(STATUS.length - 1, i + 1));
-    }, mobile ? 280 : 500);
+    }, 220);
 
     const tick = (now: number) => {
       if (cancelled) return;
@@ -123,7 +122,7 @@ export function BootSplash({ children }: { children: ReactNode }) {
                 window.addEventListener("load", () => resolve(), { once: true });
               }),
         ]),
-        mobile ? 600 : 1400,
+        400,
       );
 
       const elapsed = performance.now() - started;
@@ -137,26 +136,9 @@ export function BootSplash({ children }: { children: ReactNode }) {
       setProgress(1);
       setStatusIdx(STATUS.length - 1);
 
-      if (mobile) {
-        // Skip heavy burst/door sequence on phones.
-        setPhase("open");
-        window.dispatchEvent(new CustomEvent("jt:booted"));
-        await new Promise((r) => setTimeout(r, 320));
-        if (cancelled) return;
-        setPhase("done");
-        lockScroll(false);
-        window.clearTimeout(hardCap);
-        return;
-      }
-
-      setPhase("burst");
-      await new Promise((r) => setTimeout(r, 420));
-      if (cancelled) return;
-
       setPhase("open");
       window.dispatchEvent(new CustomEvent("jt:booted"));
-
-      await new Promise((r) => setTimeout(r, 900));
+      await new Promise((r) => setTimeout(r, 280));
       if (cancelled) return;
       setPhase("done");
       lockScroll(false);

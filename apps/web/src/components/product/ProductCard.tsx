@@ -4,7 +4,7 @@ import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } fr
 import { ArrowUpRight, Heart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState, useSyncExternalStore, type MouseEvent } from "react";
+import { useRef, useState, useSyncExternalStore, type MouseEvent } from "react";
 import type { ProductCardModel } from "@/lib/woo/types";
 import { formatAED } from "@/lib/format";
 import { useWishlistStore } from "@/store/wishlist";
@@ -42,13 +42,8 @@ export function ProductCard({
   );
   const wished = hydrated && wishedStored;
 
-  const [tiltReady, setTiltReady] = useState(false);
-  useEffect(() => {
-    // 3D card float + springs crush mobile scroll FPS — fine pointer only.
-    const fine = window.matchMedia("(pointer: fine)").matches;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (fine && !reduce) setTiltReady(true);
-  }, []);
+  // Static cards — perpetual 3D tilt/float was lagging scroll on every device.
+  const [tiltReady] = useState(false);
 
   const ref = useRef<HTMLElement>(null);
   const px = useMotionValue(0.5);
@@ -122,18 +117,9 @@ export function ProductCard({
             }
           : { transformStyle: "preserve-3d" }
       }
-      animate={
-        enable3d
-          ? { y: [0, -5, 0], rotateZ: [-0.8, 0.8, -0.8] }
-          : undefined
-      }
-      transition={
-        enable3d
-          ? { y: { duration: 4.2, repeat: Infinity, ease: "easeInOut" }, rotateZ: { duration: 5.5, repeat: Infinity, ease: "easeInOut" } }
-          : { type: "spring", stiffness: 220, damping: 16 }
-      }
-      whileHover={enable3d ? { scale: 1.06, zIndex: 40 } : undefined}
-      className="jt-card jt-playing-card group relative w-full min-w-0 will-change-transform"
+      whileHover={{ scale: 1.02, zIndex: 20 }}
+      transition={{ type: "spring", stiffness: 260, damping: 22 }}
+      className="jt-card jt-playing-card group relative w-full min-w-0"
     >
       {/* Outer aura — soft animated glow behind the cut plate */}
       <span aria-hidden className="jt-card-aura" />

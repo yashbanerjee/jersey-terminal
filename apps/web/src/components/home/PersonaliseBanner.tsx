@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
 import { SplitHeading } from "@/components/motion/SplitHeading";
@@ -27,24 +26,13 @@ export function PersonaliseBanner() {
     const name = nameRef.current;
     const num = numRef.current;
     if (!name || !num) return;
-    const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.6 });
-    tl.to(name, { yPercent: -100, opacity: 0, duration: 0.4, ease: "power2.in" })
-      .to(num, { yPercent: -40, opacity: 0, scale: 0.9, duration: 0.4, ease: "power2.in" }, "<0.05")
-      .add(() => {
-        i = (i + 1) % EXAMPLES.length;
-        name.textContent = EXAMPLES[i][0];
-        num.textContent = EXAMPLES[i][1];
-      })
-      .fromTo(name, { yPercent: 100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.5, ease: "power3.out" })
-      .fromTo(
-        num,
-        { yPercent: 40, opacity: 0, scale: 1.1 },
-        { yPercent: 0, opacity: 1, scale: 1, duration: 0.6, ease: "back.out(1.6)" },
-        "<0.05",
-      );
-    return () => {
-      tl.kill();
-    };
+    // Lightweight text swap — no continuous GSAP timeline.
+    const id = window.setInterval(() => {
+      i = (i + 1) % EXAMPLES.length;
+      name.textContent = EXAMPLES[i][0];
+      num.textContent = EXAMPLES[i][1];
+    }, 3200);
+    return () => window.clearInterval(id);
   }, []);
 
   return (
