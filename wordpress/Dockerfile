@@ -1,12 +1,5 @@
 FROM wordpress:6.7.2-php8.2-apache
 
-# Ensure a single Apache MPM (mod_php needs prefork). Railway volume remounts can
-# otherwise leave both mpm_event and mpm_prefork enabled → AH00534 crash loop.
-RUN a2dismod mpm_event 2>/dev/null || true \
-  && a2dismod mpm_worker 2>/dev/null || true \
-  && a2enmod mpm_prefork \
-  && apache2ctl -t
-
 # PHP production tuning
 RUN { \
   echo 'memory_limit=256M'; \
@@ -31,11 +24,15 @@ RUN { \
 COPY wp-content/plugins/jt-sports-commerce-extensions /usr/src/wordpress/wp-content/plugins/jt-sports-commerce-extensions
 
 COPY docker-entrypoint.d/99-jt-sports.sh /usr/local/bin/jt-sports-init.sh
-RUN chmod +x /usr/local/bin/jt-sports-init.sh
+COPY jt-entrypoint.sh /usr/local/bin/jt-entrypoint.sh
+RUN chmod +x /usr/local/bin/jt-sports-init.sh /usr/local/bin/jt-entrypoint.sh
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-  CMD curl -fsS http://127.0.0.1/wp-json/jt-sports/v1/health || exit 1
+# Prefer Railway $PORT; healthcheck uses 8080 which Railway commonly assigns.
+ENV PORT=8080
+EXPOSE 8080
 
-# Official image entrypoint; volume should mount at /var/www/html on Railway
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["apache2-foreground"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=90s --retries=3 \
+  CMD curl -fsS "http://127.0.0.1:${PORT:-8080}/wp-json/" || exit 1
+
+# Custom entrypoint fixes Railway AH00534 (multiple Apache MPMs) then starts WP.
+ENTRYPOINT ["/usr/local/bin/jt-entrypoint.sh"]
