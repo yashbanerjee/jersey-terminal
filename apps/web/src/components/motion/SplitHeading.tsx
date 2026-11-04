@@ -33,7 +33,7 @@ export function SplitHeading({
       initial={reduce ? false : "hidden"}
       whileInView="show"
       viewport={{ once: true, amount: 0.4, margin: "0px 0px -8% 0px" }}
-      transition={{ staggerChildren: 0.06, delayChildren: delay }}
+      transition={{ staggerChildren: 0.07, delayChildren: delay }}
       aria-label={text}
     >
       {words.map((w, i) => (
@@ -41,8 +41,13 @@ export function SplitHeading({
           <motion.span
             className={cn("inline-block pr-[0.06em]", accentWords.includes(i + 1) && accentClass)}
             variants={{
-              hidden: { y: "110%", skewX: -8 },
-              show: { y: 0, skewX: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
+              hidden: { y: "115%", skewX: -10, opacity: 0.4 },
+              show: {
+                y: 0,
+                skewX: 0,
+                opacity: 1,
+                transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
+              },
             }}
           >
             {w}

@@ -12,7 +12,12 @@ type Props = ComponentProps<typeof Link> & {
 /** Link with a subtle press + underline grow feel. */
 export function AnimatedLink({ children, className, ...props }: Props) {
   return (
-    <motion.div whileHover={{ x: 3 }} whileTap={{ scale: 0.98 }} className="inline-flex">
+    <motion.div
+      whileHover={{ x: 5 }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 400, damping: 24 }}
+      className="inline-flex"
+    >
       <Link {...props} className={className}>
         {children}
       </Link>

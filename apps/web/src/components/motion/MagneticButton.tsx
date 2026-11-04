@@ -40,6 +40,9 @@ export function MagneticButton({ href, children, className, variant = "solid" }:
       style={{ x, y }}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 380, damping: 22 }}
       className={cn("inline-block", variant === "solid" && "jt-drop-lime", variant === "fire" && "jt-drop-orange")}
     >
       {/* Outer = fill (or 1px border colour for outline); inner = slanted face */}

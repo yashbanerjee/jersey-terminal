@@ -41,7 +41,7 @@ export function SiteFooter() {
             </p>
             <Link
               href="/shop"
-              className="group jt-slant mt-4 inline-flex items-center gap-2 bg-jt-neon/12 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-jt-neon transition-all hover:bg-jt-neon hover:text-jt-black sm:mt-6 sm:text-sm"
+              className="group jt-slant mt-4 inline-flex items-center gap-2 bg-jt-neon/12 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-jt-neon transition-all duration-300 hover:-translate-y-0.5 hover:bg-jt-neon hover:text-jt-black hover:shadow-[0_0_28px_-8px_rgba(180,255,26,0.75)] sm:mt-6 sm:text-sm"
             >
               Shop the collection
               <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -57,7 +57,10 @@ export function SiteFooter() {
               <ul className="space-y-2 text-sm text-jt-muted sm:space-y-2.5">
                 {shop.map((l) => (
                   <li key={l.href}>
-                    <Link href={l.href} className="jt-link inline-block transition-colors hover:text-white">
+                    <Link
+                      href={l.href}
+                      className="jt-link inline-block transition-all duration-300 hover:translate-x-1 hover:text-white"
+                    >
                       {l.label}
                     </Link>
                   </li>
@@ -73,11 +76,17 @@ export function SiteFooter() {
                 {support.map((l) => (
                   <li key={l.href}>
                     {"external" in l && l.external ? (
-                      <a href={l.href} className="jt-link inline-block transition-colors hover:text-white">
+                      <a
+                        href={l.href}
+                        className="jt-link inline-block transition-all duration-300 hover:translate-x-1 hover:text-white"
+                      >
                         {l.label}
                       </a>
                     ) : (
-                      <Link href={l.href} className="jt-link inline-block transition-colors hover:text-white">
+                      <Link
+                        href={l.href}
+                        className="jt-link inline-block transition-all duration-300 hover:translate-x-1 hover:text-white"
+                      >
                         {l.label}
                       </Link>
                     )}

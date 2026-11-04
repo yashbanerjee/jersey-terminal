@@ -161,10 +161,10 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
       <AnimatePresence mode="wait">
         <motion.div
           key={active.id}
-          initial={{ opacity: 0, y: 10 }}
-          animate={show ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.3, delay: show ? 0.15 : 0 }}
+          initial={{ opacity: 0, y: 14, filter: "blur(6px)" }}
+          animate={show ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 0, y: 14 }}
+          exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
+          transition={{ duration: 0.38, delay: show ? 0.1 : 0, ease: [0.22, 1, 0.36, 1] }}
           className="relative z-20 mt-5 px-3 text-center sm:mt-6"
         >
           <p className="text-[10px] uppercase tracking-[0.28em] text-jt-muted sm:text-[11px]">
@@ -186,14 +186,16 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
           transition={{ duration: 0.5, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
           className="relative z-20 mt-4 flex items-center justify-center gap-3 sm:mt-5 sm:gap-4"
         >
-          <button
+          <motion.button
             type="button"
             aria-label="Previous jersey"
+            whileHover={{ scale: 1.08, x: -2 }}
+            whileTap={{ scale: 0.92 }}
             onClick={() => go(index - 1)}
             className="jt-slant-sm grid h-9 w-9 shrink-0 place-items-center border border-white/15 bg-jt-black/60 text-white backdrop-blur transition hover:border-jt-neon hover:text-jt-neon sm:h-10 sm:w-10"
           >
             <ChevronLeft className="h-4 w-4" />
-          </button>
+          </motion.button>
 
           <ProgressDots
             size="compact"
@@ -205,14 +207,16 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
             labels={products.map((p) => p.name)}
           />
 
-          <button
+          <motion.button
             type="button"
             aria-label="Next jersey"
+            whileHover={{ scale: 1.08, x: 2 }}
+            whileTap={{ scale: 0.92 }}
             onClick={() => go(index + 1)}
             className="jt-slant-sm grid h-9 w-9 shrink-0 place-items-center border border-white/15 bg-jt-black/60 text-white backdrop-blur transition hover:border-jt-neon hover:text-jt-neon sm:h-10 sm:w-10"
           >
             <ChevronRight className="h-4 w-4" />
-          </button>
+          </motion.button>
         </motion.div>
       )}
     </div>

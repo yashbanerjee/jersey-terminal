@@ -53,12 +53,12 @@ export function FeatureStrip() {
             return (
               <StaggerItem key={title} effect="3d">
                 <div
-                  className={`group flex h-full gap-3 jt-chamfer-sm border border-white/8 bg-white/[0.03] p-4 backdrop-blur transition-all duration-300 hover:bg-white/[0.06] sm:p-5 ${a.hoverBorder} ${a.hoverGlow}`}
+                  className={`group flex h-full gap-3 jt-chamfer-sm border border-white/8 bg-white/[0.03] p-4 backdrop-blur transition-all duration-500 hover:-translate-y-1 hover:bg-white/[0.06] sm:p-5 ${a.hoverBorder} ${a.hoverGlow}`}
                 >
                   <span
-                    className={`grid h-10 w-10 shrink-0 place-items-center jt-slant-sm transition-all duration-500 ${a.tile} ${a.hoverTile}`}
+                    className={`grid h-10 w-10 shrink-0 place-items-center jt-slant-sm transition-all duration-500 group-hover:scale-110 group-hover:rotate-[-6deg] ${a.tile} ${a.hoverTile}`}
                   >
-                    <Icon className="h-5 w-5" />
+                    <Icon className="h-5 w-5 transition-transform duration-500" />
                   </span>
                   <div className="min-w-0">
                     <p className="text-sm font-semibold leading-snug text-white">{title}</p>

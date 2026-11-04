@@ -77,8 +77,8 @@ export function ProductCard({
           ? { rotateX, rotateY, transformPerspective: 1000 }
           : undefined
       }
-      whileHover={tiltReady && !mediaOnly ? { y: -6 } : undefined}
-      transition={{ type: "spring", stiffness: 300, damping: 24 }}
+      whileHover={tiltReady && !mediaOnly ? { y: -10, scale: 1.01 } : undefined}
+      transition={{ type: "spring", stiffness: 280, damping: 22 }}
       className="jt-card group relative w-full min-w-0 will-change-transform"
     >
       <Link href={`/product/${product.slug}`} className="block">
@@ -111,7 +111,7 @@ export function ProductCard({
             {product.badges.map((b) => (
               <span
                 key={b}
-                className={`jt-slant-sm px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider sm:px-3 sm:text-[10px] ${BADGE_STYLE[b]}`}
+                className={`jt-slant-sm px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider transition-transform duration-500 group-hover:translate-x-0.5 sm:px-3 sm:text-[10px] ${BADGE_STYLE[b]}`}
               >
                 {BADGE_LABEL[b]}
               </span>
@@ -119,10 +119,10 @@ export function ProductCard({
           </div>
 
           {/* Quick action slides up on hover */}
-          <div className="pointer-events-none absolute inset-x-2 bottom-2 translate-y-3 opacity-0 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:translate-y-0 group-hover:opacity-100 sm:inset-x-3 sm:bottom-3">
+          <div className="pointer-events-none absolute inset-x-2 bottom-2 translate-y-4 opacity-0 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:translate-y-0 group-hover:opacity-100 sm:inset-x-3 sm:bottom-3">
             <span className="jt-gradient-bg jt-slant flex items-center justify-between px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-jt-black">
               View jersey
-              <ArrowUpRight className="h-4 w-4" />
+              <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </span>
           </div>
         </div>
@@ -154,12 +154,17 @@ export function ProductCard({
 
       <motion.button
         type="button"
+        whileHover={{ scale: 1.12 }}
         whileTap={{ scale: 0.85 }}
         aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
         onClick={() => toggle(product.id)}
         className="absolute right-2 top-2 rounded-full bg-black/55 p-2 text-white backdrop-blur transition-colors hover:bg-black/80 sm:right-3 sm:top-3"
       >
-        <Heart className={`h-4 w-4 transition-transform ${wished ? "scale-110 fill-jt-neon text-jt-neon" : ""}`} />
+        <Heart
+          className={`h-4 w-4 transition-all duration-300 ${
+            wished ? "scale-110 fill-jt-neon text-jt-neon" : "group-hover:text-jt-neon"
+          }`}
+        />
       </motion.button>
     </motion.article>
   );

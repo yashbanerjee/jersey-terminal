@@ -6,6 +6,7 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll, useSpring } fr
 import { Menu, Search, ShoppingBag, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
+import { FadeIn } from "@/components/motion/FadeIn";
 import { lockScroll } from "@/components/motion/SmoothScroll";
 import { useCartStore } from "@/store/cart";
 import { cn } from "@/lib/format";
@@ -60,64 +61,74 @@ export function SiteHeader() {
       />
 
       <div className="jt-container flex h-16 items-center justify-between md:h-20">
-        <Link
-          href="/"
-          className="group flex min-w-0 items-center gap-2.5 sm:gap-3"
-          aria-label="Jersey Terminal home"
-          onClick={() => setMobileOpen(false)}
-        >
-          <BrandLogo
-            variant="mark"
-            priority
-            className="transition-transform duration-500 group-hover:rotate-[-3deg] group-hover:scale-[1.05]"
-          />
-          <span className="truncate jt-display text-lg leading-none tracking-wide text-white transition-all duration-300 group-hover:jt-gradient-text sm:text-xl md:text-2xl">
-            JERSEY TERMINAL
-          </span>
-        </Link>
+        <FadeIn delay={0.05} y={10}>
+          <Link
+            href="/"
+            className="group flex min-w-0 items-center gap-2.5 sm:gap-3"
+            aria-label="Jersey Terminal home"
+            onClick={() => setMobileOpen(false)}
+          >
+            <BrandLogo
+              variant="mark"
+              priority
+              className="transition-transform duration-500 group-hover:rotate-[-3deg] group-hover:scale-[1.05]"
+            />
+            <span className="truncate jt-display text-lg leading-none tracking-wide text-white transition-all duration-300 group-hover:jt-gradient-text sm:text-xl md:text-2xl">
+              Jersey Terminal
+            </span>
+          </Link>
+        </FadeIn>
 
         <nav className="hidden items-center gap-7 lg:flex xl:gap-9" aria-label="Primary">
-          {links.map((l) => {
+          {links.map((l, i) => {
             const active = pathname === l.href || (l.href !== "/shop" && pathname.startsWith(l.href));
             return (
-              <Link
-                key={l.href}
-                href={l.href}
-                className={cn(
-                  "jt-link text-[13px] font-semibold uppercase tracking-[0.18em] transition-colors",
-                  active ? "text-jt-neon" : "text-white/80 hover:text-white",
-                )}
-              >
-                {l.label}
-                {active && (
-                  <motion.span
-                    layoutId="nav-active"
-                    className="absolute -bottom-[2px] left-0 h-[2px] w-full jt-gradient-bg"
-                    transition={{ type: "spring", stiffness: 400, damping: 36 }}
-                  />
-                )}
-              </Link>
+              <FadeIn key={l.href} delay={0.08 + i * 0.04} y={8} scale={0.98}>
+                <motion.div whileHover={{ y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 24 }}>
+                  <Link
+                    href={l.href}
+                    className={cn(
+                      "jt-link text-[13px] font-semibold uppercase tracking-[0.18em] transition-colors",
+                      active ? "text-jt-neon" : "text-white/80 hover:text-white",
+                    )}
+                  >
+                    {l.label}
+                    {active && (
+                      <motion.span
+                        layoutId="nav-active"
+                        className="absolute -bottom-[2px] left-0 h-[2px] w-full jt-gradient-bg"
+                        transition={{ type: "spring", stiffness: 400, damping: 36 }}
+                      />
+                    )}
+                  </Link>
+                </motion.div>
+              </FadeIn>
             );
           })}
         </nav>
 
-        <div className="flex items-center gap-1 sm:gap-2">
-          <Link
-            href="/shop"
-            className="rounded-full p-2.5 text-jt-muted transition hover:bg-white/5 hover:text-white"
-            aria-label="Search shop"
-          >
-            <Search className="h-5 w-5" />
-          </Link>
-          <Link
-            href="/account"
-            className="hidden rounded-full p-2.5 text-jt-muted transition hover:bg-white/5 hover:text-white sm:inline-flex"
-            aria-label="Account"
-          >
-            <User className="h-5 w-5" />
-          </Link>
+        <FadeIn delay={0.2} y={8} className="flex items-center gap-1 sm:gap-2">
+          <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}>
+            <Link
+              href="/shop"
+              className="rounded-full p-2.5 text-jt-muted transition hover:bg-white/5 hover:text-white"
+              aria-label="Search shop"
+            >
+              <Search className="h-5 w-5" />
+            </Link>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} className="hidden sm:inline-flex">
+            <Link
+              href="/account"
+              className="rounded-full p-2.5 text-jt-muted transition hover:bg-white/5 hover:text-white"
+              aria-label="Account"
+            >
+              <User className="h-5 w-5" />
+            </Link>
+          </motion.div>
           <motion.button
             type="button"
+            whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.9 }}
             onClick={toggle}
             className="relative rounded-full p-2.5 text-jt-muted transition hover:bg-white/5 hover:text-white"
@@ -139,16 +150,28 @@ export function SiteHeader() {
               )}
             </AnimatePresence>
           </motion.button>
-          <button
+          <motion.button
             type="button"
+            whileTap={{ scale: 0.9 }}
             className="rounded-full p-2.5 text-white lg:hidden"
             onClick={() => setMobileOpen((v) => !v)}
             aria-expanded={mobileOpen}
             aria-label="Toggle menu"
           >
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={mobileOpen ? "x" : "menu"}
+                initial={{ opacity: 0, rotate: -40, scale: 0.7 }}
+                animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                exit={{ opacity: 0, rotate: 40, scale: 0.7 }}
+                transition={{ duration: 0.2 }}
+                className="grid place-items-center"
+              >
+                {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </motion.span>
+            </AnimatePresence>
+          </motion.button>
+        </FadeIn>
       </div>
 
       <AnimatePresence>
@@ -173,10 +196,12 @@ export function SiteHeader() {
                   <Link
                     href={l.href}
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center justify-between border-b border-white/5 py-4 jt-display text-3xl text-white transition-colors hover:text-jt-neon"
+                    className="flex items-center justify-between border-b border-white/5 py-4 jt-display text-3xl text-white transition-all duration-300 hover:translate-x-1 hover:text-jt-neon"
                   >
                     {l.label}
-                    <span className="jt-gradient-text-fire jt-display text-base">{String(i + 1).padStart(2, "0")}</span>
+                    <span className="jt-gradient-text-fire jt-display text-base transition-transform duration-300 group-hover:scale-110">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
                   </Link>
                 </motion.li>
               ))}
