@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { ProductCardModel } from "@/lib/woo/types";
 import { JerseySlider } from "@/components/motion/JerseySlider";
 import { Reveal } from "@/components/motion/Reveal";
+import { ScrollParallax } from "@/components/motion/ScrollParallax";
 import { SplitHeading } from "@/components/motion/SplitHeading";
 
 export function ProductRail({
@@ -20,30 +21,37 @@ export function ProductRail({
   eyebrow?: string;
   products: ProductCardModel[];
   href?: string;
-  /** Optional section number shown as "01 / 02 / 03" */
   index?: number;
 }) {
   const even = (index ?? 0) % 2 === 0;
 
   return (
     <section className="relative w-full overflow-x-hidden py-8 sm:py-10 md:py-14">
-      <div
-        aria-hidden
-        className={`jt-blob ${even ? "jt-blob-orange -right-[10%]" : "jt-blob-cyan -left-[10%]"} top-0 -z-10 h-[50vh] w-[50vw] opacity-50`}
-      />
-      <div
-        aria-hidden
-        className={`pointer-events-none absolute left-[-20%] -z-10 h-[2px] w-[140%] -rotate-[22deg] blur-[1px] ${
-          even
-            ? "top-[40%] bg-[linear-gradient(90deg,transparent,rgba(255,122,26,0.5),transparent)]"
-            : "top-[60%] bg-[linear-gradient(90deg,transparent,rgba(46,230,255,0.45),transparent)]"
-        }`}
-      />
+      <ScrollParallax
+        distance={80}
+        xDistance={even ? 40 : -40}
+        className="pointer-events-none absolute inset-0 -z-10"
+      >
+        <div
+          aria-hidden
+          className={`jt-blob ${even ? "jt-blob-orange -right-[10%]" : "jt-blob-cyan -left-[10%]"} top-0 h-[50vh] w-[50vw] opacity-55`}
+        />
+      </ScrollParallax>
+      <ScrollParallax distance={40} xDistance={even ? -30 : 30} className="pointer-events-none absolute inset-0 -z-10">
+        <div
+          aria-hidden
+          className={`absolute left-[-20%] h-[2px] w-[140%] -rotate-[22deg] blur-[1px] ${
+            even
+              ? "top-[40%] bg-[linear-gradient(90deg,transparent,rgba(255,122,26,0.5),transparent)]"
+              : "top-[60%] bg-[linear-gradient(90deg,transparent,rgba(46,230,255,0.45),transparent)]"
+          }`}
+        />
+      </ScrollParallax>
 
       <div className="jt-container">
         <div className="mb-5 flex flex-col gap-4 sm:mb-7 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
           <div className="min-w-0 flex-1">
-            <Reveal effect="left" y={16}>
+            <Reveal effect="left" y={20} idle="float">
               <p className="mb-2 flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-jt-neon">
                 {index !== undefined && (
                   <span className="jt-gradient-text-fire jt-display text-lg tracking-[0.15em]">
@@ -60,13 +68,13 @@ export function ProductRail({
               className="jt-display text-[clamp(2.1rem,8vw,3.75rem)] leading-[0.95] sm:text-5xl md:text-6xl"
             />
             {subtitle && (
-              <Reveal y={16} delay={0.12}>
+              <Reveal y={20} delay={0.12} idle="breathe">
                 <p className="mt-2 max-w-md text-pretty text-sm text-jt-muted sm:text-base">{subtitle}</p>
               </Reveal>
             )}
           </div>
           {href && (
-            <Reveal effect="right" y={16} delay={0.15} className="shrink-0 self-start sm:self-end">
+            <Reveal effect="right" y={20} delay={0.15} idle="pulse" className="shrink-0 self-start sm:self-end">
               <Link
                 href={href}
                 className="group jt-slant inline-flex bg-white/30 p-px transition-colors hover:bg-jt-orange"
@@ -80,11 +88,13 @@ export function ProductRail({
           )}
         </div>
 
-        {products.length ? (
-          <JerseySlider products={products} />
-        ) : (
-          <p className="text-sm text-jt-muted">Connect WooCommerce to load live products for this collection.</p>
-        )}
+        <Reveal effect="3d" y={52} delay={0.08}>
+          {products.length ? (
+            <JerseySlider products={products} />
+          ) : (
+            <p className="text-sm text-jt-muted">Connect WooCommerce to load live products for this collection.</p>
+          )}
+        </Reveal>
       </div>
     </section>
   );

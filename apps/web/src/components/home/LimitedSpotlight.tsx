@@ -79,7 +79,7 @@ export function LimitedSpotlight({ products, href }: { products: ProductCardMode
       <div className="jt-container">
         <div className="mb-6 flex flex-col gap-4 sm:mb-8 md:flex-row md:items-end md:justify-between">
           <div>
-            <Reveal effect="left" y={12}>
+            <Reveal effect="left" y={18} idle="float">
               <p className="mb-2 inline-flex items-center gap-2 jt-slant-sm bg-jt-orange/15 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.28em] text-jt-amber backdrop-blur">
                 <span className="jt-pulse-orange inline-block h-1.5 w-1.5 rounded-full bg-jt-orange" />
                 Limited edition · While stock lasts
@@ -91,7 +91,7 @@ export function LimitedSpotlight({ products, href }: { products: ProductCardMode
               className="jt-display mt-2 text-[clamp(2.4rem,9vw,4.5rem)] leading-[0.92] sm:text-6xl md:text-7xl"
             />
           </div>
-          <Reveal y={12} delay={0.2} className="shrink-0 self-start md:self-end">
+          <Reveal y={18} delay={0.2} idle="pulse" className="shrink-0 self-start md:self-end">
             <MagneticButton href={href} variant="outline">
               All limited drops <ArrowRight className="h-4 w-4" />
             </MagneticButton>
@@ -105,6 +105,7 @@ export function LimitedSpotlight({ products, href }: { products: ProductCardMode
             key={p.id}
             effect="3d"
             delay={i * 0.1}
+            idle="sway"
             className="w-[78vw] shrink-0 sm:w-[48vw] lg:w-[30vw] xl:w-[24vw]"
           >
             <Link

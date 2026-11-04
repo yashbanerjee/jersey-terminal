@@ -1,3 +1,5 @@
+"use client";
+
 import { BadgeCheck, PenLine, ShieldCheck, Truck } from "lucide-react";
 import { StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
 
@@ -47,11 +49,14 @@ export function FeatureStrip() {
     <section className="w-full py-6 sm:py-8">
       <div className="jt-container">
         <div className="jt-divider mb-6 sm:mb-8" />
-        <StaggerGroup effect="3d" className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-6">
-          {FEATURES.map(({ icon: Icon, title, text, accent }) => {
+        <StaggerGroup
+          effect="3d"
+          className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-6"
+        >
+          {FEATURES.map(({ icon: Icon, title, text, accent }, i) => {
             const a = ACCENTS[accent];
             return (
-              <StaggerItem key={title} effect="3d">
+              <StaggerItem key={title} effect="3d" idle="float" phase={i}>
                 <div
                   className={`group flex h-full gap-3 jt-chamfer-sm border border-white/8 bg-white/[0.03] p-4 backdrop-blur transition-all duration-500 hover:-translate-y-1 hover:bg-white/[0.06] sm:p-5 ${a.hoverBorder} ${a.hoverGlow}`}
                 >
