@@ -147,7 +147,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
     <section ref={root} className="relative w-full overflow-hidden pt-[var(--jt-header-h)]">
       <HeroAmbientVideo />
       <div className="relative z-10 jt-container">
-        <div className="grid min-h-[min(88svh,860px)] items-center gap-5 pb-14 pt-5 sm:gap-6 sm:pb-16 sm:pt-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:pb-16 lg:pt-10 xl:gap-12">
+        <div className="grid min-h-[min(88svh,860px)] items-center gap-4 pb-14 pt-5 sm:gap-5 sm:pb-16 sm:pt-8 lg:grid-cols-[1fr_1fr] lg:gap-3 lg:pb-16 lg:pt-10 xl:gap-4">
           {/* Copy */}
           <div className="hero-copy order-2 flex flex-col justify-center lg:order-1">
             <p className="hero-fade inline-flex w-fit items-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-jt-neon">
@@ -220,7 +220,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
           <div className="hero-visual order-1 lg:order-2">
             {featured?.image ? (
               <div
-                className="relative mx-auto w-full max-w-[300px] sm:max-w-[420px] lg:ml-auto lg:mr-0 lg:max-w-[500px]"
+                className="relative mx-auto w-full max-w-[300px] sm:max-w-[420px] lg:mx-0 lg:max-w-none lg:-translate-x-2 xl:-translate-x-4"
                 style={{ perspective: "1100px" }}
                 onPointerEnter={(e) => {
                   if (e.pointerType === "mouse") setPaused(true);
@@ -355,7 +355,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                 )}
               </div>
             ) : (
-              <div className="jt-chamfer mx-auto aspect-[4/5] w-full max-w-[400px] bg-jt-surface lg:ml-auto" />
+              <div className="jt-chamfer mx-auto aspect-[4/5] w-full max-w-[400px] bg-jt-surface lg:mx-0 lg:max-w-none" />
             )}
           </div>
         </div>
