@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { lockScroll } from "@/components/motion/SmoothScroll";
+import { isMobilePerfTarget, withTimeout } from "@/lib/perf";
 
 type Phase = "boot" | "burst" | "open" | "done";
 
@@ -26,16 +27,18 @@ const ORBIT_DOTS = [
 
 /**
  * Cinematic boot splash — denser HUD energy, then curtain open + site fly-in.
+ * Mobile uses a short lite path so the overlay cannot hang on fonts/network.
  */
 export function BootSplash({ children }: { children: ReactNode }) {
   const reduce = useReducedMotion();
   const [phase, setPhase] = useState<Phase>("boot");
   const [progress, setProgress] = useState(0);
   const [statusIdx, setStatusIdx] = useState(0);
+  const [lite, setLite] = useState(false);
 
   const sparks = useMemo(
     () =>
-      Array.from({ length: 36 }).map((_, i) => ({
+      Array.from({ length: lite ? 8 : 36 }).map((_, i) => ({
         id: i,
         left: `${3 + ((i * 11) % 94)}%`,
         delay: (i % 12) * 0.11,
@@ -43,39 +46,48 @@ export function BootSplash({ children }: { children: ReactNode }) {
         size: 2 + (i % 4),
         color: i % 3 === 0 ? "#b4ff1a" : i % 3 === 1 ? "#ff7a1a" : "#2ee6ff",
       })),
-    [],
+    [lite],
   );
 
   const shards = useMemo(
     () =>
-      Array.from({ length: 16 }).map((_, i) => ({
+      Array.from({ length: lite ? 0 : 16 }).map((_, i) => ({
         id: i,
         x: (i % 2 === 0 ? -1 : 1) * (40 + (i % 6) * 30),
         y: -20 - (i % 8) * 22,
         rot: (i % 2 === 0 ? -1 : 1) * (22 + i * 10),
         color: i % 2 === 0 ? "#b4ff1a" : "#ff7a1a",
       })),
-    [],
+    [lite],
   );
 
-  const eqBars = useMemo(() => Array.from({ length: 18 }).map((_, i) => i), []);
+  const eqBars = useMemo(
+    () => Array.from({ length: lite ? 0 : 18 }).map((_, i) => i),
+    [lite],
+  );
 
   useEffect(() => {
     if (reduce) {
       setPhase("done");
+      lockScroll(false);
       return;
     }
+
+    const mobile = isMobilePerfTarget();
+    setLite(mobile);
 
     let cancelled = false;
     let raf = 0;
     const started = performance.now();
-    const minMs = 2800;
+    // Phones: short branded flash. Desktop: fuller sequence.
+    const minMs = mobile ? 900 : 2200;
+    const hardCapMs = mobile ? 2800 : 5200;
 
     lockScroll(true);
 
     const statusTimer = window.setInterval(() => {
       setStatusIdx((i) => Math.min(STATUS.length - 1, i + 1));
-    }, 500);
+    }, mobile ? 280 : 500);
 
     const tick = (now: number) => {
       if (cancelled) return;
@@ -86,18 +98,33 @@ export function BootSplash({ children }: { children: ReactNode }) {
     };
     raf = requestAnimationFrame(tick);
 
-    async function finish() {
-      try {
-        if (document.fonts?.ready) await document.fonts.ready;
-      } catch {
-        /* ignore */
-      }
+    const forceDone = () => {
+      if (cancelled) return;
+      cancelled = true;
+      cancelAnimationFrame(raf);
+      window.clearInterval(statusTimer);
+      setProgress(1);
+      setPhase("done");
+      lockScroll(false);
+      window.dispatchEvent(new CustomEvent("jt:booted"));
+    };
 
-      if (document.readyState !== "complete") {
-        await new Promise<void>((resolve) => {
-          window.addEventListener("load", () => resolve(), { once: true });
-        });
-      }
+    // Absolute failsafe — never leave users stuck behind the loader.
+    const hardCap = window.setTimeout(forceDone, hardCapMs);
+
+    async function finish() {
+      // Never await fonts/window.load forever — both hang on slow mobile networks.
+      await withTimeout(
+        Promise.all([
+          document.fonts?.ready ?? Promise.resolve(),
+          document.readyState === "complete"
+            ? Promise.resolve()
+            : new Promise<void>((resolve) => {
+                window.addEventListener("load", () => resolve(), { once: true });
+              }),
+        ]),
+        mobile ? 600 : 1400,
+      );
 
       const elapsed = performance.now() - started;
       if (elapsed < minMs) {
@@ -110,17 +137,30 @@ export function BootSplash({ children }: { children: ReactNode }) {
       setProgress(1);
       setStatusIdx(STATUS.length - 1);
 
+      if (mobile) {
+        // Skip heavy burst/door sequence on phones.
+        setPhase("open");
+        window.dispatchEvent(new CustomEvent("jt:booted"));
+        await new Promise((r) => setTimeout(r, 320));
+        if (cancelled) return;
+        setPhase("done");
+        lockScroll(false);
+        window.clearTimeout(hardCap);
+        return;
+      }
+
       setPhase("burst");
-      await new Promise((r) => setTimeout(r, 520));
+      await new Promise((r) => setTimeout(r, 420));
       if (cancelled) return;
 
       setPhase("open");
       window.dispatchEvent(new CustomEvent("jt:booted"));
 
-      await new Promise((r) => setTimeout(r, 1150));
+      await new Promise((r) => setTimeout(r, 900));
       if (cancelled) return;
       setPhase("done");
       lockScroll(false);
+      window.clearTimeout(hardCap);
     }
 
     void finish();
@@ -129,6 +169,7 @@ export function BootSplash({ children }: { children: ReactNode }) {
       cancelled = true;
       cancelAnimationFrame(raf);
       window.clearInterval(statusTimer);
+      window.clearTimeout(hardCap);
       lockScroll(false);
     };
   }, [reduce]);
@@ -199,32 +240,35 @@ export function BootSplash({ children }: { children: ReactNode }) {
                   }}
                 />
 
-                {/* Radar sweep */}
-                <motion.div
-                  className="absolute left-1/2 top-[42%] h-[55vmin] w-[55vmin] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40"
-                  style={{
-                    background:
-                      "conic-gradient(from 0deg, transparent 0deg, rgba(180,255,26,0.0) 40deg, rgba(180,255,26,0.35) 70deg, transparent 95deg)",
-                  }}
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 3.2, repeat: Infinity, ease: "linear" }}
-                />
-
-                <motion.span
-                  className="absolute left-[-30%] top-[22%] h-[3px] w-[160%] -rotate-[18deg] bg-[linear-gradient(90deg,transparent,rgba(46,230,255,1),transparent)] blur-[1px]"
-                  animate={{ x: ["-14%", "14%", "-14%"], opacity: [0.3, 1, 0.3] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                />
-                <motion.span
-                  className="absolute left-[-30%] top-[48%] h-[2px] w-[160%] -rotate-[18deg] bg-[linear-gradient(90deg,transparent,rgba(180,255,26,0.8),transparent)]"
-                  animate={{ x: ["10%", "-16%", "10%"], opacity: [0.2, 0.85, 0.2] }}
-                  transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
-                />
-                <motion.span
-                  className="absolute left-[-30%] top-[68%] h-[5px] w-[160%] -rotate-[18deg] bg-[linear-gradient(90deg,transparent,rgba(255,122,26,1),transparent)] blur-[1.5px]"
-                  animate={{ x: ["12%", "-12%", "12%"], opacity: [0.35, 1, 0.35] }}
-                  transition={{ duration: 2.3, repeat: Infinity, ease: "easeInOut" }}
-                />
+                {/* Radar / beams — desktop only (expensive paint on phones) */}
+                {!lite && (
+                  <>
+                    <motion.div
+                      className="absolute left-1/2 top-[42%] h-[55vmin] w-[55vmin] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40"
+                      style={{
+                        background:
+                          "conic-gradient(from 0deg, transparent 0deg, rgba(180,255,26,0.0) 40deg, rgba(180,255,26,0.35) 70deg, transparent 95deg)",
+                      }}
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 3.2, repeat: Infinity, ease: "linear" }}
+                    />
+                    <motion.span
+                      className="absolute left-[-30%] top-[22%] h-[3px] w-[160%] -rotate-[18deg] bg-[linear-gradient(90deg,transparent,rgba(46,230,255,1),transparent)] blur-[1px]"
+                      animate={{ x: ["-14%", "14%", "-14%"], opacity: [0.3, 1, 0.3] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                    <motion.span
+                      className="absolute left-[-30%] top-[48%] h-[2px] w-[160%] -rotate-[18deg] bg-[linear-gradient(90deg,transparent,rgba(180,255,26,0.8),transparent)]"
+                      animate={{ x: ["10%", "-16%", "10%"], opacity: [0.2, 0.85, 0.2] }}
+                      transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                    <motion.span
+                      className="absolute left-[-30%] top-[68%] h-[5px] w-[160%] -rotate-[18deg] bg-[linear-gradient(90deg,transparent,rgba(255,122,26,1),transparent)] blur-[1.5px]"
+                      animate={{ x: ["12%", "-12%", "12%"], opacity: [0.35, 1, 0.35] }}
+                      transition={{ duration: 2.3, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                  </>
+                )}
 
                 {sparks.map((s) => (
                   <motion.span
@@ -294,25 +338,26 @@ export function BootSplash({ children }: { children: ReactNode }) {
                     transition={{ duration: 1.7, repeat: Infinity, ease: "linear" }}
                   />
 
-                  {/* Orbiting micro-dots */}
-                  {ORBIT_DOTS.map((d, i) => (
-                    <motion.div
-                      key={i}
-                      className="pointer-events-none absolute left-1/2 top-1/2 h-0 w-0"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: d.dur, repeat: Infinity, ease: "linear" }}
-                      style={{ rotate: d.angle }}
-                    >
-                      <span
-                        className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-                        style={{
-                          background: d.color,
-                          boxShadow: `0 0 12px ${d.color}`,
-                          transform: `translate(-50%, -50%) translateY(-${d.r}px)`,
-                        }}
-                      />
-                    </motion.div>
-                  ))}
+                  {/* Orbiting micro-dots — desktop only */}
+                  {!lite &&
+                    ORBIT_DOTS.map((d, i) => (
+                      <motion.div
+                        key={i}
+                        className="pointer-events-none absolute left-1/2 top-1/2 h-0 w-0"
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: d.dur, repeat: Infinity, ease: "linear" }}
+                        style={{ rotate: d.angle }}
+                      >
+                        <span
+                          className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+                          style={{
+                            background: d.color,
+                            boxShadow: `0 0 12px ${d.color}`,
+                            transform: `translate(-50%, -50%) translateY(-${d.r}px)`,
+                          }}
+                        />
+                      </motion.div>
+                    ))}
 
                   <motion.span
                     className="absolute h-52 w-52 rounded-full bg-[radial-gradient(circle,rgba(180,255,26,0.5),transparent_62%)] blur-2xl sm:h-60 sm:w-60"
@@ -545,19 +590,27 @@ export function BootSplash({ children }: { children: ReactNode }) {
         initial={
           reduce
             ? false
-            : { opacity: 0, y: 130, scale: 0.86, filter: "blur(30px)", rotateX: 14 }
+            : lite
+              ? { opacity: 0, y: 24 }
+              : { opacity: 0, y: 130, scale: 0.86, filter: "blur(30px)", rotateX: 14 }
         }
         animate={
           contentLive || reduce
             ? { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", rotateX: 0 }
-            : { opacity: 0, y: 130, scale: 0.86, filter: "blur(30px)", rotateX: 14 }
+            : lite
+              ? { opacity: 0, y: 24 }
+              : { opacity: 0, y: 130, scale: 0.86, filter: "blur(30px)", rotateX: 14 }
         }
         transition={{
-          duration: 1.2,
+          duration: lite ? 0.35 : 1.2,
           ease: [0.16, 1, 0.3, 1],
-          delay: phase === "open" ? 0.1 : 0,
+          delay: phase === "open" && !lite ? 0.1 : 0,
         }}
-        style={{ transformOrigin: "50% 6%", transformPerspective: 1800 }}
+        style={
+          lite
+            ? undefined
+            : { transformOrigin: "50% 6%", transformPerspective: 1800 }
+        }
       >
         {children}
       </motion.div>

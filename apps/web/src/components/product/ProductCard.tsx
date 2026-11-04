@@ -43,7 +43,12 @@ export function ProductCard({
   const wished = hydrated && wishedStored;
 
   const [tiltReady, setTiltReady] = useState(false);
-  useEffect(() => setTiltReady(true), []);
+  useEffect(() => {
+    // 3D card float + springs crush mobile scroll FPS — fine pointer only.
+    const fine = window.matchMedia("(pointer: fine)").matches;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (fine && !reduce) setTiltReady(true);
+  }, []);
 
   const ref = useRef<HTMLElement>(null);
   const px = useMotionValue(0.5);

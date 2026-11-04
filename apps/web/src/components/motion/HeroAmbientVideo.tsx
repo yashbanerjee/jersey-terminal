@@ -13,7 +13,11 @@ export function HeroAmbientVideo() {
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) return;
+    const mobile =
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.matchMedia("(max-width: 768px)").matches;
+    // Skip video decode on phones — still photo is enough and far cheaper.
+    if (reduced || mobile) return;
 
     const video = videoRef.current;
     if (!video) return;

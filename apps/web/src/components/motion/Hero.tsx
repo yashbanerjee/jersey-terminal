@@ -82,14 +82,26 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
 
   useEffect(() => {
     const motionOff = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const mobile =
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.matchMedia("(max-width: 768px)").matches;
     let kill: (() => void) | undefined;
     let booted = false;
     let fallbackTimer = 0;
     let playIntro: () => void = () => {};
 
     const ctx = gsap.context(() => {
-      if (motionOff) {
-        gsap.set([".hero-line", ".hero-fade", ".hero-visual", ".hero-chip"], { opacity: 1, y: 0, x: 0, yPercent: 0 });
+      if (motionOff || mobile) {
+        // Instant show on phones — continuous GSAP floats + scrub kill scroll FPS.
+        gsap.set([".hero-line", ".hero-fade", ".hero-visual", ".hero-chip"], {
+          opacity: 1,
+          y: 0,
+          x: 0,
+          yPercent: 0,
+          scale: 1,
+          rotate: 0,
+          skewX: 0,
+        });
         return;
       }
 
@@ -129,25 +141,27 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
       fallbackTimer = window.setTimeout(playIntro, 3400);
     }, root);
 
-    import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
-      if (motionOff || !root.current) return;
-      gsap.registerPlugin(ScrollTrigger);
-      const pctx = gsap.context(() => {
-        gsap.to(".hero-copy", {
-          yPercent: -12,
-          opacity: 0.25,
-          ease: "none",
-          scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
-        });
-        gsap.to(".hero-visual", {
-          yPercent: 8,
-          scale: 0.96,
-          ease: "none",
-          scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
-        });
-      }, root);
-      kill = () => pctx.revert();
-    });
+    if (!motionOff && !mobile) {
+      import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
+        if (!root.current) return;
+        gsap.registerPlugin(ScrollTrigger);
+        const pctx = gsap.context(() => {
+          gsap.to(".hero-copy", {
+            yPercent: -12,
+            opacity: 0.25,
+            ease: "none",
+            scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
+          });
+          gsap.to(".hero-visual", {
+            yPercent: 8,
+            scale: 0.96,
+            ease: "none",
+            scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
+          });
+        }, root);
+        kill = () => pctx.revert();
+      });
+    }
 
     return () => {
       window.removeEventListener("jt:booted", playIntro);

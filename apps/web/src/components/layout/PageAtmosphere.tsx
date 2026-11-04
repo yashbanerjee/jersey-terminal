@@ -1,23 +1,27 @@
 "use client";
 
 import { motion, useMotionTemplate, useMotionValue, useSpring } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AnimatedGradientBg } from "@/components/motion/AnimatedGradientBg";
 import { RisingDots } from "@/components/motion/RisingDots";
+import { isMobilePerfTarget } from "@/lib/perf";
 
 /**
  * Site-wide stadium photo backdrop + dual cursor glow (lime + orange trail).
+ * Phones get backdrop only — no particle rain or cursor compositing layers.
  */
 export function PageAtmosphere() {
+  const [desktopFx, setDesktopFx] = useState(false);
   const mx = useMotionValue(-1000);
   const my = useMotionValue(-1000);
   const x = useSpring(mx, { stiffness: 70, damping: 18, mass: 0.55 });
   const y = useSpring(my, { stiffness: 70, damping: 18, mass: 0.55 });
-  // Lagging trail for a richer cursor aura
   const tx = useSpring(mx, { stiffness: 28, damping: 18, mass: 0.9 });
   const ty = useSpring(my, { stiffness: 28, damping: 18, mass: 0.9 });
 
   useEffect(() => {
+    if (isMobilePerfTarget()) return;
+    setDesktopFx(true);
     const fine = window.matchMedia("(pointer: fine)").matches;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!fine || reduced) return;
@@ -35,9 +39,13 @@ export function PageAtmosphere() {
   return (
     <div className="pointer-events-none fixed inset-0 -z-10">
       <AnimatedGradientBg intensity="full" />
-      <RisingDots />
-      <motion.div aria-hidden className="absolute inset-0 mix-blend-screen" style={{ background: trail }} />
-      <motion.div aria-hidden className="absolute inset-0" style={{ background: spotlight }} />
+      {desktopFx && (
+        <>
+          <RisingDots />
+          <motion.div aria-hidden className="absolute inset-0 mix-blend-screen" style={{ background: trail }} />
+          <motion.div aria-hidden className="absolute inset-0" style={{ background: spotlight }} />
+        </>
+      )}
     </div>
   );
 }

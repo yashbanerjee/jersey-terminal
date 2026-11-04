@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
+import { isMobilePerfTarget, prefersReducedMotion } from "@/lib/perf";
 
 let instance: Lenis | null = null;
 
@@ -13,10 +14,13 @@ export function lockScroll(locked: boolean) {
   else instance?.start();
 }
 
-/** Site-wide inertial smooth scrolling, synced with GSAP ScrollTrigger. */
+/**
+ * Desktop-only inertial scrolling.
+ * Lenis + rAF on touch devices causes scroll jank and input lag — use native scroll there.
+ */
 export function SmoothScroll() {
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (prefersReducedMotion() || isMobilePerfTarget()) return;
 
     const lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
     instance = lenis;
@@ -28,7 +32,6 @@ export function SmoothScroll() {
       lenis.on("scroll", ScrollTrigger.update);
     });
 
-    // Keep Framer Motion whileInView / IntersectionObserver in sync with Lenis
     lenis.on("scroll", () => {
       window.dispatchEvent(new Event("scroll"));
     });

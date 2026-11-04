@@ -960,6 +960,30 @@ html.lenis body {
   }
 }
 
+/* Phones: kill continuous CSS animations that tank scroll FPS */
+@media (max-width: 768px), (pointer: coarse) {
+  .jt-rise-dot,
+  .jt-hero-kenburns-img,
+  .jt-card-border-run,
+  .jt-card-border-bloom,
+  .jt-card-aura,
+  .jt-float,
+  .jt-flicker,
+  .jt-fog,
+  .jt-stadium-bloom,
+  .jt-mesh,
+  .jt-scan {
+    animation: none !important;
+  }
+  .jt-hero-kenburns-img {
+    transform: none !important;
+    will-change: auto !important;
+  }
+  .jt-rise-dot {
+    display: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .jt-marquee-track,
   .jt-pulse,

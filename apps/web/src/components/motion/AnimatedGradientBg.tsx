@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import { isMobilePerfTarget, prefersReducedMotion } from "@/lib/perf";
 
 /**
  * Exact stadium-night photo (`/bg/stadium-night.jpg`) as the site backdrop.
- *
- * Uses CSS background (not next/image fill) so the landscape art keeps its
- * native aspect and never collapses to height 0 under absolute positioning.
+ * Mobile keeps a static photo — no blur layers or GSAP (scroll jank).
  */
 export function AnimatedGradientBg({
   className = "",
@@ -18,10 +17,11 @@ export function AnimatedGradientBg({
 }) {
   const root = useRef<HTMLDivElement>(null);
   const full = intensity === "full";
+  const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced || !root.current) return;
+    if (prefersReducedMotion() || isMobilePerfTarget() || !root.current) return;
+    setAnimate(true);
 
     const ctx = gsap.context(() => {
       gsap.to(".jt-stadium-bloom", {
@@ -54,7 +54,6 @@ export function AnimatedGradientBg({
 
   return (
     <div ref={root} aria-hidden className={`pointer-events-none absolute inset-0 overflow-hidden bg-black ${className}`}>
-      {/* Matching lime atmosphere under / around the photo */}
       <div
         className="absolute inset-0"
         style={{
@@ -66,21 +65,19 @@ export function AnimatedGradientBg({
         }}
       />
 
-      <div
-        className="jt-stadium-bloom absolute right-[-2%] top-[-6%] h-[60vmin] w-[60vmin] rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(220,255,160,0.35) 0%, rgba(180,255,26,0.12) 40%, transparent 70%)",
-          filter: "blur(30px)",
-          opacity: 0.55,
-          mixBlendMode: "screen",
-        }}
-      />
+      {animate && (
+        <div
+          className="jt-stadium-bloom absolute right-[-2%] top-[-6%] h-[60vmin] w-[60vmin] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(220,255,160,0.35) 0%, rgba(180,255,26,0.12) 40%, transparent 70%)",
+            filter: "blur(30px)",
+            opacity: 0.55,
+            mixBlendMode: "screen",
+          }}
+        />
+      )}
 
-      {/*
-        Full-WIDTH photo (no side crop) so neon ribbons + floodlights match the
-        reference. Landscape art sits in the upper/mid band; atmosphere fills the rest.
-      */}
       <div
         style={{
           position: "absolute",
@@ -100,7 +97,6 @@ export function AnimatedGradientBg({
         }}
       />
 
-      {/* Soft left wash for headline readability only */}
       <div
         className="absolute inset-0"
         style={{
@@ -109,24 +105,28 @@ export function AnimatedGradientBg({
         }}
       />
 
-      <div
-        className="jt-fog jt-fog-a absolute -bottom-[8%] left-[-10%] h-[38vh] w-[60vw] rounded-full"
-        style={{
-          background: "radial-gradient(ellipse, rgba(180,255,26,0.14), transparent 70%)",
-          filter: "blur(40px)",
-          opacity: 0.55,
-          mixBlendMode: "screen",
-        }}
-      />
-      <div
-        className="jt-fog jt-fog-b absolute -bottom-[10%] right-[-8%] h-[34vh] w-[52vw] rounded-full"
-        style={{
-          background: "radial-gradient(ellipse, rgba(200,255,120,0.12), transparent 70%)",
-          filter: "blur(44px)",
-          opacity: 0.5,
-          mixBlendMode: "screen",
-        }}
-      />
+      {animate && (
+        <>
+          <div
+            className="jt-fog jt-fog-a absolute -bottom-[8%] left-[-10%] h-[38vh] w-[60vw] rounded-full"
+            style={{
+              background: "radial-gradient(ellipse, rgba(180,255,26,0.14), transparent 70%)",
+              filter: "blur(40px)",
+              opacity: 0.55,
+              mixBlendMode: "screen",
+            }}
+          />
+          <div
+            className="jt-fog jt-fog-b absolute -bottom-[10%] right-[-8%] h-[34vh] w-[52vw] rounded-full"
+            style={{
+              background: "radial-gradient(ellipse, rgba(200,255,120,0.12), transparent 70%)",
+              filter: "blur(44px)",
+              opacity: 0.5,
+              mixBlendMode: "screen",
+            }}
+          />
+        </>
+      )}
     </div>
   );
 }
