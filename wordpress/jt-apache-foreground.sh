@@ -8,9 +8,14 @@ DEST_PLUGINS="${WP_PATH}/wp-content/plugins"
 
 ensure_plugin_from_image() {
   local name="$1"
-  if [ -d "${SRC_PLUGINS}/${name}" ] && [ ! -d "${DEST_PLUGINS}/${name}" ]; then
-    echo "[jt-sports] Copying plugin ${name} onto volume..."
-    mkdir -p "$DEST_PLUGINS"
+  local force="${2:-0}"
+  if [ ! -d "${SRC_PLUGINS}/${name}" ]; then
+    return 0
+  fi
+  mkdir -p "$DEST_PLUGINS"
+  if [ "$force" = "1" ] || [ ! -d "${DEST_PLUGINS}/${name}" ]; then
+    echo "[jt-sports] Syncing plugin ${name} onto volume..."
+    rm -rf "${DEST_PLUGINS}/${name}"
     cp -a "${SRC_PLUGINS}/${name}" "${DEST_PLUGINS}/${name}"
   fi
 }
@@ -29,8 +34,9 @@ if command -v wp >/dev/null 2>&1 && [ -f "${WP_PATH}/wp-config.php" ]; then
       --allow-root || echo "[jt-sports] wp core install returned non-zero (may already be installing)"
   fi
 
-  # Persistent wp-content volume can miss plugins bundled in the image — copy them first.
-  ensure_plugin_from_image "woocommerce"
+  # Persistent wp-content volume can miss / pin wrong plugin builds — sync from image.
+  # Force-refresh WooCommerce so an incompatible latest-stable left on the volume is replaced.
+  ensure_plugin_from_image "woocommerce" 1
   ensure_plugin_from_image "jt-sports-commerce-extensions"
   mkdir -p "${WP_PATH}/jt-import"
   if [ -d /usr/src/wordpress/jt-import ] && [ ! -f "${WP_PATH}/jt-import/import-catalog.php" ]; then
