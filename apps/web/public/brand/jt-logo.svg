@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none" role="img" aria-label="JT Sports">
+  <rect width="120" height="120" rx="24" fill="#0B0B0B"/>
+  <path d="M28 34h64v14H66v48H54V48H28V34z" fill="url(#jtGrad)"/>
+  <path d="M78 52c10 0 18 8 18 18s-8 18-18 18-18-8-18-18 8-18 18-18z" stroke="#E5F50C" stroke-width="4"/>
+  <defs>
+    <linearGradient id="jtGrad" x1="28" y1="34" x2="92" y2="96" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#9AF909"/>
+      <stop offset="1" stop-color="#E5F50C"/>
+    </linearGradient>
+  </defs>
+</svg>

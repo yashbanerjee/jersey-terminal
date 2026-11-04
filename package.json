@@ -1,0 +1,21 @@
+{
+  "name": "jt-sports-commerce",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Premium UAE sports merchandise — Next.js + WooCommerce on Railway",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "dev:worker": "pnpm --filter worker dev",
+    "build": "pnpm --filter @jt/shared build && pnpm --filter web build && pnpm --filter worker build",
+    "build:web": "pnpm --filter web build",
+    "build:worker": "pnpm --filter worker build",
+    "start": "pnpm --filter web start",
+    "start:worker": "pnpm --filter worker start",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.15.9"
+}

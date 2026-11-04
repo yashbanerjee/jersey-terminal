@@ -1,0 +1,65 @@
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+      MYSQL_ROOT_PASSWORD: rootsecret
+    volumes:
+      - jt_mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-prootsecret"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    volumes:
+      - jt_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  wordpress:
+    build:
+      context: ./wordpress
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_CONFIG_EXTRA: |
+        define('JT_STOREFRONT_ORIGIN', 'http://localhost:3000');
+        if (isset($$_SERVER['HTTP_X_FORWARDED_PROTO']) && $$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+          $$_SERVER['HTTPS'] = 'on';
+        }
+      JT_STOREFRONT_ORIGIN: http://localhost:3000
+      JT_INTERNAL_API_SECRET: local-dev-secret
+      REVALIDATE_SECRET: local-revalidate-secret
+      JT_REVALIDATE_URL: http://host.docker.internal:3000/api/revalidate
+    volumes:
+      - jt_wp_data:/var/www/html
+      - ./wordpress/wp-content/plugins/jt-sports-commerce-extensions:/var/www/html/wp-content/plugins/jt-sports-commerce-extensions
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  jt_mysql_data:
+  jt_redis_data:
+  jt_wp_data:
