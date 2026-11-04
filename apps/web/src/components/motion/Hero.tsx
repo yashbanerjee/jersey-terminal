@@ -7,8 +7,10 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ArrowRight, ChevronDown, Globe, PenLine, Shirt, Star, Zap } from "lucide-react";
 import { CountUp } from "@/components/motion/CountUp";
+import { HeroAmbientVideo } from "@/components/motion/HeroAmbientVideo";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { ProgressDots } from "@/components/motion/ProgressDots";
+import { SlideImpact } from "@/components/motion/SlideImpact";
 import { formatAED } from "@/lib/format";
 
 const HERO_SLIDE_MS = 3000;
@@ -141,6 +143,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
 
   return (
     <section ref={root} className="relative w-full overflow-hidden pt-[var(--jt-header-h)]">
+      <HeroAmbientVideo />
       <div className="relative z-10 jt-container">
         <div className="grid min-h-[calc(100svh-var(--jt-header-h))] items-center gap-6 pb-16 pt-6 sm:gap-8 sm:pb-20 sm:pt-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:pb-24 lg:pt-12 xl:gap-16">
           {/* Copy */}
@@ -239,6 +242,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                 </div>
 
                 <div className="hero-jersey relative jt-drop-orange" style={{ transformStyle: "preserve-3d" }}>
+                  <SlideImpact triggerKey={featured.id} />
                   <AnimatePresence mode="wait" custom={dir}>
                     <motion.div
                       key={featured.id}

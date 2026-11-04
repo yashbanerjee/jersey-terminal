@@ -1,10 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Reveal } from "@/components/motion/Reveal";
 import { SplitHeading } from "@/components/motion/SplitHeading";
 import { AddToCartPanel } from "@/components/product/AddToCartPanel";
+import { ProductGallery3D } from "@/components/product/ProductGallery3D";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import {
   getProductBySlug,
@@ -45,35 +45,11 @@ export default async function ProductPage({
       </Reveal>
 
       <div className="grid w-full gap-8 lg:grid-cols-2 lg:gap-12 xl:gap-16">
-        <Reveal effect="3d" className="space-y-3" y={24}>
-          <div className="jt-card jt-glow-border group relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-jt-surface ring-1 ring-white/10 shadow-[0_40px_120px_-40px_rgba(255,122,26,0.4)] sm:aspect-[3/4]">
-            <div className="pointer-events-none absolute left-1/2 top-1/2 h-[80%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,122,26,0.22),rgba(46,230,255,0.1)_45%,transparent_70%)] blur-3xl" />
-            {product.images[0] ? (
-              <div className="jt-card-media absolute inset-0">
-                <Image
-                  src={product.images[0].src}
-                  alt={product.images[0].alt || product.name}
-                  fill
-                  priority
-                  className="object-cover transition duration-700 group-hover:scale-[1.04]"
-                  sizes="(max-width:1024px) 100vw, 50vw"
-                />
-              </div>
-            ) : null}
-            <span aria-hidden className="jt-card-shine pointer-events-none absolute inset-0" />
-          </div>
-          {product.images.length > 1 && (
-            <div className="grid grid-cols-4 gap-2">
-              {product.images.slice(1, 5).map((img) => (
-                <div
-                  key={img.id}
-                  className="relative aspect-square overflow-hidden rounded-lg bg-jt-surface ring-1 ring-white/10 transition-transform duration-300 hover:scale-[1.03]"
-                >
-                  <Image src={img.src} alt={img.alt || product.name} fill className="object-cover" sizes="25vw" />
-                </div>
-              ))}
-            </div>
-          )}
+        <Reveal effect="3d" y={24}>
+          <ProductGallery3D
+            name={product.name}
+            images={product.images.map((img) => ({ id: img.id, src: img.src, alt: img.alt || product.name }))}
+          />
         </Reveal>
 
         <div className="min-w-0 lg:sticky lg:top-28 lg:self-start">

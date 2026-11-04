@@ -1,8 +1,8 @@
 import { Search } from "lucide-react";
-import Link from "next/link";
 import { PageHeading } from "@/components/layout/PageHeading";
-import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
+import { Reveal } from "@/components/motion/Reveal";
 import { ProductGrid } from "@/components/product/ProductGrid";
+import { ShopChips } from "@/components/shop/ShopChips";
 import { getCategories, listProducts } from "@/lib/woo/products";
 
 export const dynamic = "force-dynamic";
@@ -24,26 +24,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
       />
 
       <div className="mt-6 flex flex-col gap-4 sm:mt-8 lg:flex-row lg:items-center lg:justify-between">
-        <StaggerGroup className="jt-chip-row">
-          <StaggerItem className="shrink-0">
-            <Link
-              href="/shop"
-              className="jt-chip rounded-full border border-jt-neon bg-jt-neon/10 px-5 py-2.5 text-xs uppercase tracking-[0.16em] text-jt-neon transition-colors hover:bg-jt-neon/20"
-            >
-              All
-            </Link>
-          </StaggerItem>
-          {categories.map((c) => (
-            <StaggerItem key={c.id} className="shrink-0">
-              <Link
-                href={`/shop/${c.slug}`}
-                className="jt-chip rounded-full border border-white/15 bg-white/[0.02] px-5 py-2.5 text-xs uppercase tracking-[0.16em] text-jt-muted transition-colors hover:border-jt-neon/60 hover:bg-jt-neon/10 hover:text-white"
-              >
-                {c.name}
-              </Link>
-            </StaggerItem>
-          ))}
-        </StaggerGroup>
+        <ShopChips categories={categories} />
 
         <Reveal effect="right" delay={0.2} className="relative w-full lg:max-w-sm">
           <form className="relative w-full">

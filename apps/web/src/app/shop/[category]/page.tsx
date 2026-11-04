@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { PageHeading } from "@/components/layout/PageHeading";
 import { Reveal } from "@/components/motion/Reveal";
 import { ProductGrid } from "@/components/product/ProductGrid";
+import { ShopChips } from "@/components/shop/ShopChips";
 import { getCategories, listProducts } from "@/lib/woo/products";
 
 export const dynamic = "force-dynamic";
@@ -29,6 +30,9 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         </Link>
       </Reveal>
       <PageHeading eyebrow="Collection" title={match?.name ?? category.replace(/-/g, " ")} count={products.length} />
+      <div className="mt-6 sm:mt-8">
+        <ShopChips categories={categories} />
+      </div>
       <ProductGrid className="mt-8 sm:mt-10" products={products} />
     </div>
   );

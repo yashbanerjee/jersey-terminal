@@ -931,6 +931,26 @@ html.lenis body {
   transform-origin: center;
 }
 
+/* Hero ambient — Ken Burns pan when no stadium video file is present */
+.jt-hero-kenburns {
+  opacity: 0.32;
+}
+.jt-hero-kenburns-img {
+  animation: jt-kenburns 28s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes jt-kenburns {
+  0% {
+    transform: scale(1.08) translate(0%, 0%);
+  }
+  50% {
+    transform: scale(1.16) translate(-2.5%, 1.5%);
+  }
+  100% {
+    transform: scale(1.12) translate(2%, -1.5%);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .jt-marquee-track,
   .jt-pulse,
@@ -960,7 +980,8 @@ html.lenis body {
   .jt-card-aura,
   .jt-card:hover .jt-card-border-run,
   .jt-card:hover .jt-card-border-bloom,
-  .jt-card:hover .jt-card-frame-glow {
+  .jt-card:hover .jt-card-frame-glow,
+  .jt-hero-kenburns-img {
     animation: none !important;
   }
   .jt-card-media img,

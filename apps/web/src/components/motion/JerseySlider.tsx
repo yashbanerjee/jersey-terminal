@@ -7,6 +7,7 @@ import type { ProductCardModel } from "@/lib/woo/types";
 import { formatAED } from "@/lib/format";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ProgressDots } from "@/components/motion/ProgressDots";
+import { SlideImpact } from "@/components/motion/SlideImpact";
 
 type Props = {
   products: ProductCardModel[];
@@ -98,6 +99,7 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
           className="relative mx-auto aspect-[5/7] w-[min(68vw,230px)] overflow-visible sm:w-[270px] md:w-[290px] lg:w-[310px]"
           style={{ transformStyle: "preserve-3d" }}
         >
+          {entered && <SlideImpact triggerKey={index} />}
           {slots.map((offset) => {
             const i = ((index + offset) % total + total) % total;
             const product = products[i];
