@@ -15,7 +15,7 @@ import {
 } from "@/lib/woo/products";
 import { displayCategory } from "@/lib/woo/store-map";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function ProductPage({
   params,

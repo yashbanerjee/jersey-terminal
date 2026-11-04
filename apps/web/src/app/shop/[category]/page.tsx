@@ -5,7 +5,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { getCategories, listProducts } from "@/lib/woo/products";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
   const { category } = await params;

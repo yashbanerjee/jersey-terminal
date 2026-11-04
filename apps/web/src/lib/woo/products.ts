@@ -206,40 +206,44 @@ export async function getProductExtensions(productId: number) {
 }
 
 export async function getHomepageCollections() {
-  const cats = await getCategories();
-  const newId = cats.find((c) => c.slug === "new-arrivals")?.id;
-  const limitedId = cats.find(
-    (c) => c.slug === "limited-editions" || c.slug === "limited",
-  )?.id;
-  const featuredId = cats.find((c) => c.slug === "featured")?.id;
+  try {
+    const cats = await getCategories();
+    const newId = cats.find((c) => c.slug === "new-arrivals")?.id;
+    const limitedId = cats.find(
+      (c) => c.slug === "limited-editions" || c.slug === "limited",
+    )?.id;
+    const featuredId = cats.find((c) => c.slug === "featured")?.id;
 
-  const [newest, limitedRaw, all] = await Promise.all([
-    listProducts({
-      category: newId ? String(newId) : undefined,
-      orderby: "date",
-      perPage: 12,
-    }),
-    listProducts({
-      category: limitedId
-        ? String(limitedId)
-        : featuredId
-          ? String(featuredId)
-          : undefined,
-      featured: !limitedId,
-      perPage: 12,
-    }),
-    listProducts({ orderby: "date", perPage: 24 }),
-  ]);
+    const [newest, limitedRaw, all] = await Promise.all([
+      listProducts({
+        category: newId ? String(newId) : undefined,
+        orderby: "date",
+        perPage: 12,
+      }),
+      listProducts({
+        category: limitedId
+          ? String(limitedId)
+          : featuredId
+            ? String(featuredId)
+            : undefined,
+        featured: !limitedId,
+        perPage: 12,
+      }),
+      listProducts({ orderby: "date", perPage: 24 }),
+    ]);
 
-  // If limited category is empty, fall back to featured / top of catalog
-  const limited =
-    limitedRaw.length > 0
-      ? limitedRaw
-      : all.filter((p) =>
-          ["champions-edition", "shadow-strike-jersey", "velocity-jersey"].includes(
-            p.slug,
-          ),
-        );
+    // If limited category is empty, fall back to featured / top of catalog
+    const limited =
+      limitedRaw.length > 0
+        ? limitedRaw
+        : all.filter((p) =>
+            ["champions-edition", "shadow-strike-jersey", "velocity-jersey"].includes(
+              p.slug,
+            ),
+          );
 
-  return { newest, limited, all };
+    return { newest, limited, all };
+  } catch {
+    return { newest: [], limited: [], all: [] };
+  }
 }

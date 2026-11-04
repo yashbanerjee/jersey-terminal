@@ -6,10 +6,17 @@ import { PersonaliseBanner } from "@/components/home/PersonaliseBanner";
 import { FeatureStrip } from "@/components/home/FeatureStrip";
 import { getHomepageCollections } from "@/lib/woo/products";
 
+/** Always render at request time so Docker builds don't need live Woo/WordPress. */
+export const dynamic = "force-dynamic";
+
 const FEATURED_PRIORITY = ["shadow-strike-jersey", "champions-edition", "velocity-jersey", "red-horizon"];
 
 export default async function HomePage() {
-  const { newest, limited, all } = await getHomepageCollections();
+  const { newest, limited, all } = await getHomepageCollections().catch(() => ({
+    newest: [],
+    limited: [],
+    all: [],
+  }));
 
   const priorityHits = FEATURED_PRIORITY.map((slug) => all.find((p) => p.slug === slug)).filter(
     (p): p is NonNullable<typeof p> => Boolean(p),

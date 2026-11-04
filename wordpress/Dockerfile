@@ -1,5 +1,12 @@
 FROM wordpress:6.7.2-php8.2-apache
 
+# Ensure a single Apache MPM (mod_php needs prefork). Railway volume remounts can
+# otherwise leave both mpm_event and mpm_prefork enabled → AH00534 crash loop.
+RUN a2dismod mpm_event 2>/dev/null || true \
+  && a2dismod mpm_worker 2>/dev/null || true \
+  && a2enmod mpm_prefork \
+  && apache2ctl -t
+
 # PHP production tuning
 RUN { \
   echo 'memory_limit=256M'; \
