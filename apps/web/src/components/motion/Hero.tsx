@@ -261,15 +261,8 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                                   </div>
                                 </div>
 
-                                <div className="hero-chip hero-chip-b absolute right-3 top-[40%] z-20 sm:right-4">
-                                  <span className="inline-flex items-center gap-1.5 rounded-full border border-jt-neon/70 bg-gradient-to-r from-jt-neon to-jt-lime px-2.5 py-1.5 text-[10px] font-bold text-jt-black shadow-[0_10px_30px_-8px_rgba(180,255,26,0.9)] sm:gap-2 sm:px-3 sm:py-2 sm:text-xs">
-                                    <PenLine className="h-3.5 w-3.5" />
-                                    Personalise name &amp; number
-                                  </span>
-                                </div>
-
-                                <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col gap-3 bg-gradient-to-t from-black/90 via-black/55 to-transparent p-3.5 pt-16 sm:flex-row sm:items-end sm:justify-between sm:gap-4 sm:p-5 sm:pt-20">
-                                  <div className="min-w-0 flex-1">
+                                <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col gap-3 bg-gradient-to-t from-black/90 via-black/55 to-transparent p-3.5 pt-16 sm:p-5 sm:pt-20">
+                                  <div className="min-w-0">
                                     <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-jt-orange">
                                       Featured jersey
                                       {featured.category ? (
@@ -287,11 +280,17 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                                       <span>Ships worldwide</span>
                                     </p>
                                   </div>
-                                  <div className="w-fit shrink-0 jt-slant bg-gradient-to-br from-jt-black to-jt-surface px-4 py-2 text-left ring-1 ring-white/15 sm:text-right">
-                                    <p className="text-[9px] uppercase tracking-[0.2em] text-jt-muted">From</p>
-                                    <p className="jt-display text-lg sm:text-xl">
-                                      <span className="jt-gradient-text-fire">{formatAED(featured.price)}</span>
-                                    </p>
+                                  <div className="flex items-center justify-between gap-2">
+                                    <div className="w-fit shrink-0 jt-slant bg-gradient-to-br from-jt-black to-jt-surface px-4 py-2 text-left ring-1 ring-white/15">
+                                      <p className="text-[9px] uppercase tracking-[0.2em] text-jt-muted">From</p>
+                                      <p className="jt-display text-lg sm:text-xl">
+                                        <span className="jt-gradient-text-fire">{formatAED(featured.price)}</span>
+                                      </p>
+                                    </div>
+                                    <span className="inline-flex max-w-[58%] items-center gap-1.5 rounded-full border border-jt-neon/70 bg-gradient-to-r from-jt-neon to-jt-lime px-2.5 py-1.5 text-[10px] font-bold leading-tight text-jt-black shadow-[0_10px_30px_-8px_rgba(180,255,26,0.9)] sm:max-w-none sm:gap-2 sm:px-3 sm:py-2 sm:text-xs">
+                                      <PenLine className="h-3.5 w-3.5 shrink-0" />
+                                      Personalise name &amp; number
+                                    </span>
                                   </div>
                                 </div>
                               </div>
