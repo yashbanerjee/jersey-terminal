@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion, useMotionValueEvent, useScroll, useSpring } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { Menu, Search, ShoppingBag, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
@@ -22,20 +22,16 @@ const links = [
 
 export function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { count, toggle } = useCartStore();
   const pathname = usePathname();
 
-  const { scrollY, scrollYProgress } = useScroll();
-  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 24, mass: 0.3 });
-
-  useMotionValueEvent(scrollY, "change", (y) => {
-    const prev = scrollY.getPrevious() ?? 0;
-    setScrolled(y > 24);
-    if (mobileOpen) return setHidden(false);
-    setHidden(y > prev && y > 140);
-  });
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     lockScroll(mobileOpen);
@@ -43,23 +39,14 @@ export function SiteHeader() {
   }, [mobileOpen]);
 
   return (
-    <motion.header
-      initial={false}
-      animate={{ y: hidden ? "-100%" : "0%" }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+    <header
       className={cn(
-        "fixed inset-x-0 top-0 z-50 border-b transition-[background-color,border-color,box-shadow] duration-500",
+        "fixed inset-x-0 top-0 z-50 border-b transition-[background-color,border-color,box-shadow] duration-300",
         scrolled || mobileOpen
           ? "border-white/10 bg-jt-black/95 shadow-[0_10px_40px_-20px_rgba(0,0,0,0.9),0_1px_0_0_rgba(180,255,26,0.08)]"
           : "border-transparent bg-transparent",
       )}
     >
-      {/* Scroll progress — aurora gradient */}
-      <motion.span
-        aria-hidden
-        style={{ scaleX: progress }}
-        className="jt-gradient-bg-aurora absolute inset-x-0 top-0 h-[2px] origin-left shadow-[0_0_12px_rgba(180,255,26,0.6)]"
-      />
 
       <div className="jt-container flex h-16 items-center justify-between md:h-20">
         <FadeIn delay={0.05} y={10}>
@@ -211,6 +198,6 @@ export function SiteHeader() {
           </motion.nav>
         )}
       </AnimatePresence>
-    </motion.header>
+    </header>
   );
 }

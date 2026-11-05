@@ -65,7 +65,9 @@
 }
 
 html {
-  scroll-behavior: auto;
+  /* Same native smooth scroll United Tigers uses — no JS scroll library. */
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -461,6 +463,12 @@ html.lenis body {
   );
   opacity: 0.45;
   pointer-events: none;
+}
+.jt-playing-card {
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+.jt-playing-card:hover {
+  transform: translateY(-4px);
 }
 .jt-card:hover .jt-card-aura {
   opacity: 0.75;
@@ -973,6 +981,9 @@ html.lenis body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   .jt-marquee-track,
   .jt-pulse,
   .jt-pulse-orange,

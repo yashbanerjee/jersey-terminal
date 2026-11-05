@@ -117,8 +117,6 @@ export function ProductCard({
             }
           : { transformStyle: "preserve-3d" }
       }
-      whileHover={{ scale: 1.02, zIndex: 20 }}
-      transition={{ type: "spring", stiffness: 260, damping: 22 }}
       className="jt-card jt-playing-card group relative w-full min-w-0"
     >
       {/* Outer aura — soft animated glow behind the cut plate */}
