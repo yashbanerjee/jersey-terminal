@@ -2,14 +2,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
 import { SplitHeading } from "@/components/motion/SplitHeading";
-import { SITE } from "@/lib/site";
+import { getStorefrontContact } from "@/lib/storefront-contact";
 
 export const metadata: Metadata = {
   title: "Returns & Exchanges",
   description: "Return policy for Jersey Terminal stock and personalised goods.",
 };
 
-export default function ReturnsPage() {
+export default async function ReturnsPage() {
+  const contact = await getStorefrontContact();
+  const email = contact.email || "support via the contact page";
+
   return (
     <div className="jt-page jt-container max-w-3xl">
       <SplitHeading as="h1" text="Returns & exchanges" className="jt-display text-4xl tracking-wide sm:text-5xl" />
@@ -18,7 +21,7 @@ export default function ReturnsPage() {
           <h2>Ready-made stock (no print)</h2>
           <p>
             Unworn, unwashed items with tags may be exchanged within 7 days of delivery for size issues. Email{" "}
-            {SITE.email} with your order number and photos of the garment.
+            {email} with your order number and photos of the garment.
           </p>
           <h2>Personalised &amp; custom kits</h2>
           <p>

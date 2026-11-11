@@ -2,14 +2,17 @@ import type { Metadata } from "next";
 import { Reveal } from "@/components/motion/Reveal";
 import { SplitHeading } from "@/components/motion/SplitHeading";
 import { CUSTOM_MOQ } from "@/lib/custom-order";
-import { SITE } from "@/lib/site";
+import { getStorefrontContact } from "@/lib/storefront-contact";
 
 export const metadata: Metadata = {
   title: "Terms of Sale",
   description: "Terms for Jersey Terminal retail and custom kit orders.",
 };
 
-export default function TermsPage() {
+export default async function TermsPage() {
+  const contact = await getStorefrontContact();
+  const email = contact.email || "the contact page";
+
   return (
     <div className="jt-page jt-container max-w-3xl">
       <SplitHeading as="h1" text="Terms of sale" className="jt-display text-4xl tracking-wide sm:text-5xl" />
@@ -17,7 +20,7 @@ export default function TermsPage() {
         <div className="prose prose-invert mt-6 max-w-none text-sm text-white/70">
           <p>
             By placing an order with Jersey Terminal you agree to these terms. Prices are in AED unless stated
-            otherwise. Contact {SITE.email} for questions.
+            otherwise. Contact {email} for questions.
           </p>
           <h2>Retail jerseys</h2>
           <p>

@@ -45,11 +45,31 @@ class JT_Admin_Settings
             'jt_sports_personalization_default',
             'jt_sports_customs_arrangement',
             'jt_sports_currency',
+            'jt_sports_whatsapp_number',
+            'jt_sports_support_email',
+            'jt_sports_support_phone',
+            'jt_sports_support_city',
         ];
 
         foreach ($fields as $field) {
             register_setting('jt_sports_settings', $field);
         }
+    }
+
+    /** Public contact payload for the Next.js storefront. */
+    public static function storefront_contact(): array
+    {
+        $whatsapp_raw = (string) get_option('jt_sports_whatsapp_number', '');
+        $whatsapp = preg_replace('/\D+/', '', $whatsapp_raw) ?: '';
+
+        return [
+            'whatsappNumber' => $whatsapp,
+            'whatsappEnabled' => strlen($whatsapp) >= 10,
+            'email' => sanitize_email((string) get_option('jt_sports_support_email', '')),
+            'phone' => sanitize_text_field((string) get_option('jt_sports_support_phone', '')),
+            'city' => sanitize_text_field((string) get_option('jt_sports_support_city', '')),
+            'brand' => 'Jersey Terminal',
+        ];
     }
 
     public static function render(): void

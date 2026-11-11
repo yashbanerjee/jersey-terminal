@@ -17,6 +17,61 @@ if (!defined('ABSPATH')) {
       <tr><th>Currency</th><td><input name="jt_sports_currency" value="<?php echo esc_attr(get_option('jt_sports_currency', 'AED')); ?>" /></td></tr>
     </table>
 
+    <h2>Contact &amp; WhatsApp</h2>
+    <p class="description">Shown on the storefront. Leave WhatsApp empty to hide all WhatsApp buttons.</p>
+    <table class="form-table">
+      <tr>
+        <th><label for="jt_sports_whatsapp_number">WhatsApp number</label></th>
+        <td>
+          <input
+            class="regular-text"
+            id="jt_sports_whatsapp_number"
+            name="jt_sports_whatsapp_number"
+            placeholder="971501234567"
+            value="<?php echo esc_attr(get_option('jt_sports_whatsapp_number', '')); ?>"
+          />
+          <p class="description">Digits only with country code (no + or spaces). Example: 971501234567. Empty = hide WhatsApp CTA.</p>
+        </td>
+      </tr>
+      <tr>
+        <th><label for="jt_sports_support_email">Support email</label></th>
+        <td>
+          <input
+            class="regular-text"
+            type="email"
+            id="jt_sports_support_email"
+            name="jt_sports_support_email"
+            placeholder="hello@jerseyterminal.com"
+            value="<?php echo esc_attr(get_option('jt_sports_support_email', '')); ?>"
+          />
+        </td>
+      </tr>
+      <tr>
+        <th><label for="jt_sports_support_phone">Support phone (display)</label></th>
+        <td>
+          <input
+            class="regular-text"
+            id="jt_sports_support_phone"
+            name="jt_sports_support_phone"
+            placeholder="+971 50 123 4567"
+            value="<?php echo esc_attr(get_option('jt_sports_support_phone', '')); ?>"
+          />
+        </td>
+      </tr>
+      <tr>
+        <th><label for="jt_sports_support_city">City / location</label></th>
+        <td>
+          <input
+            class="regular-text"
+            id="jt_sports_support_city"
+            name="jt_sports_support_city"
+            placeholder="Dubai, UAE"
+            value="<?php echo esc_attr(get_option('jt_sports_support_city', '')); ?>"
+          />
+        </td>
+      </tr>
+    </table>
+
     <h2>Stripe (headless connector fallback)</h2>
     <table class="form-table">
       <tr><th>Publishable Key</th><td><input class="regular-text" name="jt_sports_stripe_publishable_key" value="<?php echo esc_attr(get_option('jt_sports_stripe_publishable_key', getenv('STRIPE_PUBLISHABLE_KEY') ?: '')); ?>" /></td></tr>

@@ -69,6 +69,17 @@ class JT_REST_API
             'permission_callback' => '__return_true',
             'callback' => [__CLASS__, 'product_extensions'],
         ]);
+
+        register_rest_route('jt-sports/v1', '/storefront-contact', [
+            'methods' => 'GET',
+            'permission_callback' => '__return_true',
+            'callback' => [__CLASS__, 'storefront_contact'],
+        ]);
+    }
+
+    public static function storefront_contact()
+    {
+        return JT_Admin_Settings::storefront_contact();
     }
 
     public static function internal_perm(WP_REST_Request $request): bool

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight, MessageCircle } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Reveal } from "@/components/motion/Reveal";
-import { SITE, WHATSAPP_DEFAULT_MESSAGE, whatsappUrl } from "@/lib/site";
+import { WHATSAPP_DEFAULT_MESSAGE, whatsappUrl, type StorefrontContact } from "@/lib/site";
 
 const shop = [
   { href: "/shop/jerseys", label: "Jerseys" },
@@ -20,7 +20,12 @@ const support = [
   { href: "/terms", label: "Terms" },
 ];
 
-export function SiteFooter() {
+export function SiteFooter({ contact }: { contact: StorefrontContact }) {
+  const whatsappHref = contact.whatsappEnabled
+    ? whatsappUrl(contact.whatsappNumber, WHATSAPP_DEFAULT_MESSAGE)
+    : "";
+  const detailLine = [contact.email, contact.phone, contact.city].filter(Boolean).join(" · ");
+
   return (
     <footer className="relative w-full overflow-hidden border-t border-white/10 bg-jt-black/80 backdrop-blur-sm">
       <div className="jt-divider pointer-events-none absolute inset-x-0 top-0" />
@@ -48,18 +53,18 @@ export function SiteFooter() {
                 Shop the collection
                 <ArrowUpRight className="h-4 w-4" />
               </Link>
-              <a
-                href={whatsappUrl(WHATSAPP_DEFAULT_MESSAGE)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 border border-[#25D366]/40 bg-[#25D366]/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#25D366]"
-              >
-                <MessageCircle className="h-4 w-4" /> WhatsApp
-              </a>
+              {whatsappHref && (
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 border border-[#25D366]/40 bg-[#25D366]/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#25D366]"
+                >
+                  <MessageCircle className="h-4 w-4" /> WhatsApp
+                </a>
+              )}
             </div>
-            <p className="mt-3 text-xs text-jt-muted">
-              {SITE.email} · {SITE.phoneDisplay} · {SITE.city}
-            </p>
+            {detailLine && <p className="mt-3 text-xs text-jt-muted">{detailLine}</p>}
           </Reveal>
 
           <div className="grid grid-cols-2 gap-6 sm:gap-8 md:contents">

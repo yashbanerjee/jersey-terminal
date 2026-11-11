@@ -1,13 +1,15 @@
 "use client";
 
 import { MessageCircle } from "lucide-react";
-import { SITE, WHATSAPP_DEFAULT_MESSAGE, whatsappUrl } from "@/lib/site";
+import { useWhatsAppHref } from "@/components/layout/ContactProvider";
 
 export function WhatsAppFloat() {
-  if (!SITE.whatsappNumber) return null;
+  const href = useWhatsAppHref();
+  if (!href) return null;
+
   return (
     <a
-      href={whatsappUrl(WHATSAPP_DEFAULT_MESSAGE)}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"

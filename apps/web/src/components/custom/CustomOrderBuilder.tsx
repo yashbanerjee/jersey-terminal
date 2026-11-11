@@ -31,6 +31,7 @@ import {
   type SponsorPlacement,
   type SponsorRow,
 } from "@/lib/custom-order";
+import { useStorefrontContact } from "@/components/layout/ContactProvider";
 import { SizeGuide } from "@/components/product/SizeGuide";
 import { cn } from "@/lib/format";
 import { whatsappUrl } from "@/lib/site";
@@ -79,6 +80,7 @@ export function CustomOrderBuilder() {
   const [payMode, setPayMode] = useState<"full" | "deposit">("full");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const contact = useStorefrontContact();
 
   const qtySafe = Math.max(CUSTOM_MOQ, Number.isFinite(qty) ? Math.floor(qty) : CUSTOM_MOQ);
   const active = CUSTOM_TIERS[tier];
@@ -194,6 +196,10 @@ export function CustomOrderBuilder() {
   }
 
   function openWhatsAppQuote() {
+    if (!contact.whatsappEnabled) {
+      setError("WhatsApp is not configured yet. Pay online or ask the shop owner to add a number in JT Sports settings.");
+      return;
+    }
     const msg = validateStep(3) || validateStep(1) || validateStep(2);
     if (msg) {
       setError(msg);
@@ -220,7 +226,9 @@ export function CustomOrderBuilder() {
     ]
       .filter(Boolean)
       .join("\n");
-    window.open(whatsappUrl(text), "_blank", "noopener,noreferrer");
+    const href = whatsappUrl(contact.whatsappNumber, text);
+    if (!href) return;
+    window.open(href, "_blank", "noopener,noreferrer");
   }
 
   return (
@@ -681,14 +689,16 @@ export function CustomOrderBuilder() {
           </button>
         ) : (
           <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={openWhatsAppQuote}
-              disabled={busy}
-              className="inline-flex items-center gap-2 border border-[#25D366]/50 bg-[#25D366]/10 px-4 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#25D366] disabled:opacity-60"
-            >
-              WhatsApp quote
-            </button>
+            {contact.whatsappEnabled && (
+              <button
+                type="button"
+                onClick={openWhatsAppQuote}
+                disabled={busy}
+                className="inline-flex items-center gap-2 border border-[#25D366]/50 bg-[#25D366]/10 px-4 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#25D366] disabled:opacity-60"
+              >
+                WhatsApp quote
+              </button>
+            )}
             <button
               type="button"
               onClick={() => void onPay()}
