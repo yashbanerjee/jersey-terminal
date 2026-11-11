@@ -1,5 +1,6 @@
 import { Hero } from "@/components/motion/Hero";
 import { BrandStory } from "@/components/home/BrandStory";
+import { CustomKitTeaser } from "@/components/home/CustomKitTeaser";
 import { FeatureStrip } from "@/components/home/FeatureStrip";
 import { HomeSection } from "@/components/home/HomeSection";
 import { LimitedSpotlight } from "@/components/home/LimitedSpotlight";
@@ -57,6 +58,10 @@ export default async function HomePage() {
 
       <HomeSection>
         <LimitedSpotlight products={limited} href="/shop/limited-editions" />
+      </HomeSection>
+
+      <HomeSection>
+        <CustomKitTeaser />
       </HomeSection>
 
       <HomeSection>

@@ -69,7 +69,7 @@ export function PersonaliseBanner() {
                     <li className="border border-white/10 bg-white/[0.03] px-3 py-2">Match ready</li>
                   </ul>
                   <div className="mt-5">
-                    <MagneticButton href="/shop">
+                    <MagneticButton href="/custom">
                       Start customising <ArrowRight className="h-4 w-4" />
                     </MagneticButton>
                   </div>

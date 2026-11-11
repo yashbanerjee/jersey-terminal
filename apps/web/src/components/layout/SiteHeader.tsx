@@ -15,8 +15,8 @@ import { cn } from "@/lib/format";
 const links = [
   { href: "/shop", label: "Shop" },
   { href: "/shop/jerseys", label: "Jerseys" },
+  { href: "/custom", label: "Custom" },
   { href: "/shop/training-wear", label: "Training" },
-  { href: "/shop/limited-editions", label: "Limited" },
   { href: "/track", label: "Track" },
 ];
 

@@ -5,10 +5,10 @@ import { Reveal } from "@/components/motion/Reveal";
 
 const shop = [
   { href: "/shop/jerseys", label: "Jerseys" },
+  { href: "/custom", label: "Custom kits" },
   { href: "/shop/match-kits", label: "Match Kits" },
   { href: "/shop/training-wear", label: "Training Wear" },
   { href: "/shop/limited-editions", label: "Limited Editions" },
-  { href: "/shop/sale", label: "Sale" },
 ];
 
 const support = [
