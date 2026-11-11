@@ -21,8 +21,8 @@ export function CustomKitTeaser() {
                   className="mt-3 jt-display text-[clamp(1.8rem,4.5vw,3rem)] leading-[0.95] text-white"
                 />
                 <p className="mt-3 max-w-xl text-sm text-white/65 sm:text-[15px]">
-                  Basic, Premium, or Luxury — pay per jersey plus freight. Perfect for clubs,
-                  academies, and private squads who need a full coordinated kit.
+                  Team owners: pick a package, upload your logo, add player names & numbers, and
+                  place sponsors — then pay per jersey plus freight.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-2">
                   {(Object.keys(CUSTOM_TIERS) as Array<keyof typeof CUSTOM_TIERS>).map((id) => (

@@ -7,7 +7,7 @@ import { CUSTOM_MOQ, CUSTOM_TIERS, formatUSD } from "@/lib/custom-order";
 export const metadata: Metadata = {
   title: "Custom Jerseys",
   description:
-    "Order your own customised jerseys in Basic, Premium, or Luxury packages. Minimum 15 pieces. Jersey price plus freight.",
+    "Team owners: pick Basic, Premium, or Luxury, upload logo and team name, add player names & numbers, place sponsors. Minimum 15 jerseys plus freight.",
 };
 
 export default async function CustomOrderPage({
@@ -28,14 +28,14 @@ export default async function CustomOrderPage({
         </Reveal>
         <SplitHeading
           as="h1"
-          text="Order your own jersey"
+          text="Build your team kit"
           className="jt-display text-[clamp(2.2rem,6vw,4.2rem)] leading-[0.92] tracking-wide"
         />
         <Reveal delay={0.08}>
           <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/70 sm:text-base">
-            Design a full kit for your club, academy, or event. Choose Basic, Premium, or Luxury —
-            minimum {CUSTOM_MOQ} jerseys. Checkout covers jersey cost plus freight for your delivery
-            zone.
+            For local team owners: pick Basic, Premium, or Luxury, upload your club logo, enter the
+            team name, then add each player’s name and number for every shirt. Add sponsors with
+            placement if you have them. Minimum {CUSTOM_MOQ} jerseys — pay jersey total plus freight.
           </p>
         </Reveal>
 

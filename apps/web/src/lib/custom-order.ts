@@ -2,6 +2,43 @@ export type CustomTierId = "basic" | "premium" | "luxury";
 
 export type FreightZoneId = "uae" | "gcc" | "intl";
 
+export type SponsorPlacement =
+  | "chest_center"
+  | "chest_left"
+  | "chest_right"
+  | "sleeve_left"
+  | "sleeve_right"
+  | "back_upper"
+  | "back_lower"
+  | "shorts"
+  | "other";
+
+export type PlayerKitRow = {
+  name: string;
+  number: string;
+  size: string;
+};
+
+export type SponsorRow = {
+  name: string;
+  placement: SponsorPlacement;
+  notes?: string;
+};
+
+export const PLAYER_SIZES = ["YS", "YM", "YL", "S", "M", "L", "XL", "XXL", "3XL"] as const;
+
+export const SPONSOR_PLACEMENTS: Record<SponsorPlacement, string> = {
+  chest_center: "Chest — center (main sponsor)",
+  chest_left: "Chest — left",
+  chest_right: "Chest — right",
+  sleeve_left: "Left sleeve",
+  sleeve_right: "Right sleeve",
+  back_upper: "Back — upper",
+  back_lower: "Back — lower",
+  shorts: "Shorts",
+  other: "Other / tell us in notes",
+};
+
 export const CUSTOM_MOQ = 15;
 
 export const CUSTOM_TIERS: Record<
