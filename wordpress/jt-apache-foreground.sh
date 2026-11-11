@@ -60,11 +60,11 @@ if command -v wp >/dev/null 2>&1 && [ -f "${WP_PATH}/wp-config.php" ]; then
   wp rewrite structure '/%postname%/' --path="$WP_PATH" --allow-root 2>/dev/null || true
   wp rewrite flush --path="$WP_PATH" --allow-root 2>/dev/null || true
 
-  PRODUCT_COUNT="$(wp post list --post_type=product --format=count --path="$WP_PATH" --allow-root 2>/dev/null || echo 0)"
-  if [ "${PRODUCT_COUNT}" = "0" ] && [ -f "${WP_PATH}/jt-import/import-catalog.php" ]; then
-    echo "[jt-sports] Seeding catalog (${PRODUCT_COUNT} products)..."
-    wp eval-file "${WP_PATH}/jt-import/import-catalog.php" --path="$WP_PATH" --allow-root \
-      || echo "[jt-sports] Catalog import failed (non-fatal)"
+  # Do not re-seed the old demo jersey catalog. Only keep United Tigers products.
+  if [ -f "${WP_PATH}/jt-import/remove-demo-products.php" ]; then
+    echo "[jt-sports] Removing demo jerseys..."
+    wp eval-file "${WP_PATH}/jt-import/remove-demo-products.php" --path="$WP_PATH" --allow-root \
+      || echo "[jt-sports] Demo product cleanup failed (non-fatal)"
   fi
 
   # Idempotent upsert for United Tigers jerseys (match + training).

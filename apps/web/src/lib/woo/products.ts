@@ -279,9 +279,6 @@ export async function getHomepageCollections() {
         const featuredNames = new Set([
           "united-tiger-match-jersey",
           "united-tiger-training-jersey",
-          "champions-edition",
-          "shadow-strike-jersey",
-          "velocity-jersey",
         ]);
 
         const newestRaw = all.filter((p) => p.badges.includes("new"));

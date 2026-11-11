@@ -18,10 +18,6 @@ export const dynamic = "force-dynamic";
 const FEATURED_PRIORITY = [
   "united-tiger-match-jersey",
   "united-tiger-training-jersey",
-  "shadow-strike-jersey",
-  "champions-edition",
-  "velocity-jersey",
-  "red-horizon",
 ];
 
 export default async function HomePage() {

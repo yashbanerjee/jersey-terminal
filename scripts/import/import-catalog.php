@@ -141,19 +141,15 @@ foreach (['pa_size', 'pa_color'] as $tax) {
     }
 }
 
+// Demo catalogue import is retired — site currently sells United Tigers jerseys only.
+// Prefer scripts/import/import-united-tigers.php for live products.
 $featured_slugs = [
     'united-tiger-match-jersey',
     'united-tiger-training-jersey',
-    'shadow-strike-jersey',
-    'velocity-jersey',
-    'champions-edition',
 ];
 $new_slugs = [
     'united-tiger-match-jersey',
     'united-tiger-training-jersey',
-    'red-horizon',
-    'titan-white',
-    'elite-gold',
 ];
 
 $imported = 0;
