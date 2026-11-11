@@ -25,9 +25,9 @@ export type HeroProduct = {
 };
 
 const STATS = [
-  { icon: Shirt, value: "6+", label: "Jersey styles", color: "text-jt-cyan" },
+  { icon: Shirt, value: "UT", label: "Match + training", color: "text-jt-cyan" },
   { icon: Zap, value: "1–3 days", label: "UAE delivery", color: "text-jt-orange" },
-  { icon: Globe, value: "190+", label: "Countries shipped", color: "text-jt-cyan" },
+  { icon: Globe, value: "15+", label: "Custom kit MOQ", color: "text-jt-cyan" },
 ];
 
 const slide3d = {

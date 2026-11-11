@@ -5,8 +5,10 @@ import {
   CUSTOM_MOQ,
   CUSTOM_TIERS,
   FREIGHT_ZONES,
-  freightTotalUsd,
-  jerseySubtotalUsd,
+  depositAed,
+  freightTotalAed,
+  jerseySubtotalAed,
+  orderTotalAed,
   type CustomTierId,
   type FreightZoneId,
 } from "@/lib/custom-order";
@@ -50,10 +52,12 @@ const bodySchema = z.object({
   logoDataUrl: z.string().max(2_500_000).optional().default(""),
   players: z.array(playerSchema).min(CUSTOM_MOQ).max(120),
   sponsors: z.array(sponsorSchema).max(8).optional().default([]),
+  /** full = pay jersey+freight now; deposit = 30% design deposit */
+  payMode: z.enum(["full", "deposit"]).optional().default("full"),
 });
 
-function toCents(usd: number) {
-  return Math.round(usd * 100);
+function toFils(aed: number) {
+  return Math.round(aed * 100);
 }
 
 function orderRef() {
@@ -76,8 +80,10 @@ export async function POST(req: Request) {
     const zone = data.zone as FreightZoneId;
     const tierMeta = CUSTOM_TIERS[tier];
     const zoneMeta = FREIGHT_ZONES[zone];
-    const jersey = jerseySubtotalUsd(tier, data.quantity);
-    const freight = freightTotalUsd(zone, data.quantity);
+    const jersey = jerseySubtotalAed(tier, data.quantity);
+    const freight = freightTotalAed(zone, data.quantity);
+    const full = orderTotalAed(tier, zone, data.quantity);
+    const charge = data.payMode === "deposit" ? depositAed(tier, zone, data.quantity) : full;
     const secret = env.stripeSecret;
 
     if (!secret) {
@@ -118,6 +124,46 @@ export async function POST(req: Request) {
       .join("; ")
       .slice(0, 400);
 
+    const lineItems =
+      data.payMode === "deposit"
+        ? [
+            {
+              quantity: 1,
+              price_data: {
+                currency: "aed",
+                unit_amount: toFils(charge),
+                product_data: {
+                  name: `${data.teamName} — design deposit (30%)`,
+                  description: `${tierMeta.name} kit · ${data.quantity} shirts · proof before bulk print · balance due after approval`,
+                },
+              },
+            },
+          ]
+        : [
+            {
+              quantity: data.quantity,
+              price_data: {
+                currency: "aed",
+                unit_amount: toFils(tierMeta.priceAed),
+                product_data: {
+                  name: `${data.teamName} — ${tierMeta.name} custom jersey`,
+                  description: `Team kit · ${data.quantity} shirts · logo + player names/numbers`,
+                },
+              },
+            },
+            {
+              quantity: 1,
+              price_data: {
+                currency: "aed",
+                unit_amount: toFils(freight),
+                product_data: {
+                  name: `Freight — ${zoneMeta.label}`,
+                  description: `${data.quantity} × AED ${zoneMeta.perJerseyAed.toFixed(2)} · ${zoneMeta.note}`,
+                },
+              },
+            },
+          ];
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       customer_email: data.email,
@@ -127,6 +173,7 @@ export async function POST(req: Request) {
       metadata: {
         type: "custom_team_kit",
         order_ref: ref,
+        pay_mode: data.payMode,
         tier,
         zone,
         quantity: String(data.quantity),
@@ -136,31 +183,11 @@ export async function POST(req: Request) {
         has_logo: data.logoDataUrl ? "1" : "0",
         sponsors: sponsorPreview || "none",
         roster_preview: rosterPreview.slice(0, 450),
+        currency: "AED",
+        full_total_aed: String(full),
+        charged_aed: String(charge),
       },
-      line_items: [
-        {
-          quantity: data.quantity,
-          price_data: {
-            currency: "usd",
-            unit_amount: toCents(tierMeta.priceUsd),
-            product_data: {
-              name: `${data.teamName} — ${tierMeta.name} custom jersey`,
-              description: `Team kit · ${data.quantity} shirts · logo + player names/numbers`,
-            },
-          },
-        },
-        {
-          quantity: 1,
-          price_data: {
-            currency: "usd",
-            unit_amount: toCents(freight),
-            product_data: {
-              name: `Freight — ${zoneMeta.label}`,
-              description: `${data.quantity} × $${zoneMeta.perJerseyUsd.toFixed(2)} · ${zoneMeta.note}`,
-            },
-          },
-        },
-      ],
+      line_items: lineItems,
     });
 
     if (!session.url) {
@@ -172,6 +199,8 @@ export async function POST(req: Request) {
       orderRef: ref,
       jerseyTotal: jersey,
       freightTotal: freight,
+      charged: charge,
+      currency: "AED",
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Invalid custom order";

@@ -1,16 +1,27 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { X } from "lucide-react";
+import { Minus, Plus, Trash2, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { PersonalizationTag } from "@/components/cart/PersonalizationTag";
 import { lockScroll } from "@/components/motion/SmoothScroll";
 import { useCartStore } from "@/store/cart";
 
 export function CartDrawer() {
   const { open, setOpen, items, totalLabel, hydrate, setLoading } = useCartStore();
+  const [busyKey, setBusyKey] = useState<string | null>(null);
+
+  async function refreshCart() {
+    const res = await fetch("/api/cart", { cache: "no-store" });
+    const data = await res.json();
+    hydrate({
+      items: data.items ?? [],
+      totalLabel: data.totalLabel ?? "AED 0.00",
+      count: data.count ?? 0,
+    });
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -40,6 +51,42 @@ export function CartDrawer() {
     lockScroll(open);
     return () => lockScroll(false);
   }, [open]);
+
+  async function updateQty(key: string, quantity: number) {
+    if (quantity < 1) {
+      await removeItem(key);
+      return;
+    }
+    setBusyKey(key);
+    try {
+      const res = await fetch("/api/cart", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key, quantity }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error || "Update failed");
+      await refreshCart();
+    } finally {
+      setBusyKey(null);
+    }
+  }
+
+  async function removeItem(key: string) {
+    setBusyKey(key);
+    try {
+      const res = await fetch("/api/cart", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error || "Remove failed");
+      await refreshCart();
+    } finally {
+      setBusyKey(null);
+    }
+  }
 
   return (
     <AnimatePresence>
@@ -107,12 +154,41 @@ export function CartDrawer() {
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium">{item.name}</p>
                       <p className="mt-1 text-xs text-jt-muted">
-                        {[...(item.variation ?? []).map((v) => `${v.name}: ${v.value}`), `Qty ${item.quantity}`].join(
-                          " · ",
-                        )}
+                        {(item.variation ?? []).map((v) => `${v.name}: ${v.value}`).join(" · ")}
                       </p>
                       <PersonalizationTag personalization={item.personalization} />
                       <p className="mt-2 text-sm text-jt-neon">{item.priceLabel}</p>
+                      <div className="mt-3 flex items-center gap-2">
+                        <div className="inline-flex items-center border border-white/15">
+                          <button
+                            type="button"
+                            disabled={busyKey === item.key}
+                            onClick={() => void updateQty(item.key, item.quantity - 1)}
+                            className="p-1.5 text-white/70 hover:bg-white/5 disabled:opacity-40"
+                            aria-label="Decrease quantity"
+                          >
+                            <Minus className="h-3.5 w-3.5" />
+                          </button>
+                          <span className="min-w-8 text-center text-xs">{item.quantity}</span>
+                          <button
+                            type="button"
+                            disabled={busyKey === item.key}
+                            onClick={() => void updateQty(item.key, item.quantity + 1)}
+                            className="p-1.5 text-white/70 hover:bg-white/5 disabled:opacity-40"
+                            aria-label="Increase quantity"
+                          >
+                            <Plus className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                        <button
+                          type="button"
+                          disabled={busyKey === item.key}
+                          onClick={() => void removeItem(item.key)}
+                          className="inline-flex items-center gap-1 px-2 py-1.5 text-[11px] uppercase tracking-[0.14em] text-white/45 hover:text-jt-coral disabled:opacity-40"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" /> Remove
+                        </button>
+                      </div>
                     </div>
                   </motion.div>
                 ))
@@ -125,10 +201,13 @@ export function CartDrawer() {
               transition={{ delay: 0.18, duration: 0.4 }}
               className="border-t border-white/10 p-5"
             >
-              <div className="mb-4 flex justify-between text-sm">
+              <div className="mb-1 flex justify-between text-sm">
                 <span className="text-jt-muted">Subtotal</span>
                 <span>{totalLabel}</span>
               </div>
+              <p className="mb-4 text-[11px] text-jt-muted">
+                UAE courier from AED 15 · GCC / intl calculated at checkout.
+              </p>
               <motion.div whileHover={{ scale: 1.015 }} whileTap={{ scale: 0.98 }}>
                 <Link
                   href="/checkout"

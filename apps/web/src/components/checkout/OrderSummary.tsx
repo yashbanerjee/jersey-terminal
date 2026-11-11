@@ -82,7 +82,9 @@ export function OrderSummary() {
         <span className="text-sm text-jt-muted">Total</span>
         <span className="jt-display text-2xl text-jt-neon">{totalLabel}</span>
       </div>
-      <p className="mt-1 text-[11px] text-jt-muted">Shipping calculated at the next step.</p>
+      <p className="mt-1 text-[11px] text-jt-muted">
+        UAE courier from ~AED 15 · GCC / international rates confirmed on the Stripe / Woo step.
+      </p>
     </aside>
   );
 }

@@ -4,12 +4,12 @@ import { useEffect, useRef } from "react";
 import { Marquee } from "@/components/motion/Marquee";
 
 const ITEMS = [
-  "Free UAE delivery over AED 250",
+  "United Tigers match & training kits",
   "Personalise name & number",
-  "Secure Stripe checkout",
-  "Worldwide shipping",
-  "Limited editions drop weekly",
-  "Match-day ready kits",
+  "Custom team kits from MOQ 15",
+  "Secure Stripe checkout · AED",
+  "UAE · GCC · worldwide shipping",
+  "WhatsApp sales support",
 ];
 
 export function TickerStrip() {

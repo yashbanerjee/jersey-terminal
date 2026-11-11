@@ -41,12 +41,13 @@ export const SPONSOR_PLACEMENTS: Record<SponsorPlacement, string> = {
 
 export const CUSTOM_MOQ = 15;
 
+/** All custom kit prices in AED (aligned with retail storefront). */
 export const CUSTOM_TIERS: Record<
   CustomTierId,
   {
     id: CustomTierId;
     name: string;
-    priceUsd: number;
+    priceAed: number;
     tagline: string;
     fabric: string;
     highlights: string[];
@@ -56,7 +57,7 @@ export const CUSTOM_TIERS: Record<
   basic: {
     id: "basic",
     name: "Basic",
-    priceUsd: 15,
+    priceAed: 55,
     tagline: "Clean club kit for squads that need volume without fuss.",
     fabric: "160gsm polyester interlock · athletic fit",
     bestFor: "Academies, school teams, and large fan runs",
@@ -72,7 +73,7 @@ export const CUSTOM_TIERS: Record<
   premium: {
     id: "premium",
     name: "Premium",
-    priceUsd: 25,
+    priceAed: 95,
     tagline: "Match-day finish with richer fabric and fuller branding.",
     fabric: "170gsm performance knit · moisture-wicking",
     bestFor: "Clubs, corporates, and tournament kits",
@@ -89,7 +90,7 @@ export const CUSTOM_TIERS: Record<
   luxury: {
     id: "luxury",
     name: "Luxury",
-    priceUsd: 40,
+    priceAed: 150,
     tagline: "Elite presentation — the closest feel to a pro match shirt.",
     fabric: "180gsm elite jersey knit · reinforced seams",
     bestFor: "Pro clubs, VIP drops, and signature collections",
@@ -107,44 +108,52 @@ export const CUSTOM_TIERS: Record<
 
 export const FREIGHT_ZONES: Record<
   FreightZoneId,
-  { id: FreightZoneId; label: string; perJerseyUsd: number; note: string }
+  { id: FreightZoneId; label: string; perJerseyAed: number; note: string }
 > = {
   uae: {
     id: "uae",
     label: "UAE (all emirates)",
-    perJerseyUsd: 2.5,
+    perJerseyAed: 9,
     note: "Door-to-door via regional courier",
   },
   gcc: {
     id: "gcc",
     label: "GCC",
-    perJerseyUsd: 4,
+    perJerseyAed: 15,
     note: "Express regional freight",
   },
   intl: {
     id: "intl",
     label: "International",
-    perJerseyUsd: 6.5,
+    perJerseyAed: 24,
     note: "Tracked international express · duties may apply (DAP)",
   },
 };
 
-export function jerseySubtotalUsd(tier: CustomTierId, qty: number) {
-  return CUSTOM_TIERS[tier].priceUsd * qty;
+export function jerseySubtotalAed(tier: CustomTierId, qty: number) {
+  return CUSTOM_TIERS[tier].priceAed * qty;
 }
 
-export function freightTotalUsd(zone: FreightZoneId, qty: number) {
-  return FREIGHT_ZONES[zone].perJerseyUsd * qty;
+export function freightTotalAed(zone: FreightZoneId, qty: number) {
+  return FREIGHT_ZONES[zone].perJerseyAed * qty;
 }
 
-export function orderTotalUsd(tier: CustomTierId, zone: FreightZoneId, qty: number) {
-  return jerseySubtotalUsd(tier, qty) + freightTotalUsd(zone, qty);
+export function orderTotalAed(tier: CustomTierId, zone: FreightZoneId, qty: number) {
+  return jerseySubtotalAed(tier, qty) + freightTotalAed(zone, qty);
 }
 
-export function formatUSD(amount: number) {
-  return new Intl.NumberFormat("en-US", {
+/** 30% design deposit for quote / proof-first flow */
+export function depositAed(tier: CustomTierId, zone: FreightZoneId, qty: number) {
+  return Math.round(orderTotalAed(tier, zone, qty) * 0.3);
+}
+
+export function formatAEDMoney(amount: number) {
+  return new Intl.NumberFormat("en-AE", {
     style: "currency",
-    currency: "USD",
+    currency: "AED",
     minimumFractionDigits: 2,
   }).format(amount);
 }
+
+/** @deprecated use formatAEDMoney — kept for gradual rename */
+export const formatUSD = formatAEDMoney;

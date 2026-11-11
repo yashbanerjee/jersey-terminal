@@ -1,11 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { notFound } from "next/navigation";
 import { Reveal } from "@/components/motion/Reveal";
 import { SplitHeading } from "@/components/motion/SplitHeading";
 import { AddToCartPanel } from "@/components/product/AddToCartPanel";
 import { ProductGallery3D } from "@/components/product/ProductGallery3D";
 import { ProductGrid } from "@/components/product/ProductGrid";
+import { CUSTOM_MOQ } from "@/lib/custom-order";
 import {
   getProductBySlug,
   getProductExtensions,
@@ -16,6 +18,26 @@ import {
 import { displayCategory } from "@/lib/woo/store-map";
 
 export const revalidate = 120;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const product = await getProductBySlug(slug);
+  if (!product) return { title: "Product" };
+  const desc = product.short_description?.replace(/<[^>]+>/g, "").slice(0, 160) || product.name;
+  return {
+    title: product.name,
+    description: desc,
+    openGraph: {
+      title: product.name,
+      description: desc,
+      images: product.images?.[0]?.src ? [{ url: product.images[0].src }] : undefined,
+    },
+  };
+}
 
 export default async function ProductPage({
   params,
@@ -70,6 +92,20 @@ export default async function ProductPage({
           <Reveal y={16} delay={0.25}>
             <div className="mt-6 sm:mt-8">
               <AddToCartPanel product={product} variations={variations} personalization={extensions} />
+            </div>
+          </Reveal>
+          <Reveal y={12} delay={0.28}>
+            <div className="mt-6 border border-jt-neon/30 bg-jt-neon/5 p-4">
+              <p className="text-[11px] uppercase tracking-[0.2em] text-jt-neon">Team order</p>
+              <p className="mt-2 text-sm text-white/70">
+                Need {CUSTOM_MOQ}+ matching kits with your crest, roster, and sponsors?
+              </p>
+              <Link
+                href="/custom"
+                className="mt-3 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-jt-neon hover:text-white"
+              >
+                Build a custom kit <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
           </Reveal>
           <Reveal y={12} delay={0.3}>

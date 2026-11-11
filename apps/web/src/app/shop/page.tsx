@@ -3,6 +3,7 @@ import { PageHeading } from "@/components/layout/PageHeading";
 import { Reveal } from "@/components/motion/Reveal";
 import { ProductGrid } from "@/components/product/ProductGrid";
 import { ShopChips } from "@/components/shop/ShopChips";
+import { ShopSearchFocus } from "@/components/shop/ShopSearchFocus";
 import { getCategories, listProducts } from "@/lib/woo/products";
 
 export const revalidate = 120;
@@ -16,10 +17,11 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
 
   return (
     <div className="jt-page jt-container w-full">
+      <ShopSearchFocus />
       <PageHeading
         eyebrow="Jersey Terminal"
         title={q ? `Results for "${q}"` : "Shop all"}
-        description="Jerseys, kits, training and limited drops — every style we carry, in one place."
+        description="United Tigers match and training jerseys — personalise name & number, or build a full custom squad kit."
         count={products.length}
       />
 
@@ -27,7 +29,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         <ShopChips categories={categories} />
 
         <Reveal effect="right" delay={0.2} className="relative w-full lg:max-w-sm">
-          <form className="relative w-full">
+          <form id="search" className="relative w-full">
             <label className="sr-only" htmlFor="q">
               Search
             </label>

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, Search, ShoppingBag, User, X } from "lucide-react";
+import { Menu, MessageCircle, Search, ShoppingBag, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { FadeIn } from "@/components/motion/FadeIn";
@@ -11,6 +11,7 @@ import { HoverScramble } from "@/components/motion/HoverScramble";
 import { lockScroll } from "@/components/motion/SmoothScroll";
 import { useCartStore } from "@/store/cart";
 import { cn } from "@/lib/format";
+import { WHATSAPP_DEFAULT_MESSAGE, whatsappUrl } from "@/lib/site";
 
 const links = [
   { href: "/shop", label: "Shop" },
@@ -97,9 +98,20 @@ export function SiteHeader() {
         </nav>
 
         <FadeIn delay={0.2} y={8} className="flex items-center gap-1 sm:gap-2">
+          <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }} className="hidden sm:inline-flex">
+            <a
+              href={whatsappUrl(WHATSAPP_DEFAULT_MESSAGE)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full p-2.5 text-[#25D366] transition hover:bg-[#25D366]/10"
+              aria-label="WhatsApp"
+            >
+              <MessageCircle className="h-5 w-5" />
+            </a>
+          </motion.div>
           <motion.div whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.92 }}>
             <Link
-              href="/shop"
+              href="/shop#search"
               className="rounded-full p-2.5 text-jt-muted transition hover:bg-white/5 hover:text-white"
               aria-label="Search shop"
             >

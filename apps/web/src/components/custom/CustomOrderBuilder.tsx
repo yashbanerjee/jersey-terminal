@@ -20,17 +20,20 @@ import {
   FREIGHT_ZONES,
   PLAYER_SIZES,
   SPONSOR_PLACEMENTS,
-  formatUSD,
-  freightTotalUsd,
-  jerseySubtotalUsd,
-  orderTotalUsd,
+  depositAed,
+  formatAEDMoney,
+  freightTotalAed,
+  jerseySubtotalAed,
+  orderTotalAed,
   type CustomTierId,
   type FreightZoneId,
   type PlayerKitRow,
   type SponsorPlacement,
   type SponsorRow,
 } from "@/lib/custom-order";
+import { SizeGuide } from "@/components/product/SizeGuide";
 import { cn } from "@/lib/format";
+import { whatsappUrl } from "@/lib/site";
 
 const TIER_ORDER: CustomTierId[] = ["basic", "premium", "luxury"];
 const ZONE_ORDER: FreightZoneId[] = ["uae", "gcc", "intl"];
@@ -73,14 +76,17 @@ export function CustomOrderBuilder() {
   const [logoName, setLogoName] = useState("");
   const [players, setPlayers] = useState<PlayerKitRow[]>(() => emptyPlayers(CUSTOM_MOQ));
   const [sponsors, setSponsors] = useState<SponsorRow[]>([]);
+  const [payMode, setPayMode] = useState<"full" | "deposit">("full");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const qtySafe = Math.max(CUSTOM_MOQ, Number.isFinite(qty) ? Math.floor(qty) : CUSTOM_MOQ);
   const active = CUSTOM_TIERS[tier];
-  const jerseyTotal = useMemo(() => jerseySubtotalUsd(tier, qtySafe), [tier, qtySafe]);
-  const freightTotal = useMemo(() => freightTotalUsd(zone, qtySafe), [zone, qtySafe]);
-  const grandTotal = useMemo(() => orderTotalUsd(tier, zone, qtySafe), [tier, zone, qtySafe]);
+  const jerseyTotal = useMemo(() => jerseySubtotalAed(tier, qtySafe), [tier, qtySafe]);
+  const freightTotal = useMemo(() => freightTotalAed(zone, qtySafe), [zone, qtySafe]);
+  const grandTotal = useMemo(() => orderTotalAed(tier, zone, qtySafe), [tier, zone, qtySafe]);
+  const depositTotal = useMemo(() => depositAed(tier, zone, qtySafe), [tier, zone, qtySafe]);
+  const dueNow = payMode === "deposit" ? depositTotal : grandTotal;
 
   useEffect(() => {
     setPlayers((prev) => emptyPlayers(qtySafe, prev));
@@ -175,6 +181,7 @@ export function CustomOrderBuilder() {
           logoDataUrl,
           players,
           sponsors,
+          payMode,
         }),
       });
       const data = (await res.json()) as { url?: string; error?: string };
@@ -184,6 +191,36 @@ export function CustomOrderBuilder() {
       setError(err instanceof Error ? err.message : "Checkout failed");
       setBusy(false);
     }
+  }
+
+  function openWhatsAppQuote() {
+    const msg = validateStep(3) || validateStep(1) || validateStep(2);
+    if (msg) {
+      setError(msg);
+      return;
+    }
+    const roster = players
+      .slice(0, 12)
+      .map((p) => `#${p.number} ${p.name} (${p.size})`)
+      .join(", ");
+    const sponsorLine = sponsors.length
+      ? sponsors.map((s) => `${s.name} @ ${s.placement}`).join("; ")
+      : "none";
+    const text = [
+      `Hi Jersey Terminal — team kit quote request`,
+      `Team: ${teamName}`,
+      `Package: ${active.name} · Qty: ${qtySafe}`,
+      `Colours: ${primaryColor || "—"} / ${secondaryColor || "—"}`,
+      `Contact: ${name} · ${email} · ${phone}`,
+      `Freight zone: ${zone}`,
+      `Est. total: ${formatAEDMoney(grandTotal)} (or 30% deposit ${formatAEDMoney(depositTotal)})`,
+      `Sponsors: ${sponsorLine}`,
+      `Roster sample: ${roster}${players.length > 12 ? "…" : ""}`,
+      notes ? `Notes: ${notes}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
+    window.open(whatsappUrl(text), "_blank", "noopener,noreferrer");
   }
 
   return (
@@ -256,7 +293,7 @@ export function CustomOrderBuilder() {
                       >
                         <p className="text-[9px] uppercase tracking-[0.2em] text-jt-muted">Per jersey</p>
                         <p className="jt-display text-xl">
-                          <span className="jt-gradient-text-fire">{formatUSD(t.priceUsd)}</span>
+                          <span className="jt-gradient-text-fire">{formatAEDMoney(t.priceAed)}</span>
                         </p>
                       </div>
                     </div>
@@ -404,6 +441,9 @@ export function CustomOrderBuilder() {
               <p className="mt-2 text-sm text-white/60">
                 One row per jersey ({qtySafe}). We’ll print each name and number on the back.
               </p>
+              <div className="mt-2">
+                <SizeGuide compact />
+              </div>
             </div>
             <p className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.16em] text-jt-cyan">
               <Users className="h-4 w-4" /> {players.length} shirts
@@ -564,26 +604,56 @@ export function CustomOrderBuilder() {
                       </span>
                       <span className="mt-0.5 block text-xs text-white/50">{z.note}</span>
                     </span>
-                    <span className="text-xs text-jt-amber">{formatUSD(z.perJerseyUsd)}/jersey</span>
+                    <span className="text-xs text-jt-amber">{formatAEDMoney(z.perJerseyAed)}/jersey</span>
                   </button>
                 );
               })}
             </div>
 
+            <div className="mt-5 grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setPayMode("full")}
+                className={cn(
+                  "border px-3 py-2.5 text-left text-xs uppercase tracking-[0.14em]",
+                  payMode === "full" ? "border-jt-neon bg-jt-neon/15 text-jt-neon" : "border-white/10 text-white/55",
+                )}
+              >
+                Pay in full
+              </button>
+              <button
+                type="button"
+                onClick={() => setPayMode("deposit")}
+                className={cn(
+                  "border px-3 py-2.5 text-left text-xs uppercase tracking-[0.14em]",
+                  payMode === "deposit" ? "border-jt-neon bg-jt-neon/15 text-jt-neon" : "border-white/10 text-white/55",
+                )}
+              >
+                30% design deposit
+              </button>
+            </div>
+            <p className="mt-2 text-[11px] text-white/45">
+              Deposit locks design proof first; balance before print. Full pay covers jersey + freight now.
+            </p>
+
             <div className="mt-5 space-y-2 border-t border-white/10 pt-5 text-sm">
               <div className="flex justify-between gap-3 text-white/70">
                 <span className="inline-flex items-center gap-2"><Shirt className="h-4 w-4 text-jt-neon" />{active.name} × {qtySafe}</span>
-                <span>{formatUSD(jerseyTotal)}</span>
+                <span>{formatAEDMoney(jerseyTotal)}</span>
               </div>
               <div className="flex justify-between gap-3 text-white/70">
                 <span className="inline-flex items-center gap-2"><Plane className="h-4 w-4 text-jt-orange" />Freight</span>
-                <span>{formatUSD(freightTotal)}</span>
+                <span>{formatAEDMoney(freightTotal)}</span>
+              </div>
+              <div className="flex justify-between gap-3 text-white/70">
+                <span>Order total</span>
+                <span>{formatAEDMoney(grandTotal)}</span>
               </div>
               <div className="flex justify-between gap-3 border-t border-white/10 pt-3 jt-display text-lg">
                 <span className="inline-flex items-center gap-2 text-sm uppercase tracking-[0.16em] text-jt-muted">
-                  <Package className="h-4 w-4" /> Total due
+                  <Package className="h-4 w-4" /> Due now
                 </span>
-                <span className="jt-gradient-text-aurora">{formatUSD(grandTotal)}</span>
+                <span className="jt-gradient-text-aurora">{formatAEDMoney(dueNow)}</span>
               </div>
             </div>
           </div>
@@ -610,22 +680,32 @@ export function CustomOrderBuilder() {
             Continue <ArrowRight className="h-4 w-4" />
           </button>
         ) : (
-          <button
-            type="button"
-            onClick={() => void onPay()}
-            disabled={busy}
-            className="jt-gradient-bg inline-flex items-center gap-2 px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-jt-black disabled:opacity-60"
-          >
-            {busy ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Preparing Stripe…
-              </>
-            ) : (
-              <>
-                Pay jersey + freight <ArrowRight className="h-4 w-4" />
-              </>
-            )}
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={openWhatsAppQuote}
+              disabled={busy}
+              className="inline-flex items-center gap-2 border border-[#25D366]/50 bg-[#25D366]/10 px-4 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#25D366] disabled:opacity-60"
+            >
+              WhatsApp quote
+            </button>
+            <button
+              type="button"
+              onClick={() => void onPay()}
+              disabled={busy}
+              className="jt-gradient-bg inline-flex items-center gap-2 px-5 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-jt-black disabled:opacity-60"
+            >
+              {busy ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" /> Preparing Stripe…
+                </>
+              ) : (
+                <>
+                  {payMode === "deposit" ? "Pay deposit" : "Pay jersey + freight"} <ArrowRight className="h-4 w-4" />
+                </>
+              )}
+            </button>
+          </div>
         )}
       </div>
     </div>

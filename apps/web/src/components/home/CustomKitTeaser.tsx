@@ -2,7 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { MagneticButton } from "@/components/motion/MagneticButton";
 import { Reveal } from "@/components/motion/Reveal";
 import { SplitHeading } from "@/components/motion/SplitHeading";
-import { CUSTOM_MOQ, CUSTOM_TIERS, formatUSD } from "@/lib/custom-order";
+import { CUSTOM_MOQ, CUSTOM_TIERS, formatAEDMoney } from "@/lib/custom-order";
 
 export function CustomKitTeaser() {
   return (
@@ -30,7 +30,7 @@ export function CustomKitTeaser() {
                       key={id}
                       className="border border-white/12 bg-black/35 px-3 py-1.5 text-[11px] uppercase tracking-[0.16em] text-white/70"
                     >
-                      {CUSTOM_TIERS[id].name} {formatUSD(CUSTOM_TIERS[id].priceUsd)}
+                      {CUSTOM_TIERS[id].name} {formatAEDMoney(CUSTOM_TIERS[id].priceAed)}
                     </span>
                   ))}
                 </div>

@@ -1,21 +1,23 @@
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, MessageCircle } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { Reveal } from "@/components/motion/Reveal";
+import { SITE, WHATSAPP_DEFAULT_MESSAGE, whatsappUrl } from "@/lib/site";
 
 const shop = [
   { href: "/shop/jerseys", label: "Jerseys" },
   { href: "/custom", label: "Custom kits" },
-  { href: "/shop/match-kits", label: "Match Kits" },
   { href: "/shop/training-wear", label: "Training Wear" },
-  { href: "/shop/limited-editions", label: "Limited Editions" },
 ];
 
 const support = [
   { href: "/track", label: "Track order" },
   { href: "/account", label: "Account" },
   { href: "/shipping", label: "Shipping & customs" },
-  { href: "mailto:support@yourdomain.com", label: "Contact", external: true },
+  { href: "/contact", label: "Contact" },
+  { href: "/returns", label: "Returns" },
+  { href: "/privacy", label: "Privacy" },
+  { href: "/terms", label: "Terms" },
 ];
 
 export function SiteFooter() {
@@ -27,7 +29,6 @@ export function SiteFooter() {
 
       <div className="relative jt-container py-8 sm:py-10 md:py-14">
         <div className="grid gap-8 md:grid-cols-[1.4fr_1fr_1fr] md:gap-10">
-          {/* Brand */}
           <Reveal>
             <div className="flex items-center gap-2.5 sm:gap-3">
               <BrandLogo variant="mark" className="h-12 w-12 sm:h-14 sm:w-14" />
@@ -36,19 +37,31 @@ export function SiteFooter() {
               </span>
             </div>
             <p className="mt-3 max-w-md text-sm leading-relaxed text-jt-muted sm:mt-4">
-              Premium sports merchandise for athletes and fans across the UAE and the world.
-              Official-style kits, limited drops, and training essentials.
+              Match and training kits for UAE clubs and fans — ready-to-wear United Tigers jerseys plus
+              custom team kits from MOQ 15.
             </p>
-            <Link
-              href="/shop"
-              className="group jt-slant mt-4 inline-flex items-center gap-2 bg-jt-neon/12 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-jt-neon transition-all duration-300 hover:-translate-y-0.5 hover:bg-jt-neon hover:text-jt-black hover:shadow-[0_0_28px_-8px_rgba(180,255,26,0.75)] sm:mt-6 sm:text-sm"
-            >
-              Shop the collection
-              <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </Link>
+            <div className="mt-4 flex flex-wrap gap-2 sm:mt-6">
+              <Link
+                href="/shop"
+                className="group jt-slant inline-flex items-center gap-2 bg-jt-neon/12 px-5 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-jt-neon transition-all duration-300 hover:-translate-y-0.5 hover:bg-jt-neon hover:text-jt-black"
+              >
+                Shop the collection
+                <ArrowUpRight className="h-4 w-4" />
+              </Link>
+              <a
+                href={whatsappUrl(WHATSAPP_DEFAULT_MESSAGE)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 border border-[#25D366]/40 bg-[#25D366]/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#25D366]"
+              >
+                <MessageCircle className="h-4 w-4" /> WhatsApp
+              </a>
+            </div>
+            <p className="mt-3 text-xs text-jt-muted">
+              {SITE.email} · {SITE.phoneDisplay} · {SITE.city}
+            </p>
           </Reveal>
 
-          {/* Link columns — 2-up on mobile to avoid a tall stack */}
           <div className="grid grid-cols-2 gap-6 sm:gap-8 md:contents">
             <Reveal delay={0.08}>
               <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-jt-neon sm:mb-4 sm:text-xs">
@@ -57,10 +70,7 @@ export function SiteFooter() {
               <ul className="space-y-2 text-sm text-jt-muted sm:space-y-2.5">
                 {shop.map((l) => (
                   <li key={l.href}>
-                    <Link
-                      href={l.href}
-                      className="jt-link inline-block transition-all duration-300 hover:translate-x-1 hover:text-white"
-                    >
+                    <Link href={l.href} className="jt-link inline-block transition-all duration-300 hover:translate-x-1 hover:text-white">
                       {l.label}
                     </Link>
                   </li>
@@ -75,21 +85,9 @@ export function SiteFooter() {
               <ul className="space-y-2 text-sm text-jt-muted sm:space-y-2.5">
                 {support.map((l) => (
                   <li key={l.href}>
-                    {"external" in l && l.external ? (
-                      <a
-                        href={l.href}
-                        className="jt-link inline-block transition-all duration-300 hover:translate-x-1 hover:text-white"
-                      >
-                        {l.label}
-                      </a>
-                    ) : (
-                      <Link
-                        href={l.href}
-                        className="jt-link inline-block transition-all duration-300 hover:translate-x-1 hover:text-white"
-                      >
-                        {l.label}
-                      </Link>
-                    )}
+                    <Link href={l.href} className="jt-link inline-block transition-all duration-300 hover:translate-x-1 hover:text-white">
+                      {l.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -98,7 +96,6 @@ export function SiteFooter() {
         </div>
       </div>
 
-      {/* Giant wordmark — desktop only; drifts while in view */}
       <div className="relative hidden overflow-hidden md:block">
         <div className="jt-container">
           <Reveal y={48} idle="float" effect="blur">

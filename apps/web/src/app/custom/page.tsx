@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { CustomOrderBuilder } from "@/components/custom/CustomOrderBuilder";
 import { Reveal } from "@/components/motion/Reveal";
 import { SplitHeading } from "@/components/motion/SplitHeading";
-import { CUSTOM_MOQ, CUSTOM_TIERS, formatUSD } from "@/lib/custom-order";
+import { CUSTOM_MOQ, CUSTOM_TIERS, formatAEDMoney } from "@/lib/custom-order";
 
 export const metadata: Metadata = {
   title: "Custom Jerseys",
   description:
-    "Team owners: pick Basic, Premium, or Luxury, upload logo and team name, add player names & numbers, place sponsors. Minimum 15 jerseys plus freight.",
+    "Team owners: pick Basic, Premium, or Luxury (AED), upload logo and team name, add player names & numbers, place sponsors. Pay full, 30% deposit, or WhatsApp a quote.",
 };
 
 export default async function CustomOrderPage({
@@ -52,7 +52,7 @@ export default async function CustomOrderPage({
               <div key={id} className="border border-white/10 bg-white/[0.03] px-4 py-4">
                 <p className="text-[11px] uppercase tracking-[0.22em] text-jt-muted">{t.name}</p>
                 <p className="mt-1 jt-display text-2xl">
-                  <span className="jt-gradient-text-fire">{formatUSD(t.priceUsd)}</span>
+                  <span className="jt-gradient-text-fire">{formatAEDMoney(t.priceAed)}</span>
                   <span className="ml-1 text-xs font-sans uppercase tracking-[0.16em] text-white/45">
                     / jersey
                   </span>

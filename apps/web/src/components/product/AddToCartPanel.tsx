@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import type { WooProduct, WooVariation } from "@/lib/woo/types";
 import { formatAED } from "@/lib/format";
 import { useCartStore } from "@/store/cart";
+import { SizeGuide } from "@/components/product/SizeGuide";
 import {
   EMPTY_PERSONALIZATION,
   hasPersonalization,
@@ -26,6 +27,7 @@ export function AddToCartPanel({
   };
 }) {
   const [selected, setSelected] = useState<Record<string, string>>({});
+  const [qty, setQty] = useState(1);
   const [pers, setPers] = useState<PersonalizationValue>(EMPTY_PERSONALIZATION);
   const [status, setStatus] = useState<"idle" | "loading" | "ok" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -48,7 +50,7 @@ export function AddToCartPanel({
     try {
       const payload: Record<string, unknown> = {
         id: variation?.id ?? product.id,
-        quantity: 1,
+        quantity: Math.max(1, Math.min(50, qty)),
       };
       if (variations.length) {
         payload.variation = Object.entries(selected).map(([attribute, value]) => ({ attribute, value }));
@@ -100,7 +102,10 @@ export function AddToCartPanel({
       {attrs.map((attr) => (
         <div key={attr.slug}>
           <p className="mb-2 flex items-center justify-between text-xs uppercase tracking-[0.16em] text-jt-muted">
-            {attr.name}
+            <span className="inline-flex items-center gap-3">
+              {attr.name}
+              {/size/i.test(attr.name) && <SizeGuide compact />}
+            </span>
             {selected[attr.name] && <span className="text-white">{selected[attr.name]}</span>}
           </p>
           <div className="flex flex-wrap gap-2">
@@ -124,6 +129,18 @@ export function AddToCartPanel({
           </div>
         </div>
       ))}
+
+      <label className="block text-xs uppercase tracking-[0.16em] text-jt-muted">
+        Quantity
+        <input
+          type="number"
+          min={1}
+          max={50}
+          value={qty}
+          onChange={(e) => setQty(Math.max(1, Number(e.target.value) || 1))}
+          className="mt-2 w-24 border border-white/15 bg-jt-black px-3 py-2 text-sm text-white outline-none focus:border-jt-neon"
+        />
+      </label>
 
       {personalization.personalizationEligible && (
         <PersonalizationForm

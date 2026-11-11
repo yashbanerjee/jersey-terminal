@@ -46,11 +46,11 @@ export default async function HomePage() {
       <HomeSection>
         <ProductRail
           index={1}
-          eyebrow="Just landed"
-          title="New Arrivals"
-          subtitle="Fresh drops for the season — be first on the pitch and the street."
-          products={newest}
-          href="/shop?sort=date"
+          eyebrow="United Tigers"
+          title="Ready to wear"
+          subtitle="Match and training jerseys in stock — personalise name & number at checkout."
+          products={newest.length ? newest : all}
+          href="/shop"
           layout="deck+grid"
           limit={8}
         />
@@ -75,9 +75,9 @@ export default async function HomePage() {
       <HomeSection>
         <ProductRail
           index={2}
-          eyebrow="Everything"
-          title="All Jerseys"
-          subtitle="The full Jersey Terminal collection — browse every cut in one dense drop."
+          eyebrow="Collection"
+          title="Shop jerseys"
+          subtitle="Current catalogue — more clubs coming. Need a full squad kit? Go custom."
           products={all}
           href="/shop"
           layout="grid"

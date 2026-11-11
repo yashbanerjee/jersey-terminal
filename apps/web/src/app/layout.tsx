@@ -4,6 +4,7 @@ import { CartDrawer } from "@/components/cart/CartDrawer";
 import { PageAtmosphere } from "@/components/layout/PageAtmosphere";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat";
 import "./globals.css";
 
 /** Body face — modern geometric sans with a slightly techy, sporty feel. */
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main className="relative z-10 w-full flex-1">{children}</main>
         <SiteFooter />
         <CartDrawer />
+        <WhatsAppFloat />
       </body>
     </html>
   );
