@@ -218,22 +218,42 @@ export function CustomOrderBuilder() {
                   key={id}
                   type="button"
                   onClick={() => setTier(id)}
+                  aria-pressed={selected}
                   className={cn(
-                    "jt-chamfer w-full bg-gradient-to-br p-px text-left transition",
+                    "jt-chamfer w-full bg-gradient-to-br text-left transition-all duration-200",
                     ACCENT[id],
-                    selected ? "shadow-[0_0_40px_-12px_rgba(180,255,26,0.55)]" : "opacity-85 hover:opacity-100",
+                    selected
+                      ? "scale-[1.01] p-[2px] shadow-[0_0_48px_-8px_rgba(180,255,26,0.75)] ring-2 ring-jt-neon ring-offset-2 ring-offset-jt-black"
+                      : "p-px opacity-55 grayscale-[0.35] hover:opacity-90 hover:grayscale-0",
                   )}
                 >
-                  <div className="jt-chamfer bg-jt-dark p-4 sm:p-5">
+                  <div
+                    className={cn(
+                      "jt-chamfer p-4 sm:p-5",
+                      selected ? "bg-jt-dark/95 bg-[linear-gradient(135deg,rgba(180,255,26,0.12),transparent_42%)]" : "bg-jt-dark",
+                    )}
+                  >
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-jt-neon">
-                          {t.name} kit
-                        </p>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-jt-neon">
+                            {t.name} kit
+                          </p>
+                          {selected && (
+                            <span className="inline-flex items-center gap-1 bg-jt-neon px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-jt-black">
+                              <Check className="h-3 w-3" /> Selected
+                            </span>
+                          )}
+                        </div>
                         <h3 className="mt-1 jt-display text-2xl text-white sm:text-3xl">{t.name}</h3>
                         <p className="mt-2 max-w-xl text-sm text-white/65">{t.tagline}</p>
                       </div>
-                      <div className="jt-slant bg-black/50 px-3 py-2 ring-1 ring-white/10">
+                      <div
+                        className={cn(
+                          "jt-slant px-3 py-2",
+                          selected ? "bg-jt-neon/15 ring-1 ring-jt-neon/50" : "bg-black/50 ring-1 ring-white/10",
+                        )}
+                      >
                         <p className="text-[9px] uppercase tracking-[0.2em] text-jt-muted">Per jersey</p>
                         <p className="jt-display text-xl">
                           <span className="jt-gradient-text-fire">{formatUSD(t.priceUsd)}</span>
@@ -528,11 +548,20 @@ export function CustomOrderBuilder() {
                     onClick={() => setZone(id)}
                     className={cn(
                       "flex items-start justify-between gap-3 border px-3 py-3 text-left transition",
-                      zone === id ? "border-jt-neon/60 bg-jt-neon/10" : "border-white/10 bg-white/[0.02]",
+                      zone === id
+                        ? "border-jt-neon bg-jt-neon/15 ring-1 ring-jt-neon/40"
+                        : "border-white/10 bg-white/[0.02] opacity-70 hover:opacity-100",
                     )}
                   >
                     <span>
-                      <span className="block text-sm font-medium text-white">{z.label}</span>
+                      <span className="flex items-center gap-2 text-sm font-medium text-white">
+                        {z.label}
+                        {zone === id && (
+                          <span className="bg-jt-neon px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.14em] text-jt-black">
+                            Selected
+                          </span>
+                        )}
+                      </span>
                       <span className="mt-0.5 block text-xs text-white/50">{z.note}</span>
                     </span>
                     <span className="text-xs text-jt-amber">{formatUSD(z.perJerseyUsd)}/jersey</span>
