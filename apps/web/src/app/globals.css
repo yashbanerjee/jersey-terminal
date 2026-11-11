@@ -980,9 +980,174 @@ html.lenis body {
   display: none !important;
 }
 
+/* ---- Homepage motion: one-shot reveals (GPU transforms only) ---- */
+.jt-reveal {
+  --jt-reveal-delay: 0s;
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--jt-reveal-delay),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--jt-reveal-delay);
+  will-change: opacity, transform;
+}
+.jt-reveal-up {
+  transform: translate3d(0, 28px, 0);
+}
+.jt-reveal-down {
+  transform: translate3d(0, -22px, 0);
+}
+.jt-reveal-left {
+  transform: translate3d(-36px, 0, 0);
+}
+.jt-reveal-right {
+  transform: translate3d(36px, 0, 0);
+}
+.jt-reveal-scale,
+.jt-reveal-pop {
+  transform: translate3d(0, 18px, 0) scale(0.94);
+}
+.jt-reveal-3d {
+  transform: translate3d(0, 32px, 0) scale(0.96);
+}
+.jt-reveal-clip {
+  clip-path: inset(0 0 100% 0);
+  transform: none;
+  transition:
+    opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1) var(--jt-reveal-delay),
+    clip-path 0.85s cubic-bezier(0.22, 1, 0.36, 1) var(--jt-reveal-delay);
+}
+.jt-reveal.is-in {
+  opacity: 1;
+  transform: none;
+  clip-path: inset(0 0 0 0);
+}
+
+.jt-stagger .jt-stagger-item {
+  opacity: 0;
+  transform: translate3d(0, 36px, 0) scale(0.96);
+  transition:
+    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--jt-stagger-i, 0) * 80ms);
+  will-change: opacity, transform;
+}
+.jt-stagger-3d .jt-stagger-item {
+  transform: translate3d(0, 40px, 0) scale(0.94);
+}
+.jt-stagger.is-in .jt-stagger-item {
+  opacity: 1;
+  transform: none;
+}
+
+.jt-home-section .jt-home-scan {
+  pointer-events: none;
+  position: absolute;
+  inset: 12% -10% auto;
+  z-index: 2;
+  height: 2px;
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(180, 255, 26, 0.85),
+    rgba(46, 230, 255, 0.7),
+    rgba(255, 122, 26, 0.75),
+    transparent
+  );
+  transform: translate3d(-40%, 0, 0) rotate(-12deg);
+}
+.jt-home-section.is-in .jt-home-scan {
+  animation: jt-home-scan 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes jt-home-scan {
+  0% {
+    opacity: 0;
+    transform: translate3d(-45%, 0, 0) rotate(-12deg);
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(55%, 0, 0) rotate(-12deg);
+  }
+}
+
+/* Hero one-shot entrance */
+.jt-hero-ready .hero-line {
+  display: block;
+  transform: translate3d(0, 110%, 0) skewX(-8deg);
+  opacity: 0;
+}
+.jt-hero-ready.is-booted .hero-line {
+  animation: jt-hero-line 0.95s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.jt-hero-ready .hero-line:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.jt-hero-ready h1 > span:nth-child(1) .hero-line {
+  animation-delay: 0.08s;
+}
+.jt-hero-ready h1 > span:nth-child(2) .hero-line {
+  animation-delay: 0.18s;
+}
+.jt-hero-ready h1 > span:nth-child(3) .hero-line {
+  animation-delay: 0.28s;
+}
+@keyframes jt-hero-line {
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+.jt-hero-ready .hero-fade,
+.jt-hero-ready .hero-visual {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+}
+.jt-hero-ready.is-booted .hero-fade,
+.jt-hero-ready.is-booted .hero-visual {
+  animation: jt-hero-fade 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.jt-hero-ready.is-booted .hero-copy > .hero-fade:nth-child(1) {
+  animation-delay: 0.32s;
+}
+.jt-hero-ready.is-booted .hero-copy > .hero-fade:nth-child(3) {
+  animation-delay: 0.42s;
+}
+.jt-hero-ready.is-booted .hero-copy > .hero-fade:nth-child(4) {
+  animation-delay: 0.52s;
+}
+.jt-hero-ready.is-booted .hero-copy > .hero-fade:nth-child(5) {
+  animation-delay: 0.62s;
+}
+.jt-hero-ready.is-booted .hero-visual {
+  animation-delay: 0.18s;
+}
+@keyframes jt-hero-fade {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .jt-reveal,
+  .jt-stagger .jt-stagger-item,
+  .jt-hero-ready .hero-line,
+  .jt-hero-ready .hero-fade,
+  .jt-hero-ready .hero-visual {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+  .jt-home-scan {
+    display: none !important;
   }
   .jt-marquee-track,
   .jt-pulse,

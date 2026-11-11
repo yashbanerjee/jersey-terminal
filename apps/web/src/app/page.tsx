@@ -1,6 +1,7 @@
 import { Hero } from "@/components/motion/Hero";
 import { BrandStory } from "@/components/home/BrandStory";
 import { FeatureStrip } from "@/components/home/FeatureStrip";
+import { HomeSection } from "@/components/home/HomeSection";
 import { LimitedSpotlight } from "@/components/home/LimitedSpotlight";
 import { Newsletter } from "@/components/home/Newsletter";
 import { PersonaliseBanner } from "@/components/home/PersonaliseBanner";
@@ -37,38 +38,54 @@ export default async function HomePage() {
     <div className="w-full">
       <Hero products={heroProducts} />
       <TickerStrip />
-      <FeatureStrip />
+      <HomeSection>
+        <FeatureStrip />
+      </HomeSection>
 
-      <ProductRail
-        index={1}
-        eyebrow="Just landed"
-        title="New Arrivals"
-        subtitle="Fresh drops for the season — be first on the pitch and the street."
-        products={newest}
-        href="/shop?sort=date"
-        layout="deck+grid"
-        limit={8}
-      />
+      <HomeSection>
+        <ProductRail
+          index={1}
+          eyebrow="Just landed"
+          title="New Arrivals"
+          subtitle="Fresh drops for the season — be first on the pitch and the street."
+          products={newest}
+          href="/shop?sort=date"
+          layout="deck+grid"
+          limit={8}
+        />
+      </HomeSection>
 
-      <LimitedSpotlight products={limited} href="/shop/limited-editions" />
+      <HomeSection>
+        <LimitedSpotlight products={limited} href="/shop/limited-editions" />
+      </HomeSection>
 
-      <PersonaliseBanner />
+      <HomeSection>
+        <PersonaliseBanner />
+      </HomeSection>
 
-      <BrandStory />
+      <HomeSection>
+        <BrandStory />
+      </HomeSection>
 
-      <ProductRail
-        index={2}
-        eyebrow="Everything"
-        title="All Jerseys"
-        subtitle="The full Jersey Terminal collection — browse every cut in one dense drop."
-        products={all}
-        href="/shop"
-        layout="grid"
-        limit={12}
-      />
+      <HomeSection>
+        <ProductRail
+          index={2}
+          eyebrow="Everything"
+          title="All Jerseys"
+          subtitle="The full Jersey Terminal collection — browse every cut in one dense drop."
+          products={all}
+          href="/shop"
+          layout="grid"
+          limit={12}
+        />
+      </HomeSection>
 
-      <Reviews />
-      <Newsletter />
+      <HomeSection>
+        <Reviews />
+      </HomeSection>
+      <HomeSection>
+        <Newsletter />
+      </HomeSection>
     </div>
   );
 }

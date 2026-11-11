@@ -4,7 +4,6 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
 import { ArrowRight, ChevronDown, Globe, PenLine, Shirt, Star, Zap } from "lucide-react";
 import { CountUp } from "@/components/motion/CountUp";
 import { HeroAmbientVideo } from "@/components/motion/HeroAmbientVideo";
@@ -33,17 +32,19 @@ const STATS = [
 
 const slide3d = {
   enter: (dir: number) => ({
-    x: dir > 0 ? 100 : -100,
-    rotateY: dir > 0 ? -24 : 24,
+    x: dir > 0 ? 72 : -72,
+    rotateY: dir > 0 ? -16 : 16,
     opacity: 0,
-    scale: 0.9,
+    scale: 0.94,
+    filter: "brightness(0.85)",
   }),
-  center: { x: 0, rotateY: 0, opacity: 1, scale: 1 },
+  center: { x: 0, rotateY: 0, opacity: 1, scale: 1, filter: "brightness(1)" },
   exit: (dir: number) => ({
-    x: dir > 0 ? -100 : 100,
-    rotateY: dir > 0 ? 24 : -24,
+    x: dir > 0 ? -56 : 56,
+    rotateY: dir > 0 ? 12 : -12,
     opacity: 0,
-    scale: 0.9,
+    scale: 0.96,
+    filter: "brightness(0.9)",
   }),
 };
 
@@ -81,28 +82,20 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
   }, []);
 
   useEffect(() => {
-    // Instant visible hero — no ScrollTrigger scrub / infinite floats (scroll jank).
-    const ctx = gsap.context(() => {
-      gsap.set([".hero-line", ".hero-fade", ".hero-visual", ".hero-chip"], {
-        opacity: 1,
-        y: 0,
-        x: 0,
-        yPercent: 0,
-        scale: 1,
-        rotate: 0,
-        skewX: 0,
-      });
-    }, root);
-
-    window.dispatchEvent(new CustomEvent("jt:booted"));
-
-    return () => ctx.revert();
+    const el = root.current;
+    if (!el) return;
+    // One-shot cinematic entrance after paint — no continuous GSAP loops.
+    const id = window.requestAnimationFrame(() => {
+      el.classList.add("is-booted");
+      window.dispatchEvent(new CustomEvent("jt:booted"));
+    });
+    return () => window.cancelAnimationFrame(id);
   }, []);
 
   return (
     <section
       ref={root}
-      className="relative flex min-h-[100svh] w-full flex-col overflow-hidden pt-[var(--jt-header-h)]"
+      className="jt-hero-ready relative flex min-h-[100svh] w-full flex-col overflow-hidden pt-[var(--jt-header-h)]"
     >
       <HeroAmbientVideo />
 
@@ -222,7 +215,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                         initial="enter"
                         animate="center"
                         exit="exit"
-                        transition={{ type: "spring", stiffness: 140, damping: 22, mass: 0.9 }}
+                        transition={{ type: "spring", stiffness: 170, damping: 24, mass: 0.75 }}
                         style={{ transformStyle: "preserve-3d" }}
                       >
                         <Link href={`/product/${featured.slug}`} className="group relative block">
