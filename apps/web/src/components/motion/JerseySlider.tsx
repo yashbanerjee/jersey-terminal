@@ -74,7 +74,7 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
 
   const slots = total === 1 ? [0] : total === 2 ? [-1, 0] : [-1, 0, 1];
   const show = inView || reduced;
-  const spread = narrow ? 102 : 168;
+  const spread = narrow ? 88 : 168;
 
   return (
     <div
@@ -86,17 +86,17 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
       onPointerLeave={() => setPaused(false)}
     >
       <div
-        className="relative mx-auto w-full max-w-5xl"
-        style={{ perspective: "1400px", perspectiveOrigin: "50% 45%" }}
+        className="relative mx-auto w-full max-w-5xl px-1 pt-8 sm:px-0 sm:pt-10"
+        style={{ perspective: "1400px", perspectiveOrigin: "50% 42%" }}
       >
         {/* Soft table shadow under the deck */}
         <div
           aria-hidden
-          className="pointer-events-none absolute left-1/2 top-[72%] h-10 w-[min(70%,320px)] -translate-x-1/2 rounded-[100%] bg-black/50 blur-2xl"
+          className="pointer-events-none absolute left-1/2 top-[78%] h-10 w-[min(70%,320px)] -translate-x-1/2 rounded-[100%] bg-black/50 blur-2xl"
         />
 
         <div
-          className="relative mx-auto aspect-[5/7] w-[min(58vw,210px)] overflow-visible sm:w-[240px] md:w-[260px] lg:w-[280px]"
+          className="relative mx-auto aspect-[5/7] w-[min(72vw,240px)] overflow-visible sm:w-[240px] md:w-[260px] lg:w-[280px]"
           style={{ transformStyle: "preserve-3d" }}
         >
           {entered && <SlideImpact triggerKey={index} />}
@@ -105,13 +105,13 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
             const product = products[i];
             const isActive = offset === 0;
             const x = offset * spread;
-            // Deeper fan — side cards stay readable so the deck fills the band
-            const rotateY = reduced ? 0 : offset * -32;
-            const rotateZ = reduced ? 0 : offset * 5;
-            const rotateX = reduced ? 0 : isActive ? -4 : 6;
-            const y = isActive ? -10 : 18;
+            // Shallower fan on mobile so cards stay inside the padded stage
+            const rotateY = reduced ? 0 : offset * (narrow ? -22 : -32);
+            const rotateZ = reduced ? 0 : offset * (narrow ? 3 : 5);
+            const rotateX = reduced ? 0 : isActive ? (narrow ? -2 : -4) : narrow ? 4 : 6;
+            const y = isActive ? (narrow ? 0 : -8) : narrow ? 12 : 18;
             const z = isActive ? 110 : -70;
-            const scale = isActive ? 1.02 : 0.8;
+            const scale = isActive ? 1 : narrow ? 0.78 : 0.8;
             const opacity = isActive ? 1 : 0.55;
 
             return (
@@ -171,7 +171,11 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
                   className={isActive ? "pointer-events-auto" : "pointer-events-none select-none"}
                   animate={
                     isActive && show && !reduced
-                      ? { y: [0, -10, 0], rotateZ: [0, 1.2, 0], rotateY: [0, 3, 0, -3, 0] }
+                      ? {
+                          y: narrow ? [0, -4, 0] : [0, -8, 0],
+                          rotateZ: [0, 1.2, 0],
+                          rotateY: [0, 3, 0, -3, 0],
+                        }
                       : { y: 0, rotateZ: 0, rotateY: 0 }
                   }
                   transition={

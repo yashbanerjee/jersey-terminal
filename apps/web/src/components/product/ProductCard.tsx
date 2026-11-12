@@ -127,12 +127,12 @@ export function ProductCard({
           <span aria-hidden className="jt-card-border-run" />
           <span aria-hidden className="jt-card-border-bloom" />
 
-          <div className="jt-card-media jt-playing-face relative aspect-[5/7] w-full overflow-hidden bg-jt-dark">
+          <div className="jt-card-media jt-playing-face relative aspect-[5/7] w-full overflow-hidden bg-black">
             <span aria-hidden className="jt-playing-inset pointer-events-none absolute inset-[5px] z-[1] sm:inset-[6px]" />
 
             {product.image ? (
               <motion.div
-                className="absolute inset-[-8%] h-[116%] w-[116%]"
+                className="absolute inset-0"
                 style={
                   enable3d
                     ? { x: artX, y: artY, scale: artScale, transformStyle: "preserve-3d" }
@@ -145,7 +145,7 @@ export function ProductCard({
                   fill
                   priority={priority}
                   sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, (max-width:1536px) 25vw, 20vw"
-                  className="object-cover"
+                  className="object-contain object-center p-1.5 sm:p-2"
                 />
               </motion.div>
             ) : (

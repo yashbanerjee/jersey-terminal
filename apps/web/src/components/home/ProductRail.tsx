@@ -36,7 +36,7 @@ export function ProductRail({
   const countLabel = products.length ? `${products.length} styles` : null;
 
   return (
-    <section className="relative w-full overflow-x-hidden py-6 sm:py-8 md:py-10">
+    <section className="relative w-full overflow-x-clip py-6 sm:py-8 md:py-10">
       <SectionScan />
       <ScrollParallax
         distance={80}
