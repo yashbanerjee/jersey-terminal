@@ -22,16 +22,21 @@ export function TickerStrip() {
       el.classList.add("is-in");
       return;
     }
+    const failSafe = window.setTimeout(() => el.classList.add("is-in"), 1000);
     const io = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
         el.classList.add("is-in");
+        window.clearTimeout(failSafe);
         io.disconnect();
       },
-      { threshold: 0.3 },
+      { threshold: 0.05, rootMargin: "40px 0px" },
     );
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      window.clearTimeout(failSafe);
+      io.disconnect();
+    };
   }, []);
 
   return (

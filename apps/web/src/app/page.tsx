@@ -10,6 +10,7 @@ import { ProductRail } from "@/components/home/ProductRail";
 import { Reviews } from "@/components/home/Reviews";
 import { SquadGallery } from "@/components/home/SquadGallery";
 import { TickerStrip } from "@/components/home/TickerStrip";
+import { FALLBACK_HERO_PRODUCTS } from "@/lib/fallback-products";
 import { getHomepageCollections } from "@/lib/woo/products";
 
 /**
@@ -30,11 +31,13 @@ export default async function HomePage() {
     all: [],
   }));
 
-  const priorityHits = FEATURED_PRIORITY.map((slug) => all.find((p) => p.slug === slug)).filter(
+  const catalog = all.length ? all : FALLBACK_HERO_PRODUCTS;
+  const priorityHits = FEATURED_PRIORITY.map((slug) => catalog.find((p) => p.slug === slug)).filter(
     (p): p is NonNullable<typeof p> => Boolean(p),
   );
-  const rest = all.filter((p) => !FEATURED_PRIORITY.includes(p.slug));
-  const heroProducts = [...priorityHits, ...rest].slice(0, 6);
+  const rest = catalog.filter((p) => !FEATURED_PRIORITY.includes(p.slug));
+  const heroProducts = (priorityHits.length ? [...priorityHits, ...rest] : FALLBACK_HERO_PRODUCTS).slice(0, 6);
+  const railProducts = newest.length ? newest : catalog;
 
   return (
     <div className="w-full">
@@ -50,7 +53,7 @@ export default async function HomePage() {
           eyebrow="United Tigers"
           title="Ready to wear"
           subtitle="Match and training jerseys in stock — personalise name & number at checkout."
-          products={newest.length ? newest : all}
+          products={railProducts}
           href="/shop"
           layout="deck+grid"
           limit={8}
@@ -62,7 +65,7 @@ export default async function HomePage() {
       </HomeSection>
 
       <HomeSection>
-        <LimitedSpotlight products={limited} href="/shop/limited-editions" />
+        <LimitedSpotlight products={limited.length ? limited : catalog} href="/shop" />
       </HomeSection>
 
       <HomeSection>
@@ -83,7 +86,7 @@ export default async function HomePage() {
           eyebrow="Collection"
           title="Shop jerseys"
           subtitle="Current catalogue — more clubs coming. Need a full squad kit? Go custom."
-          products={all}
+          products={catalog}
           href="/shop"
           layout="grid"
           limit={12}

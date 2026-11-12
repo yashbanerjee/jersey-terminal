@@ -990,6 +990,20 @@ html.lenis body {
     transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--jt-reveal-delay);
   will-change: opacity, transform;
 }
+/* If JS never marks is-in, force content visible after a short delay. */
+@keyframes jt-reveal-fallback {
+  to {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0 0 0 0);
+  }
+}
+.jt-reveal:not(.is-in) {
+  animation: jt-reveal-fallback 0.01s linear 1.4s forwards;
+}
+.jt-stagger:not(.is-in) .jt-stagger-item {
+  animation: jt-reveal-fallback 0.01s linear 1.4s forwards;
+}
 .jt-reveal-up {
   transform: translate3d(0, 28px, 0);
 }

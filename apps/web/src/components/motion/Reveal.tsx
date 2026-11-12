@@ -47,9 +47,43 @@ function effectClass(effect: RevealEffect) {
   }
 }
 
+function observeInView(el: HTMLElement, once: boolean, onIn: () => void) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    onIn();
+    return () => undefined;
+  }
+
+  // Safety net: never leave content permanently invisible.
+  const failSafe = window.setTimeout(onIn, 1200);
+
+  const io = new IntersectionObserver(
+    ([entry]) => {
+      if (!entry.isIntersecting) return;
+      onIn();
+      window.clearTimeout(failSafe);
+      if (once) io.disconnect();
+    },
+    { threshold: 0.01, rootMargin: "80px 0px 80px 0px" },
+  );
+  io.observe(el);
+
+  // If already in view on mount (common for above-the-fold sections), reveal immediately.
+  const rect = el.getBoundingClientRect();
+  if (rect.top < window.innerHeight && rect.bottom > 0) {
+    onIn();
+    window.clearTimeout(failSafe);
+    if (once) io.disconnect();
+  }
+
+  return () => {
+    window.clearTimeout(failSafe);
+    io.disconnect();
+  };
+}
+
 /**
  * One-shot scroll entrance via CSS + IntersectionObserver.
- * No perpetual loops, no blur filters — premium without tanking FPS.
+ * Fail-safe timeout keeps content visible if the observer never fires.
  */
 export function Reveal({
   children,
@@ -63,20 +97,7 @@ export function Reveal({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      el.classList.add("is-in");
-      return;
-    }
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        el.classList.add("is-in");
-        if (once) io.disconnect();
-      },
-      { threshold: 0.16, rootMargin: "0px 0px -6% 0px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
+    return observeInView(el, once, () => el.classList.add("is-in"));
   }, [once]);
 
   return (
@@ -106,20 +127,7 @@ export function StaggerGroup({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      el.classList.add("is-in");
-      return;
-    }
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        el.classList.add("is-in");
-        if (once) io.disconnect();
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -4% 0px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
+    return observeInView(el, once, () => el.classList.add("is-in"));
   }, [once]);
 
   const items = Children.map(children, (child, i) => {

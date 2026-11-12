@@ -330,7 +330,16 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                   )}
                 </div>
               ) : (
-                <div className="jt-chamfer mx-auto aspect-[3/4] w-full max-w-[min(100%,calc(66svh*0.75))] bg-jt-surface" />
+                <div className="jt-chamfer relative mx-auto aspect-[3/4] w-full max-w-[min(100%,calc(66svh*0.75))] overflow-hidden bg-jt-surface">
+                  <Image
+                    src="/products/united-tigers/match-01.webp"
+                    alt="United Tiger Match Jersey"
+                    fill
+                    priority
+                    sizes="(max-width:1024px) 92vw, 42vw"
+                    className="object-cover object-[center_18%]"
+                  />
+                </div>
               )}
             </div>
           </div>
