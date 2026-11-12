@@ -1,6 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { env } from "@/lib/env";
 import { wooRest, wooStore, jtSports } from "./client";
+import { overrideCardImage, overrideProductImageSrcs } from "./product-image-overrides";
 import { displayCategory, storeToCard, storeToVariation, storeToWooProduct } from "./store-map";
 import type { ProductCardModel, WooProduct, WooVariation } from "./types";
 
@@ -29,6 +30,9 @@ function badgesFromProduct(p: WooProduct): ProductCardModel["badges"] {
 }
 
 export function toCard(p: WooProduct): ProductCardModel {
+  const primary = p.images?.[0]
+    ? { src: p.images[0].src, alt: p.images[0].alt || p.name }
+    : undefined;
   return {
     id: p.id,
     slug: p.slug,
@@ -37,11 +41,16 @@ export function toCard(p: WooProduct): ProductCardModel {
     regularPrice: p.regular_price,
     salePrice: p.sale_price || null,
     onSale: p.on_sale,
-    image: p.images?.[0]
-      ? { src: p.images[0].src, alt: p.images[0].alt || p.name }
-      : undefined,
+    image: overrideCardImage(p.slug, primary),
     badges: badgesFromProduct(p),
     category: displayCategory(p.categories),
+  };
+}
+
+function withImageOverrides(product: WooProduct): WooProduct {
+  return {
+    ...product,
+    images: overrideProductImageSrcs(product.slug, product.images ?? []),
   };
 }
 
@@ -137,8 +146,8 @@ export async function listProducts(params: {
 
   return unstable_cache(
     () => listProductsUncached(params),
-    key,
-    { revalidate: 120, tags: ["products"] },
+    [...key, "img-override-v1"],
+    { revalidate: 60, tags: ["products"] },
   )();
 }
 
@@ -149,31 +158,31 @@ export async function getProductBySlug(slug: string): Promise<WooProduct | null>
         if (!hasRestAuth()) {
           const { data } = await wooStore<unknown[]>(
             `/products?slug=${encodeURIComponent(slug)}`,
-            { next: { revalidate: 120, tags: ["products", `product-slug-${slug}`] } },
+            { next: { revalidate: 60, tags: ["products", `product-slug-${slug}`] } },
           );
           const first = (data as Parameters<typeof storeToWooProduct>[0][])[0];
-          return first ? storeToWooProduct(first) : null;
+          return first ? withImageOverrides(storeToWooProduct(first)) : null;
         }
         const products = await wooRest<WooProduct[]>(
           `/products?slug=${encodeURIComponent(slug)}`,
-          { next: { revalidate: 120, tags: ["products", `product-slug-${slug}`] } },
+          { next: { revalidate: 60, tags: ["products", `product-slug-${slug}`] } },
         );
-        return products[0] ?? null;
+        return products[0] ? withImageOverrides(products[0]) : null;
       } catch {
         try {
           const { data } = await wooStore<unknown[]>(
             `/products?slug=${encodeURIComponent(slug)}`,
-            { next: { revalidate: 120, tags: ["products", `product-slug-${slug}`] } },
+            { next: { revalidate: 60, tags: ["products", `product-slug-${slug}`] } },
           );
           const first = (data as Parameters<typeof storeToWooProduct>[0][])[0];
-          return first ? storeToWooProduct(first) : null;
+          return first ? withImageOverrides(storeToWooProduct(first)) : null;
         } catch {
           return null;
         }
       }
     },
-    ["product-slug", slug],
-    { revalidate: 120, tags: ["products", `product-slug-${slug}`] },
+    ["product-slug", slug, "img-override-v1"],
+    { revalidate: 60, tags: ["products", `product-slug-${slug}`] },
   )();
 }
 

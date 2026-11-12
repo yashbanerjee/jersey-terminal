@@ -1,3 +1,4 @@
+import { overrideCardImage } from "./product-image-overrides";
 import type { ProductCardModel, WooProduct, WooVariation } from "./types";
 
 /** Grouping/marketing categories that make poor card labels. */
@@ -135,9 +136,12 @@ export function storeToCard(p: StoreProduct): ProductCardModel {
     regularPrice: woo.regular_price,
     salePrice: woo.sale_price || null,
     onSale: woo.on_sale,
-    image: woo.images[0]
-      ? { src: woo.images[0].src, alt: woo.images[0].alt || woo.name }
-      : undefined,
+    image: overrideCardImage(
+      woo.slug,
+      woo.images[0]
+        ? { src: woo.images[0].src, alt: woo.images[0].alt || woo.name }
+        : undefined,
+    ),
     badges,
     category: displayCategory(woo.categories),
   };
