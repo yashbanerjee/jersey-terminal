@@ -26,7 +26,10 @@ const BY_SLUG: Record<string, string[]> = {
   "united-tiger-training-jersey": TRAIN,
 };
 
-export function overrideProductImageSrcs(slug: string, images: Array<{ id: number; src: string; alt: string }>) {
+export function overrideProductImageSrcs(
+  slug: string,
+  images: Array<{ id: number; src: string; alt?: string }>,
+) {
   const overrides = BY_SLUG[slug];
   if (!overrides?.length) return images;
   return overrides.map((src, i) => ({
