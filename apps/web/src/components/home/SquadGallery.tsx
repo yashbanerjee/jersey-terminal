@@ -50,18 +50,26 @@ export function SquadGallery({ photos = UNITED_TIGERS_SQUAD }: { photos?: SquadP
               <button
                 type="button"
                 onClick={() => setActive(photo)}
-                className="group relative aspect-[3/4] w-full overflow-hidden border border-white/10 bg-jt-dark text-left"
+                className="jt-card jt-playing-card group relative aspect-[3/4] w-full overflow-visible text-left"
               >
-                <Image
-                  src={photo.src}
-                  alt={photo.alt}
-                  fill
-                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  className="object-cover transition duration-500 group-hover:scale-[1.04]"
-                />
-                <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 pb-3 pt-10">
-                  <span className="block text-[11px] font-semibold uppercase tracking-[0.14em] text-white">
-                    {photo.name}
+                <span aria-hidden className="jt-card-aura" />
+                <span className="jt-card-frame jt-playing-frame relative block h-full w-full p-[2.5px] sm:p-[3px]">
+                  <span aria-hidden className="jt-card-border-run" />
+                  <span aria-hidden className="jt-card-border-bloom" />
+                  <span className="jt-card-media jt-playing-face relative block h-full w-full overflow-hidden bg-black">
+                    <Image
+                      src={photo.src}
+                      alt={photo.alt}
+                      fill
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      className="object-cover object-top transition duration-500 group-hover:scale-[1.04]"
+                    />
+                    <span aria-hidden className="jt-card-shine pointer-events-none absolute inset-0 z-[1]" />
+                    <span className="absolute inset-x-0 bottom-0 z-[2] bg-gradient-to-t from-black/85 via-black/35 to-transparent px-3 pb-3 pt-10">
+                      <span className="block text-[11px] font-semibold uppercase tracking-[0.14em] text-white">
+                        {photo.name}
+                      </span>
+                    </span>
                   </span>
                 </span>
               </button>
@@ -87,13 +95,13 @@ export function SquadGallery({ photos = UNITED_TIGERS_SQUAD }: { photos?: SquadP
             >
               <X className="h-5 w-5" />
             </button>
-            <div className="relative aspect-[3/4] w-full overflow-hidden border border-white/15 bg-jt-dark sm:aspect-[4/5]">
+            <div className="relative aspect-[3/4] w-full overflow-hidden border border-white/15 bg-black sm:aspect-[4/5]">
               <Image
                 src={active.src}
                 alt={active.alt}
                 fill
                 sizes="(max-width: 768px) 100vw, 768px"
-                className="object-contain"
+                className="object-contain object-center"
                 priority
               />
             </div>
