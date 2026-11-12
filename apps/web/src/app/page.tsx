@@ -8,6 +8,7 @@ import { Newsletter } from "@/components/home/Newsletter";
 import { PersonaliseBanner } from "@/components/home/PersonaliseBanner";
 import { ProductRail } from "@/components/home/ProductRail";
 import { Reviews } from "@/components/home/Reviews";
+import { SquadGallery } from "@/components/home/SquadGallery";
 import { TickerStrip } from "@/components/home/TickerStrip";
 import { getHomepageCollections } from "@/lib/woo/products";
 
@@ -54,6 +55,10 @@ export default async function HomePage() {
           layout="deck+grid"
           limit={8}
         />
+      </HomeSection>
+
+      <HomeSection>
+        <SquadGallery />
       </HomeSection>
 
       <HomeSection>

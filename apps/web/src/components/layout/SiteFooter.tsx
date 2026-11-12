@@ -7,6 +7,7 @@ import { WHATSAPP_DEFAULT_MESSAGE, whatsappUrl, type StorefrontContact } from "@
 const shop = [
   { href: "/shop/jerseys", label: "Jerseys" },
   { href: "/custom", label: "Custom kits" },
+  { href: "/squad", label: "Squad gallery" },
   { href: "/shop/training-wear", label: "Training Wear" },
 ];
 
