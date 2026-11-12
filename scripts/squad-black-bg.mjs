@@ -15,8 +15,8 @@ function isBg(r, g, b) {
   const min = Math.min(r, g, b);
   const sat = max - min;
   const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  // Mid-grey studio: low saturation, medium luminance
-  return sat < 28 && lum > 95 && lum < 210;
+  // Studio grey + soft floor spill — low saturation, mid/high luminance
+  return sat < 36 && lum > 55 && lum < 245;
 }
 
 async function processFile(file) {
@@ -57,6 +57,18 @@ async function processFile(file) {
     if (x + 1 < width) push(x + 1, y);
     if (y > 0) push(x, y - 1);
     if (y + 1 < height) push(x, y + 1);
+  }
+
+  // Also clear enclosed grey pockets (e.g. between legs) that edge flood misses.
+  for (let i = 0; i < width * height; i++) {
+    if (visited[i]) continue;
+    const o = i * channels;
+    if (!isBg(data[o], data[o + 1], data[o + 2])) continue;
+    visited[i] = 1;
+    data[o] = 0;
+    data[o + 1] = 0;
+    data[o + 2] = 0;
+    data[o + 3] = 255;
   }
 
   // Soft fringe toward black so cut edges match product mockups

@@ -5,7 +5,7 @@ export type SquadPhoto = {
 };
 
 /** Bump when squad assets change so Next/CDN caches refresh. */
-const SQUAD_ASSET_V = "black-bg-v1";
+const SQUAD_ASSET_V = "black-bg-v2";
 
 function squadSrc(file: string) {
   return `/squad/united-tigers/${file}?v=${SQUAD_ASSET_V}`;
