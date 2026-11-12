@@ -64,18 +64,45 @@ function ut_ensure_terms(string $taxonomy, array $names): void
     }
 }
 
-function ut_sideload_image(string $url, int $post_id): int
+function ut_resolve_image_src(string $src, string $base): string
 {
-    if (!$url) {
+    $src = trim($src);
+    if ($src === '') {
+        return '';
+    }
+    if (preg_match('#^https?://#i', $src)) {
+        return $src;
+    }
+    $local = $base . '/' . ltrim(str_replace('\\', '/', $src), '/');
+    return file_exists($local) ? $local : '';
+}
+
+function ut_sideload_image(string $src, int $post_id, string $base): int
+{
+    $resolved = ut_resolve_image_src($src, $base);
+    if ($resolved === '') {
+        WP_CLI::warning('image missing: ' . $src);
         return 0;
     }
-    $tmp = download_url($url, 60);
-    if (is_wp_error($tmp)) {
-        WP_CLI::warning('image download failed: ' . $url . ' — ' . $tmp->get_error_message());
-        return 0;
+
+    if (preg_match('#^https?://#i', $resolved)) {
+        $tmp = download_url($resolved, 60);
+        if (is_wp_error($tmp)) {
+            WP_CLI::warning('image download failed: ' . $resolved . ' — ' . $tmp->get_error_message());
+            return 0;
+        }
+        $name = basename(parse_url($resolved, PHP_URL_PATH) ?: 'image.jpg');
+    } else {
+        $tmp = wp_tempnam(basename($resolved));
+        if (!$tmp || !@copy($resolved, $tmp)) {
+            WP_CLI::warning('local image copy failed: ' . $resolved);
+            return 0;
+        }
+        $name = basename($resolved);
     }
+
     $file = [
-        'name' => basename(parse_url($url, PHP_URL_PATH) ?: 'image.webp'),
+        'name' => $name,
         'tmp_name' => $tmp,
     ];
     $id = media_handle_sideload($file, $post_id);
@@ -97,6 +124,42 @@ function ut_find_by_slug(string $slug): int
         'fields' => 'ids',
     ]);
     return $posts ? (int) $posts[0] : 0;
+}
+
+function ut_attach_images(WC_Product $product, int $product_id, array $images, string $version, string $base): void
+{
+    $meta_key = '_jt_ut_images_version';
+    $current = (string) get_post_meta($product_id, $meta_key, true);
+    $has_image = (bool) $product->get_image_id();
+
+    if ($has_image && $current !== '' && $current === $version) {
+        WP_CLI::log("Images already at version {$version} for #{$product_id}");
+        return;
+    }
+
+    $gallery = [];
+    $featured = 0;
+    foreach ($images as $idx => $src) {
+        $img_id = ut_sideload_image((string) $src, $product_id, $base);
+        if (!$img_id) {
+            continue;
+        }
+        if ($idx === 0 || !$featured) {
+            $featured = $img_id;
+        } else {
+            $gallery[] = $img_id;
+        }
+    }
+
+    if ($featured) {
+        $product->set_image_id($featured);
+        $product->set_gallery_image_ids($gallery);
+        $product->save();
+        update_post_meta($product_id, $meta_key, $version);
+        WP_CLI::log('Attached ' . (1 + count($gallery)) . " images (version {$version})");
+    } else {
+        WP_CLI::warning("No images attached for product #{$product_id}");
+    }
 }
 
 ut_ensure_attribute('Size', 'size');
@@ -121,6 +184,7 @@ foreach ($items as $item) {
     $desc = (string) ($item['description'] ?? $short);
     $sizes = $item['sizes'] ?? ['S', 'M', 'L', 'XL', 'XXL'];
     $images = $item['images'] ?? [];
+    $images_version = (string) ($item['imagesVersion'] ?? 'default');
     $extra_cats = $item['categories'] ?? [];
 
     $existing = ut_find_by_slug($slug);
@@ -163,26 +227,7 @@ foreach ($items as $item) {
     $product->set_category_ids(array_values(array_unique(array_map('intval', $cat_ids))));
 
     $product_id = $product->save();
-
-    // Sideload images only when the product has none yet (avoids duplicate media on re-runs).
-    if (!$product->get_image_id()) {
-        $gallery = [];
-        foreach ($images as $idx => $src) {
-            $img_id = ut_sideload_image((string) $src, $product_id);
-            if (!$img_id) {
-                continue;
-            }
-            if ($idx === 0) {
-                $product->set_image_id($img_id);
-            } else {
-                $gallery[] = $img_id;
-            }
-        }
-        if ($gallery) {
-            $product->set_gallery_image_ids($gallery);
-        }
-        $product->save();
-    }
+    ut_attach_images($product, $product_id, $images, $images_version, $base);
 
     foreach ($product->get_children() as $child_id) {
         wp_delete_post($child_id, true);
