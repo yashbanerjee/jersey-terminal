@@ -70,7 +70,7 @@ export function LimitedSpotlight({ products, href }: { products: ProductCardMode
               href={`/product/${p.slug}`}
               className="jt-card jt-drop-orange group relative block bg-[linear-gradient(135deg,rgba(46,230,255,0.6),rgba(255,255,255,0.15)_35%,rgba(255,122,26,0.7))] p-px jt-chamfer transition-transform duration-500 hover:-translate-y-2"
             >
-              <div className="jt-chamfer relative overflow-hidden bg-jt-surface">
+              <div className="jt-chamfer relative overflow-hidden bg-[radial-gradient(ellipse_at_50%_70%,#4a0d5c_0%,#1a0824_52%,#050607_100%)]">
                 <div className="jt-card-media relative aspect-[4/5]">
                   {p.image ? (
                     <Image
@@ -78,7 +78,7 @@ export function LimitedSpotlight({ products, href }: { products: ProductCardMode
                       alt={p.image.alt}
                       fill
                       sizes="(max-width:640px) 62vw, (max-width:1024px) 28vw, 18vw"
-                      className="object-cover"
+                      className="object-contain object-center"
                     />
                   ) : null}
                   <div className="absolute inset-0 bg-gradient-to-t from-jt-black/95 via-jt-black/25 to-transparent" />

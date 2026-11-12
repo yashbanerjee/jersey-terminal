@@ -220,7 +220,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                       >
                         <Link href={`/product/${featured.slug}`} className="group relative block">
                           <div className="jt-chamfer relative bg-[linear-gradient(135deg,rgba(46,230,255,0.95),rgba(255,255,255,0.4)_28%,rgba(255,122,26,0.95)_62%,rgba(255,176,32,0.95))] p-[2px] shadow-[0_40px_100px_-24px_rgba(255,122,26,0.65)]">
-                            <div className="jt-chamfer relative overflow-hidden bg-jt-dark">
+                            <div className="jt-chamfer relative overflow-hidden bg-[radial-gradient(ellipse_at_50%_70%,#3b0a4a_0%,#12061a_55%,#050607_100%)]">
                               {/* True portrait box — width capped so aspect never collapses into a wide stretch */}
                               <div className="relative aspect-[3/4] w-full">
                                 <Image
@@ -229,13 +229,11 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                                   fill
                                   priority={index === 0}
                                   sizes="(max-width:1024px) 92vw, 42vw"
-                                  className="!h-full !w-full object-cover object-[center_18%] transition duration-1000 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.04]"
+                                  className="!h-full !w-full object-contain object-center transition duration-1000 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.03]"
                                 />
-                                <div className="pointer-events-none absolute -left-[30%] top-[18%] h-[3px] w-[160%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(46,230,255,0.95),transparent)] opacity-80 blur-[1px]" />
-                                <div className="pointer-events-none absolute -left-[30%] top-[68%] h-[4px] w-[160%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(255,122,26,0.95),transparent)] opacity-80 blur-[1.5px]" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-jt-black via-jt-black/25 to-transparent" />
-                                <div className="absolute inset-x-0 bottom-0 h-[55%] bg-[radial-gradient(ellipse_at_50%_100%,rgba(255,122,26,0.4),transparent_62%)]" />
-                                <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(46,230,255,0.12),transparent_35%,rgba(255,122,26,0.1)_70%,transparent)]" />
+                                <div className="pointer-events-none absolute -left-[30%] top-[18%] h-[3px] w-[160%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(46,230,255,0.55),transparent)] opacity-70 blur-[1px]" />
+                                <div className="pointer-events-none absolute -left-[30%] top-[68%] h-[4px] w-[160%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(255,45,120,0.55),transparent)] opacity-70 blur-[1.5px]" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-jt-black/80 via-transparent to-transparent" />
                                 <span aria-hidden className="jt-card-shine pointer-events-none absolute inset-0" />
 
                                 <div className="absolute inset-x-0 top-0 z-20 flex items-start justify-between gap-2 p-3 sm:p-4">
@@ -305,7 +303,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                             setDir(i > index ? 1 : -1);
                             setIndex(i);
                           }}
-                          className={`relative aspect-[3/4] overflow-hidden rounded-lg bg-jt-surface ring-1 transition ${
+                          className={`relative aspect-[3/4] overflow-hidden rounded-lg bg-[radial-gradient(ellipse_at_50%_70%,#3b0a4a_0%,#12061a_60%,#050607_100%)] ring-1 transition ${
                             i === index
                               ? "ring-jt-neon shadow-[0_0_18px_-4px_rgba(180,255,26,0.75)]"
                               : "ring-white/10 opacity-70 hover:opacity-100"
@@ -317,7 +315,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                               alt=""
                               fill
                               sizes="96px"
-                              className="!h-full !w-full object-cover object-[center_20%]"
+                              className="!h-full !w-full object-contain object-center"
                             />
                           ) : null}
                           <span
@@ -330,14 +328,14 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                   )}
                 </div>
               ) : (
-                <div className="jt-chamfer relative mx-auto aspect-[3/4] w-full max-w-[min(100%,calc(66svh*0.75))] overflow-hidden bg-jt-surface">
+                <div className="jt-chamfer relative mx-auto aspect-[3/4] w-full max-w-[min(100%,calc(66svh*0.75))] overflow-hidden bg-[radial-gradient(ellipse_at_50%_70%,#3b0a4a_0%,#12061a_55%,#050607_100%)]">
                   <Image
-                    src="/products/united-tigers/match-01.webp"
+                    src="/products/united-tigers/match-life-01.jpg"
                     alt="United Tiger Match Jersey"
                     fill
                     priority
                     sizes="(max-width:1024px) 92vw, 42vw"
-                    className="object-cover object-[center_18%]"
+                    className="object-contain object-center"
                   />
                 </div>
               )}

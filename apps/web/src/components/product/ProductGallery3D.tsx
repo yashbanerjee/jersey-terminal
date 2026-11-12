@@ -88,16 +88,16 @@ export function ProductGallery3D({
             transformStyle: "preserve-3d",
             transformPerspective: 1200,
           }}
-          className="jt-card jt-glow-border group relative aspect-[4/5] w-full cursor-grab overflow-hidden rounded-2xl bg-jt-surface ring-1 ring-white/10 shadow-[0_40px_120px_-40px_rgba(255,122,26,0.4)] active:cursor-grabbing sm:aspect-[3/4]"
+          className="jt-card jt-glow-border group relative aspect-[4/5] w-full cursor-grab overflow-hidden rounded-2xl bg-[radial-gradient(ellipse_at_50%_70%,#4a0d5c_0%,#1a0824_52%,#050607_100%)] ring-1 ring-white/10 shadow-[0_40px_120px_-40px_rgba(255,122,26,0.4)] active:cursor-grabbing sm:aspect-[3/4]"
         >
-          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[80%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,122,26,0.22),rgba(46,230,255,0.1)_45%,transparent_70%)] blur-3xl" />
+          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[80%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,45,120,0.2),rgba(168,85,247,0.12)_45%,transparent_70%)] blur-3xl" />
           <div className="jt-card-media absolute inset-0" style={{ transform: "translateZ(20px)" }}>
             <Image
               src={current.src}
               alt={current.alt || name}
               fill
               priority
-              className="object-cover"
+              className="object-contain object-center"
               sizes="(max-width:1024px) 100vw, 50vw"
               draggable={false}
             />
@@ -125,11 +125,11 @@ export function ProductGallery3D({
                 rx.set(0);
                 ry.set(0);
               }}
-              className={`relative aspect-square overflow-hidden rounded-lg bg-jt-surface ring-1 transition-transform duration-300 hover:scale-[1.03] ${
+              className={`relative aspect-square overflow-hidden rounded-lg bg-[radial-gradient(ellipse_at_50%_70%,#4a0d5c_0%,#1a0824_55%,#050607_100%)] ring-1 transition-transform duration-300 hover:scale-[1.03] ${
                 active === i ? "ring-jt-neon shadow-[0_0_20px_-6px_rgba(180,255,26,0.7)]" : "ring-white/10"
               }`}
             >
-              <Image src={img.src} alt={img.alt || name} fill className="object-cover" sizes="25vw" />
+              <Image src={img.src} alt={img.alt || name} fill className="object-contain object-center" sizes="25vw" />
             </button>
           ))}
         </div>

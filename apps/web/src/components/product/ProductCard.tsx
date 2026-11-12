@@ -127,7 +127,7 @@ export function ProductCard({
           <span aria-hidden className="jt-card-border-run" />
           <span aria-hidden className="jt-card-border-bloom" />
 
-          <div className="jt-card-media jt-playing-face relative aspect-[5/7] w-full overflow-hidden bg-black">
+          <div className="jt-card-media jt-playing-face relative aspect-[5/7] w-full overflow-hidden bg-[radial-gradient(ellipse_at_50%_72%,#4a0d5c_0%,#1a0824_52%,#050607_100%)]">
             <span aria-hidden className="jt-playing-inset pointer-events-none absolute inset-[5px] z-[1] sm:inset-[6px]" />
 
             {product.image ? (
@@ -145,7 +145,7 @@ export function ProductCard({
                   fill
                   priority={priority}
                   sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, (max-width:1536px) 25vw, 20vw"
-                  className="object-contain object-center p-1.5 sm:p-2"
+                  className="object-contain object-center"
                 />
               </motion.div>
             ) : (
@@ -163,7 +163,7 @@ export function ProductCard({
             <span aria-hidden className="jt-card-shine jt-holo-shine pointer-events-none absolute inset-0 z-[1]" />
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-1/2 bg-gradient-to-t from-black/80 via-black/25 to-transparent opacity-75 transition-opacity duration-500 group-hover:opacity-95"
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-1/3 bg-gradient-to-t from-black/55 via-black/10 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-90"
             />
 
             <div

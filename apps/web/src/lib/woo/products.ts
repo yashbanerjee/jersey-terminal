@@ -146,7 +146,7 @@ export async function listProducts(params: {
 
   return unstable_cache(
     () => listProductsUncached(params),
-    [...key, "img-override-v1"],
+    [...key, "img-override-v2"],
     { revalidate: 60, tags: ["products"] },
   )();
 }
@@ -181,7 +181,7 @@ export async function getProductBySlug(slug: string): Promise<WooProduct | null>
         }
       }
     },
-    ["product-slug", slug, "img-override-v1"],
+    ["product-slug", slug, "img-override-v2"],
     { revalidate: 60, tags: ["products", `product-slug-${slug}`] },
   )();
 }
@@ -306,7 +306,7 @@ export async function getHomepageCollections() {
         return { newest: [], limited: [], all: [] };
       }
     },
-    ["homepage-collections"],
+    ["homepage-collections", "img-override-v2"],
     { revalidate: 120, tags: ["products", "categories"] },
   )();
 }

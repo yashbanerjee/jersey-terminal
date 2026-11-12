@@ -50,16 +50,16 @@ export function SquadGallery({ photos = UNITED_TIGERS_SQUAD }: { photos?: SquadP
               <button
                 type="button"
                 onClick={() => setActive(photo)}
-                className="group relative aspect-[3/4] w-full overflow-hidden border border-white/10 bg-jt-dark text-left"
+                className="group relative aspect-[3/4] w-full overflow-hidden border border-white/10 bg-[radial-gradient(ellipse_at_50%_70%,#4a0d5c_0%,#1a0824_52%,#050607_100%)] text-left"
               >
                 <Image
                   src={photo.src}
                   alt={photo.alt}
                   fill
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  className="object-cover transition duration-500 group-hover:scale-[1.04]"
+                  className="object-contain object-center transition duration-500 group-hover:scale-[1.03]"
                 />
-                <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 pb-3 pt-10">
+                <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent px-3 pb-3 pt-10">
                   <span className="block text-[11px] font-semibold uppercase tracking-[0.14em] text-white">
                     {photo.name}
                   </span>
@@ -87,13 +87,13 @@ export function SquadGallery({ photos = UNITED_TIGERS_SQUAD }: { photos?: SquadP
             >
               <X className="h-5 w-5" />
             </button>
-            <div className="relative aspect-[3/4] w-full overflow-hidden border border-white/15 bg-jt-dark sm:aspect-[4/5]">
+            <div className="relative aspect-[3/4] w-full overflow-hidden border border-white/15 bg-[radial-gradient(ellipse_at_50%_70%,#4a0d5c_0%,#1a0824_52%,#050607_100%)] sm:aspect-[4/5]">
               <Image
                 src={active.src}
                 alt={active.alt}
                 fill
                 sizes="(max-width: 768px) 100vw, 768px"
-                className="object-contain"
+                className="object-contain object-center"
                 priority
               />
             </div>

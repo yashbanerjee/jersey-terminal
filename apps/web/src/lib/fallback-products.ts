@@ -11,7 +11,7 @@ export const FALLBACK_HERO_PRODUCTS: ProductCardModel[] = [
     salePrice: null,
     onSale: false,
     image: {
-      src: "/products/united-tigers/match-01.webp",
+      src: "/products/united-tigers/match-life-01.jpg",
       alt: "United Tiger Match Jersey",
     },
     badges: ["new"],
