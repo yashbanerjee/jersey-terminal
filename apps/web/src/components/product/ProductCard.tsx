@@ -144,7 +144,8 @@ export function ProductCard({
                   alt={product.image.alt}
                   fill
                   priority={priority}
-                  sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, (max-width:1536px) 25vw, 20vw"
+                  quality={92}
+                  sizes="(max-width:640px) 70vw, (max-width:1024px) 40vw, 28vw"
                   className="!object-contain !object-center"
                 />
               </motion.div>
@@ -160,10 +161,10 @@ export function ProductCard({
               />
             )}
 
-            <span aria-hidden className="jt-card-shine jt-holo-shine pointer-events-none absolute inset-0 z-[1]" />
+            <span aria-hidden className="jt-card-shine pointer-events-none absolute inset-0 z-[1] opacity-40" />
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-1/3 bg-gradient-to-t from-black/55 via-black/10 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-90"
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-1/4 bg-gradient-to-t from-black/45 via-transparent to-transparent opacity-60"
             />
 
             <div

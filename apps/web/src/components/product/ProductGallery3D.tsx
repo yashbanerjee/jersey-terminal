@@ -85,14 +85,14 @@ export function ProductGallery3D({
           }}
           className="jt-card jt-glow-border group relative aspect-[2/3] w-full cursor-grab overflow-hidden rounded-2xl bg-[radial-gradient(ellipse_at_50%_70%,#4a0d5c_0%,#1a0824_52%,#050607_100%)] ring-1 ring-white/10 shadow-[0_40px_120px_-40px_rgba(255,122,26,0.4)] active:cursor-grabbing"
         >
-          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[80%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,45,120,0.16),rgba(168,85,247,0.1)_45%,transparent_70%)] blur-3xl" />
-          <div className="jt-card-media absolute inset-0 p-2 sm:p-3" style={{ transform: "translateZ(12px)" }}>
+          <div className="jt-card-media absolute inset-0 p-1.5 sm:p-2" style={{ transform: "translateZ(12px)" }}>
             <div className="relative h-full w-full">
               <Image
                 src={current.src}
                 alt={current.alt || name}
                 fill
                 priority
+                quality={95}
                 className="!object-contain !object-center"
                 sizes="(max-width:1024px) 100vw, 50vw"
                 draggable={false}
@@ -101,10 +101,9 @@ export function ProductGallery3D({
           </div>
           <motion.span
             aria-hidden
-            className="pointer-events-none absolute inset-0 z-[1] mix-blend-soft-light"
+            className="pointer-events-none absolute inset-0 z-[1] mix-blend-soft-light opacity-40"
             style={{ background: glareBg }}
           />
-          <span aria-hidden className="jt-card-shine pointer-events-none absolute inset-0" />
           <p className="pointer-events-none absolute bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full border border-white/15 bg-black/55 px-3 py-1 text-[10px] uppercase tracking-[0.2em] text-white/70 backdrop-blur">
             Drag to rotate
           </p>
@@ -130,6 +129,7 @@ export function ProductGallery3D({
                 src={img.src}
                 alt={img.alt || name}
                 fill
+                quality={90}
                 className="!object-contain !object-center p-0.5"
                 sizes="25vw"
               />

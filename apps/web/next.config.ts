@@ -11,7 +11,12 @@ const nextConfig: NextConfig = {
   images: {
     // Local Docker WordPress media (dev only SSRF exception)
     dangerouslyAllowLocalIP: true,
-    formats: ["image/avif", "image/webp"],
+    // Prefer WebP for sharper photo delivery; AVIF can soft-blur jersey detail.
+    formats: ["image/webp"],
+    // Allow high-quality product photography (default list is [75]).
+    qualities: [75, 90, 92, 95],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1364, 1920, 2048],
+    imageSizes: [64, 96, 128, 256, 384, 512],
     remotePatterns: [
       // Always allow the configured CMS host (also passed as Docker build ARG).
       { protocol: "https", hostname: wordpressHost, pathname: "/wp-content/uploads/**" },

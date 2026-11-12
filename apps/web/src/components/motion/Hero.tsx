@@ -228,13 +228,12 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                                   alt={featured.image.alt || featured.name}
                                   fill
                                   priority={index === 0}
+                                  quality={95}
                                   sizes="(max-width:1024px) 92vw, 42vw"
-                                  className="!h-full !w-full !object-contain !object-center transition duration-1000 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.03]"
+                                  className="!h-full !w-full !object-contain !object-center transition duration-1000 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.02]"
                                 />
-                                <div className="pointer-events-none absolute -left-[30%] top-[18%] h-[3px] w-[160%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(46,230,255,0.55),transparent)] opacity-70 blur-[1px]" />
-                                <div className="pointer-events-none absolute -left-[30%] top-[68%] h-[4px] w-[160%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(255,45,120,0.55),transparent)] opacity-70 blur-[1.5px]" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-jt-black/80 via-transparent to-transparent" />
-                                <span aria-hidden className="jt-card-shine pointer-events-none absolute inset-0" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-jt-black/70 via-transparent to-transparent" />
+                                <span aria-hidden className="jt-card-shine pointer-events-none absolute inset-0 opacity-35" />
 
                                 <div className="absolute inset-x-0 top-0 z-20 flex items-start justify-between gap-2 p-3 sm:p-4">
                                   <div className="hero-chip hero-chip-a flex items-center gap-1.5 rounded-full border border-jt-amber/50 bg-gradient-to-r from-jt-black/85 to-jt-black/65 px-2.5 py-1.5 text-[11px] shadow-[0_10px_30px_-10px_rgba(255,176,32,0.75)] backdrop-blur-md sm:gap-2 sm:px-3 sm:py-2 sm:text-xs">
@@ -315,6 +314,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                               alt=""
                               fill
                               sizes="96px"
+                              quality={90}
                               className="!h-full !w-full !object-contain !object-center"
                             />
                           ) : null}
@@ -330,10 +330,11 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
               ) : (
                 <div className="jt-chamfer relative mx-auto aspect-[3/4] w-full max-w-[min(100%,calc(66svh*0.75))] overflow-hidden bg-[radial-gradient(ellipse_at_50%_70%,#3b0a4a_0%,#12061a_55%,#050607_100%)]">
                   <Image
-                    src="/products/united-tigers/match-life-01.jpg"
+                    src="/products/united-tigers/match-life-01.webp"
                     alt="United Tiger Match Jersey"
                     fill
                     priority
+                    quality={95}
                     sizes="(max-width:1024px) 92vw, 42vw"
                     className="!object-contain !object-center"
                   />

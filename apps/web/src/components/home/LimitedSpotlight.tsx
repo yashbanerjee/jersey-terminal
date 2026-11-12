@@ -78,6 +78,7 @@ export function LimitedSpotlight({ products, href }: { products: ProductCardMode
                       alt={p.image.alt}
                       fill
                       sizes="(max-width:640px) 62vw, (max-width:1024px) 28vw, 18vw"
+                      quality={92}
                       className="!object-contain !object-center"
                     />
                   ) : null}

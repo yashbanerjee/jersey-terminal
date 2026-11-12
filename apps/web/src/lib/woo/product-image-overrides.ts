@@ -5,10 +5,10 @@
  */
 
 const MATCH = [
-  "/products/united-tigers/match-life-01.jpg",
-  "/products/united-tigers/match-life-02.jpg",
-  "/products/united-tigers/match-life-03.jpg",
-  "/products/united-tigers/match-life-04.jpg",
+  "/products/united-tigers/match-life-01.webp",
+  "/products/united-tigers/match-life-02.webp",
+  "/products/united-tigers/match-life-03.webp",
+  "/products/united-tigers/match-life-04.webp",
   "/products/united-tigers/match-01.webp",
   "/products/united-tigers/match-02.webp",
 ];

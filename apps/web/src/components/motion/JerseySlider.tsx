@@ -147,8 +147,8 @@ export function JerseySlider({ products, intervalMs = 3000, className = "" }: Pr
                         scale,
                         opacity,
                         filter: isActive
-                          ? "brightness(1.08) saturate(1.1)"
-                          : "brightness(0.48) saturate(0.7)",
+                          ? "brightness(1.02) saturate(1.04)"
+                          : "brightness(0.72) saturate(0.88)",
                       }
                     : {
                         opacity: 0,
