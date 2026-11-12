@@ -8,6 +8,7 @@ type Img = { id: number; src: string; alt: string };
 
 /**
  * Product hero image — drag / swipe to rotate in 3D like inspecting a jersey.
+ * Lifestyle portraits use contain + taller frame so faces are never cropped.
  */
 export function ProductGallery3D({
   images,
@@ -27,9 +28,9 @@ export function ProductGallery3D({
   const ry = useMotionValue(0);
   const rotateX = useSpring(rx, { stiffness: 160, damping: 18, mass: 0.4 });
   const rotateY = useSpring(ry, { stiffness: 160, damping: 18, mass: 0.4 });
-  const glareX = useTransform(ry, [-28, 28], [20, 80]);
-  const glareY = useTransform(rx, [18, -18], [30, 70]);
-  const glareBg = useMotionTemplate`radial-gradient(420px circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.3), transparent 55%)`;
+  const glareX = useTransform(ry, [-18, 18], [30, 70]);
+  const glareY = useTransform(rx, [10, -10], [35, 65]);
+  const glareBg = useMotionTemplate`radial-gradient(420px circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.22), transparent 55%)`;
 
   function onPointerDown(e: PointerEvent<HTMLDivElement>) {
     dragging.current = true;
@@ -37,19 +38,11 @@ export function ProductGallery3D({
     e.currentTarget.setPointerCapture(e.pointerId);
   }
   function onPointerMove(e: PointerEvent<HTMLDivElement>) {
-    if (!dragging.current) {
-      // Gentle hover tilt when not dragging
-      const r = root.current?.getBoundingClientRect();
-      if (!r) return;
-      const px = (e.clientX - r.left) / r.width;
-      const py = (e.clientY - r.top) / r.height;
-      ry.set((px - 0.5) * -36);
-      rx.set((py - 0.5) * 24);
-      return;
-    }
+    if (!dragging.current) return;
     const dx = e.clientX - lastX.current;
     lastX.current = e.clientX;
-    ry.set(Math.max(-38, Math.min(38, ry.get() + dx * 0.35)));
+    ry.set(Math.max(-22, Math.min(22, ry.get() + dx * 0.28)));
+    rx.set(0);
   }
   function onPointerUp(e: PointerEvent<HTMLDivElement>) {
     dragging.current = false;
@@ -58,6 +51,8 @@ export function ProductGallery3D({
     } catch {
       /* ignore */
     }
+    rx.set(0);
+    ry.set(0);
   }
   function onPointerLeave() {
     if (dragging.current) return;
@@ -66,7 +61,7 @@ export function ProductGallery3D({
   }
 
   if (!current) {
-    return <div className="jt-chamfer aspect-[4/5] w-full bg-jt-surface sm:aspect-[3/4]" />;
+    return <div className="jt-chamfer aspect-[2/3] w-full bg-jt-surface" />;
   }
 
   return (
@@ -88,19 +83,21 @@ export function ProductGallery3D({
             transformStyle: "preserve-3d",
             transformPerspective: 1200,
           }}
-          className="jt-card jt-glow-border group relative aspect-[4/5] w-full cursor-grab overflow-hidden rounded-2xl bg-[radial-gradient(ellipse_at_50%_70%,#4a0d5c_0%,#1a0824_52%,#050607_100%)] ring-1 ring-white/10 shadow-[0_40px_120px_-40px_rgba(255,122,26,0.4)] active:cursor-grabbing sm:aspect-[3/4]"
+          className="jt-card jt-glow-border group relative aspect-[2/3] w-full cursor-grab overflow-hidden rounded-2xl bg-[radial-gradient(ellipse_at_50%_70%,#4a0d5c_0%,#1a0824_52%,#050607_100%)] ring-1 ring-white/10 shadow-[0_40px_120px_-40px_rgba(255,122,26,0.4)] active:cursor-grabbing"
         >
-          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[80%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,45,120,0.2),rgba(168,85,247,0.12)_45%,transparent_70%)] blur-3xl" />
-          <div className="jt-card-media absolute inset-0" style={{ transform: "translateZ(20px)" }}>
-            <Image
-              src={current.src}
-              alt={current.alt || name}
-              fill
-              priority
-              className="object-contain object-center"
-              sizes="(max-width:1024px) 100vw, 50vw"
-              draggable={false}
-            />
+          <div className="pointer-events-none absolute left-1/2 top-1/2 h-[80%] w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,45,120,0.16),rgba(168,85,247,0.1)_45%,transparent_70%)] blur-3xl" />
+          <div className="jt-card-media absolute inset-0 p-2 sm:p-3" style={{ transform: "translateZ(12px)" }}>
+            <div className="relative h-full w-full">
+              <Image
+                src={current.src}
+                alt={current.alt || name}
+                fill
+                priority
+                className="!object-contain !object-center"
+                sizes="(max-width:1024px) 100vw, 50vw"
+                draggable={false}
+              />
+            </div>
           </div>
           <motion.span
             aria-hidden
@@ -125,11 +122,17 @@ export function ProductGallery3D({
                 rx.set(0);
                 ry.set(0);
               }}
-              className={`relative aspect-square overflow-hidden rounded-lg bg-[radial-gradient(ellipse_at_50%_70%,#4a0d5c_0%,#1a0824_55%,#050607_100%)] ring-1 transition-transform duration-300 hover:scale-[1.03] ${
+              className={`relative aspect-[2/3] overflow-hidden rounded-lg bg-[radial-gradient(ellipse_at_50%_70%,#4a0d5c_0%,#1a0824_55%,#050607_100%)] ring-1 transition-transform duration-300 hover:scale-[1.03] ${
                 active === i ? "ring-jt-neon shadow-[0_0_20px_-6px_rgba(180,255,26,0.7)]" : "ring-white/10"
               }`}
             >
-              <Image src={img.src} alt={img.alt || name} fill className="object-contain object-center" sizes="25vw" />
+              <Image
+                src={img.src}
+                alt={img.alt || name}
+                fill
+                className="!object-contain !object-center p-0.5"
+                sizes="25vw"
+              />
             </button>
           ))}
         </div>

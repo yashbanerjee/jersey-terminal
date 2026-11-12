@@ -87,13 +87,12 @@ svg {
   height: auto;
 }
 
-/* Next/Image `fill` must own the box — global height:auto stretches product art. */
+/* Next/Image `fill` must own the box — global height:auto stretches product art.
+   Do NOT force object-fit here: Tailwind object-contain/cover must win per component. */
 img[data-nimg="fill"] {
   max-width: none;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center;
 }
 
 ::selection {

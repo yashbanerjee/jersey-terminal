@@ -78,7 +78,7 @@ export function LimitedSpotlight({ products, href }: { products: ProductCardMode
                       alt={p.image.alt}
                       fill
                       sizes="(max-width:640px) 62vw, (max-width:1024px) 28vw, 18vw"
-                      className="object-contain object-center"
+                      className="!object-contain !object-center"
                     />
                   ) : null}
                   <div className="absolute inset-0 bg-gradient-to-t from-jt-black/95 via-jt-black/25 to-transparent" />

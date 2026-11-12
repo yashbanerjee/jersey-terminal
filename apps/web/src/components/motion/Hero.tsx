@@ -229,7 +229,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                                   fill
                                   priority={index === 0}
                                   sizes="(max-width:1024px) 92vw, 42vw"
-                                  className="!h-full !w-full object-contain object-center transition duration-1000 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.03]"
+                                  className="!h-full !w-full !object-contain !object-center transition duration-1000 ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-[1.03]"
                                 />
                                 <div className="pointer-events-none absolute -left-[30%] top-[18%] h-[3px] w-[160%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(46,230,255,0.55),transparent)] opacity-70 blur-[1px]" />
                                 <div className="pointer-events-none absolute -left-[30%] top-[68%] h-[4px] w-[160%] -rotate-[22deg] bg-[linear-gradient(90deg,transparent,rgba(255,45,120,0.55),transparent)] opacity-70 blur-[1.5px]" />
@@ -315,7 +315,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                               alt=""
                               fill
                               sizes="96px"
-                              className="!h-full !w-full object-contain object-center"
+                              className="!h-full !w-full !object-contain !object-center"
                             />
                           ) : null}
                           <span
@@ -335,7 +335,7 @@ export function Hero({ products = [] }: { products?: HeroProduct[] }) {
                     fill
                     priority
                     sizes="(max-width:1024px) 92vw, 42vw"
-                    className="object-contain object-center"
+                    className="!object-contain !object-center"
                   />
                 </div>
               )}

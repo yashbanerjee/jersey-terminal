@@ -57,7 +57,7 @@ export function SquadGallery({ photos = UNITED_TIGERS_SQUAD }: { photos?: SquadP
                   alt={photo.alt}
                   fill
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  className="object-contain object-center transition duration-500 group-hover:scale-[1.03]"
+                  className="!object-contain !object-center transition duration-500 group-hover:scale-[1.03]"
                 />
                 <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent px-3 pb-3 pt-10">
                   <span className="block text-[11px] font-semibold uppercase tracking-[0.14em] text-white">
@@ -93,7 +93,7 @@ export function SquadGallery({ photos = UNITED_TIGERS_SQUAD }: { photos?: SquadP
                 alt={active.alt}
                 fill
                 sizes="(max-width: 768px) 100vw, 768px"
-                className="object-contain object-center"
+                className="!object-contain !object-center"
                 priority
               />
             </div>

@@ -145,7 +145,7 @@ export function ProductCard({
                   fill
                   priority={priority}
                   sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, (max-width:1536px) 25vw, 20vw"
-                  className="object-contain object-center"
+                  className="!object-contain !object-center"
                 />
               </motion.div>
             ) : (
